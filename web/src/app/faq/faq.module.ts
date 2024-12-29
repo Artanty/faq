@@ -6,7 +6,13 @@ import { RouterModule } from "@angular/router";
 import { TicketDetailComponent } from "./components/ticket-detail/ticket-detail.component";
 import { TicketListComponent } from "./components/ticket-list/ticket-list.component";
 import { FaqComponent } from "./faq.component";
-
+export const CHILD_ROUTES = [
+    {
+        path: '',
+        component: FaqComponent,
+    },
+    { path: 'ticket/:id', component: TicketDetailComponent },
+]
 @NgModule({
     declarations: [
         FaqComponent,
@@ -17,19 +23,17 @@ import { FaqComponent } from "./faq.component";
         CommonModule,
         ReactiveFormsModule,
         FormsModule,
-        RouterModule.forChild([
-            {
-                path: '',
-                component: FaqComponent,
-            },
-            // { path: 'ticket/:id', component: TicketDetailComponent },
-        ]),
+        RouterModule.forChild(CHILD_ROUTES),
         HttpClientModule,
     ],
-    providers: [],
+    providers: [
+        // { provide: 'routes', useValue: CHILD_ROUTES}
+    ],
     exports: [
         FaqComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class FaqModule {}
+export class FaqModule {
+    static routes = CHILD_ROUTES;
+}

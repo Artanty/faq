@@ -1,5 +1,8 @@
-<h1>Welcome to {{ title }}!</h1>
+<h1>Welcome to "{{ title }}"!</h1>
 <div class="host-container">
   <div class="mfeWrapper" #placeHolder></div>
 </div>
+<a [routerLink]="['/child/ticket', 1]">{{ 'ticket.title' }}</a>
+<br>
+<a [routerLink]="['/child']">{{ 'home' }}</a>
 <router-outlet></router-outlet>

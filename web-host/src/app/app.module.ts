@@ -6,25 +6,11 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
 import { BehaviorSubject } from "rxjs"
 import { BusEvent, EVENT_BUS, HOST_NAME } from "typlib"
 import { AppRoutingModule } from "./app-routing.module"
-import { AppComponent } from "./app.component"
-
-// export const authStrategyBusEvent: BusEvent = {
-//   from: "CHRM",
-//   to: "AU",
-//   event: "authStrategy",
-//   payload: {
-//     authStrategy: "backend",
-//     checkBackendUrl: "http://localhost:3600/check",
-//     signInByDataUrl: "http://localhost:3600/login",
-//     signInByTokenUrl: "http://localhost:3600/loginByToken",
-//     status: "init",
-//   },
-// }
-
-// const eventBus$ = new BehaviorSubject(authStrategyBusEvent)
+import { AppComponent } from "./app.component";
+import { TestComponent } from './components/test/test.component'
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, TestComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -32,22 +18,9 @@ import { AppComponent } from "./app.component"
     BrowserAnimationsModule,
     HttpClientModule,
   ],
-  // providers: [
-  //   { provide: EVENT_BUS, useValue: eventBus$ },
-  //   { provide: HOST_NAME, useValue: "CHRM" },
-  //   {
-  //     provide: "components",
-  //     useValue: {},
-  //     multi: true,
-  //   },
-  // ],
+  providers: [
+    { provide: 'routes', useValue: [] }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
-
-// checkBackendUrl: 'https://cs99850.tmweb.ru/login',
-// signInByDataUrl: 'https://cs99850.tmweb.ru/login',
-// signInByTokenUrl: 'https://cs99850.tmweb.ru/loginByToken',
-// },
-// from: 'product',
-// status: 'init',
