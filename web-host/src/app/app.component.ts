@@ -26,11 +26,11 @@ export class AppComponent implements OnInit {
   async loadComponent(): Promise<void> {
     const m = await loadRemoteModule({
       remoteName: "doro",
-      // remoteEntry: "./assets/mfe/doro/remoteEntry.js",
-      remoteEntry: "http://localhost:4201/remoteEntry.js",
+      remoteEntry: "./assets/mfe/web-mfe/remoteEntry.js",
+      // remoteEntry: "http://localhost:4201/remoteEntry.js",
       exposedModule: "./Component",
     })
-    this.viewContainer.createComponent(m.DoroComponent)
+    this.viewContainer.createComponent(m.AppComponent)
     // this.viewContainer.createComponent(m.DoroComponent, {
     //   injector: this.injector,
     // })

@@ -13,12 +13,10 @@ import {
   styleUrl: "./app.component.scss",
 })
 export class AppComponent implements OnInit {
-  // @ViewChild("placeHolder", { read: ViewContainerRef })
-  // viewContainer!: ViewContainerRef
-
+  
   title = "web"
 
-  constructor(private injector: Injector) {
+  constructor() {
   
   }
 

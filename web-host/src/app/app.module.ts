@@ -8,20 +8,20 @@ import { BusEvent, EVENT_BUS, HOST_NAME } from "typlib"
 import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component"
 
-export const authStrategyBusEvent: BusEvent = {
-  from: "CHRM",
-  to: "AU",
-  event: "authStrategy",
-  payload: {
-    authStrategy: "backend",
-    checkBackendUrl: "http://localhost:3600/check",
-    signInByDataUrl: "http://localhost:3600/login",
-    signInByTokenUrl: "http://localhost:3600/loginByToken",
-    status: "init",
-  },
-}
+// export const authStrategyBusEvent: BusEvent = {
+//   from: "CHRM",
+//   to: "AU",
+//   event: "authStrategy",
+//   payload: {
+//     authStrategy: "backend",
+//     checkBackendUrl: "http://localhost:3600/check",
+//     signInByDataUrl: "http://localhost:3600/login",
+//     signInByTokenUrl: "http://localhost:3600/loginByToken",
+//     status: "init",
+//   },
+// }
 
-const eventBus$ = new BehaviorSubject(authStrategyBusEvent)
+// const eventBus$ = new BehaviorSubject(authStrategyBusEvent)
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,15 +32,15 @@ const eventBus$ = new BehaviorSubject(authStrategyBusEvent)
     BrowserAnimationsModule,
     HttpClientModule,
   ],
-  providers: [
-    { provide: EVENT_BUS, useValue: eventBus$ },
-    { provide: HOST_NAME, useValue: "CHRM" },
-    {
-      provide: "components",
-      useValue: {},
-      multi: true,
-    },
-  ],
+  // providers: [
+  //   { provide: EVENT_BUS, useValue: eventBus$ },
+  //   { provide: HOST_NAME, useValue: "CHRM" },
+  //   {
+  //     provide: "components",
+  //     useValue: {},
+  //     multi: true,
+  //   },
+  // ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
