@@ -27,7 +27,7 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: "webHost",
+      name: "webHost1",
       remotes: {
         // "doro": "doro@assets/mfe/doro/remoteEntry.js",
       },

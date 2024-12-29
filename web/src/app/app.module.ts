@@ -7,8 +7,8 @@ import { BehaviorSubject } from "rxjs"
 import { BusEvent, EVENT_BUS, HOST_NAME } from "typlib"
 import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component";
-import { TicketListComponent } from './components/ticket-list/ticket-list.component';
-import { TicketDetailComponent } from './components/ticket-detail/ticket-detail.component';
+import { FaqModule } from "./faq/faq.module"
+
 
 
 // export const authStrategyBusEvent: BusEvent = {
@@ -27,14 +27,15 @@ import { TicketDetailComponent } from './components/ticket-detail/ticket-detail.
 // const eventBus$ = new BehaviorSubject(authStrategyBusEvent)
 
 @NgModule({
-  declarations: [AppComponent, TicketListComponent, TicketDetailComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    FaqModule
   ],
   // providers: [
   //   { provide: EVENT_BUS, useValue: eventBus$ },

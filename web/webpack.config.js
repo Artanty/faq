@@ -30,7 +30,8 @@ module.exports = {
       name: "webHost",
       filename: "remoteEntry.js",
       exposes: {
-        './Component': './src/app/app.component.ts',
+        './Component': './src/app/faq/faq.component.ts',
+        './Module': './src/app/faq/faq.module.ts',
       },
       // name: "webHost",
       // remotes: {

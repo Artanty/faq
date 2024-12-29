@@ -6,6 +6,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core"
+import { Router, Routes } from "@angular/router"
 
 @Component({
   selector: "app-root",
@@ -18,19 +19,54 @@ export class AppComponent implements OnInit {
 
   title = "web-host"
 
-  constructor(private injector: Injector) {
+  
+  ngOnInit(): void {}
+  constructor(
+    // private injector: Injector,
+    // private viewContainer: ViewContainerRef,
+    // private router: Router
+  ) {
     this.loadComponent()
   }
+  
+  // async loadComponent(): Promise<void> {
+  //   // Load the child MFE module
+  //   const m = await loadRemoteModule({
+  //     remoteName: 'webHost',
+  //     remoteEntry: 'http://localhost:4221/remoteEntry.js',
+  //     exposedModule: './Component',
+  //   });
 
-  ngOnInit(): void {}
+  //   // Create the child component
+  //   const componentRef = this.viewContainer.createComponent(m.FaqComponent);
+
+  //   // Add the child MFE routes to the host router
+  //   const childRoutes: Routes = [
+  //     {
+  //       path: 'child',
+  //       component: componentRef.instance as any, // Use the dynamically loaded component
+  //       children: [
+  //         { path: '', component: m.FaqComponent }, // Default route
+  //         { path: 'ticket/:id', component: m.TicketDetailComponent },
+  //       ],
+  //     },
+  //   ];
+
+  //   // Add the child routes to the host router
+  //   this.router.resetConfig([...this.router.config, ...childRoutes]);
+
+  //   // Navigate to the child MFE's default route
+  //   this.router.navigate(['/child']);
+  // }
   async loadComponent(): Promise<void> {
     const m = await loadRemoteModule({
-      remoteName: "doro",
-      remoteEntry: "./assets/mfe/web-mfe/remoteEntry.js",
-      // remoteEntry: "http://localhost:4201/remoteEntry.js",
+      remoteName: "webHost",
+      // remoteEntry: "./assets/mfe/web-mfe/remoteEntry.js",
+      remoteEntry: "http://localhost:4221/remoteEntry.js",
       exposedModule: "./Component",
     })
-    this.viewContainer.createComponent(m.AppComponent)
+    this.viewContainer.createComponent(m.FaqComponent)
+
     // this.viewContainer.createComponent(m.DoroComponent, {
     //   injector: this.injector,
     // })
