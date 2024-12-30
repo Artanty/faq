@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const ticketRoutes = require('./routes/tickets');
 const answerRoutes = require('./routes/answers');
 const cors = require('cors');
+const checkDBConnection = require('./core/db_check_connection')
 dotenv.config();
 
 const app = express();
@@ -19,4 +20,5 @@ app.use('/answers', answerRoutes);
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  checkDBConnection()
 });
