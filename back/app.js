@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const ticketRoutes = require('./routes/tickets');
 const answerRoutes = require('./routes/answers');
+const axios = require('axios');
 const cors = require('cors');
 const checkDBConnection = require('./core/db_check_connection')
 dotenv.config();
