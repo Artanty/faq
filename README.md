@@ -1,9 +1,12 @@
 # faq
 
+stories:
 
-CREATE DATABASE exam_prep;
+1. see question, input answer, submit.
 
-USE exam_prep;
+
+
+
 
 CREATE TABLE tickets (
   id INT AUTO_INCREMENT PRIMARY KEY,

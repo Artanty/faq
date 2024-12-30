@@ -1,12 +1,9 @@
 import { loadRemoteModule } from "@angular-architects/module-federation"
 import {
   Component,
-  Injector,
   OnInit,
-  ViewChild,
-  ViewContainerRef,
 } from "@angular/core"
-import { provideRouter, Router, RouterModule, Routes } from "@angular/router"
+import { Router, Routes } from "@angular/router"
 
 @Component({
   selector: "app-root",
@@ -14,8 +11,6 @@ import { provideRouter, Router, RouterModule, Routes } from "@angular/router"
   styleUrl: "./app.component.scss",
 })
 export class AppComponent implements OnInit {
-  @ViewChild("placeHolder", { read: ViewContainerRef })
-  viewContainer!: ViewContainerRef
 
   ngOnInit(): void {}
   constructor(

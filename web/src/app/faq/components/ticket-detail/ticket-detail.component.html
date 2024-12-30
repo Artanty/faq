@@ -1,15 +1,14 @@
-<div *ngIf="ticket">
-    <h2>{{ ticket.title }}</h2>
-    <p>{{ ticket.question }}</p>
-    <h3>Answers</h3>
-    <ul>
-      <li *ngFor="let answer of answers">
-        <p>{{ answer.body }} (Rate: {{ answer.rate }})</p>
-      </li>
-    </ul>
-    <form (ngSubmit)="onSubmit()">
-      <textarea [(ngModel)]="newAnswer.body" name="body" placeholder="Your answer" required></textarea>
-      <input [(ngModel)]="newAnswer.rate" type="number" name="rate" placeholder="Rate (1-5)" min="1" max="5" required>
-      <button type="submit">Submit Answer</button>
-    </form>
-  </div>
+<div class="ticketDetailsWtapper" *ngIf="state$ | async as state">
+  <ng-container [ngSwitch]="state.name">
+    <div class="loading" *ngSwitchCase="StateName.LOADING">Loading</div>
+    <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">Отправлено</div>
+    <div class="errorBlock" *ngSwitchCase="StateName.ERROR">Ошибка отправки</div>
+    <div *ngSwitchCase="StateName.READY">
+      <h3>{{ ticket?.question }}</h3>
+      <form (ngSubmit)="onSubmit()">
+        <textarea [(ngModel)]="newAnswer.body" name="body" required></textarea>
+        <button type="submit" [disabled]="!newAnswer.body.length">Сохранить</button>
+      </form>
+    </div>
+  </ng-container>
+</div>
