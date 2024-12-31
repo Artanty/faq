@@ -2,6 +2,8 @@
 <a [routerLink]="['/child/ticket', 1]">{{ 'ticket.title' }}</a>
 {{ ' | '}}
 <a [routerLink]="['/child']">{{ 'home' }}</a>
+<br>
+<p>Message: {{ message }}</p>
 <div class="host-container">
   <!-- <div class="mfeWrapper" #placeHolder></div> -->
   <router-outlet></router-outlet>

@@ -4,6 +4,7 @@ import {
   OnInit,
 } from "@angular/core"
 import { Router, Routes } from "@angular/router"
+import { ChromeMessagingService } from "./services/chrome-messaging.service"
 
 @Component({
   selector: "app-root",
@@ -12,12 +13,21 @@ import { Router, Routes } from "@angular/router"
 })
 export class AppComponent implements OnInit {
 
-  ngOnInit(): void {}
+  message: string | null = null;
+
   constructor(
-    private router: Router
+    private router: Router,
+    private chromeMessagingService: ChromeMessagingService
   ) {
     this.loadComponent()
-    console.log(this.router)
+    // console.log(this.router)
+  }
+
+  ngOnInit(): void {
+    this.chromeMessagingService.messages.subscribe((message) => {
+      this.message = message.message;
+      console.log('Message received in Angular app:', message);
+    });
   }
 
   async loadComponent(): Promise<void> {
