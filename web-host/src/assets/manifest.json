@@ -8,7 +8,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage", "nativeMessaging"],
+  "permissions": ["storage", "nativeMessaging", "alarms", "notifications"],
   "action": {
     "default_popup": "index.html"
   }

@@ -4,9 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "prebuild": "node ../build/prebuild.js",
     "build": "ng build",
-    "postbuild": "node ../build/postbuild_web-chrome-host.js --downloadBuild=DORO --downloadAndUnzipTo=dist/web-host/assets/mfe/doro --copySrc=../build/extension-files --copyDest=dist/web-host",
+    "postbuild": "node replace.js",
     "watch": "ng build --watch --configuration development",
     "run:all": "node node_modules/@angular-architects/module-federation/src/server/mf-dev-server.js"
   },
@@ -21,6 +20,7 @@
     "@angular/platform-browser": "^17.0.5",
     "@angular/platform-browser-dynamic": "^17.0.5",
     "@angular/router": "^17.0.5",
+    "dotenv-webpack": "^8.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.0"

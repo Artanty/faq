@@ -4,9 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4221",
-    "prebuild": "node ../build/prebuild.js",
     "build": "ng build",
-    "postbuild": "node ../build/postbuild_web-chrome-host.js --downloadBuild=DORO --downloadAndUnzipTo=dist/web-host/assets/mfe/doro --copySrc=../build/extension-files --copyDest=dist/web-host",
+    "postbuild": "node copy-dist.js",
     "watch": "ng build --watch --configuration development",
     "run:all": "node node_modules/@angular-architects/module-federation/src/server/mf-dev-server.js"
   },

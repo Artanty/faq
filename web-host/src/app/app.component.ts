@@ -25,7 +25,8 @@ export class AppComponent implements OnInit {
     const m = await loadRemoteModule({
       remoteName: "webHost",
       // remoteEntry: "./assets/mfe/web-host/remoteEntry.js",
-      remoteEntry: "http://localhost:4221/remoteEntry.js",
+      // remoteEntry: "http://localhost:4221/remoteEntry.js",
+      remoteEntry: `${process.env["FAQ_WEB_REMOTE_ENTRY_URL"]}`,
       exposedModule: "./Module",
     })
 
