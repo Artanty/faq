@@ -10,21 +10,20 @@ const NAMESPACE = 'NAMESPACE_PLACEHOLDER'
 const SLAVE_REPO = 'SLAVE_REPO_PLACEHOLDER'
 const COMMIT = 'COMMIT_PLACEHOLDER'
 
-chrome.alarms.create('examReminder', {
-  periodInMinutes: 5
-});
+chrome.alarms.create('openPopup', { periodInMinutes: 1 });
 
-chrome.alarms.create('sendHttpRequest', { periodInMinutes: 15 });
+chrome.alarms.create('sendStat', { periodInMinutes: 1 });
 
-
-// Listen for the alarm trigger
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'examReminder') {
-    // Open the extension's popup
+  if (alarm.name === 'openPopup') {
     openPopup();
   }
-  if (alarm.name === 'sendHttpRequest') {
-    sendStatRuntimeEvent();
+  if (alarm.name === 'sendStat') {
+    sendStatEvent({ stage: 'RUNTIME', data: {
+      projectId: `${PROJECT_ID}`,
+      slaveRepo: `${SLAVE_REPO}`,
+      commit: `${COMMIT}`
+    } });
   }
 });
 
@@ -36,74 +35,48 @@ function openPopup() {
       chrome.action.openPopup((error) => {
         if (error) {
           console.error('Failed to open popup:', error);
-          this.sendStatUnknownEvent('chrome.action.openPopup error: ', error);
+          this.sendStatEvent({ stage: 'UNKNOWN', data: `chrome.action.openPopup error: ${error}` });
         } else {
-          // Send a message to the opened popup
-          sendMessageToPopup();
+          const data = {
+            from: 'web-host',
+            to: 'faq',
+            event: 'showRandomTicket',
+            payload: null
+          }
+          sendMessageToPopup(data);
         }
       });
     } else {
-      // No active window, show a notification instead
-      sendStatUnknownEvent('!windows.length on openPopup`');
+      this.sendStatEvent({ stage: 'UNKNOWN', data: `!windows.length on openPopup` });
     }
   });
 }
-  
-  
-function sendStatUnknownEvent(eventData) {
+
+function sendStatEvent(eventStage, eventData) {
+  const statPayload = {
+    projectId: `${PROJECT_ID}`,
+    namespace: 'web-host',
+    stage: eventStage,
+    eventData,
+  }
+
+  const onErrorMessagePayload = {
+    from: 'ext-service-worker',
+    to: 'web-host',
+    event: 'retrySendStat',
+    payload: statPayload
+  }
+
   fetch(`${STAT_BACK_URL}/add-event`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      projectId: 'faq@github',
-      namespace: 'web-host',
-      stage: 'UNKNOWN',
-      eventData,
-    })
+    body: JSON.stringify(statPayload)
   })
-    .then(response => response.json())
-    .then(data => console.log('Error event sent successfully:', data))
-    .catch(error => console.error('Error sending error event:', error));
-}
-
-// Function to send a message to the opened popup
-function sendMessageToPopup() {
-  chrome.runtime.sendMessage({ message: 'Hello from background.js!', data: { key: 'value' } }, (response) => {
-    if (chrome.runtime.lastError) {
-      console.error('Error sending message:', chrome.runtime.lastError);
-    } else {
-      console.log('Message sent successfully. Response:', response);
-    }
-  });
-}
-
-function sendStatRuntimeEvent () {
-  const url = `${STAT_BACK_URL}/add-event`; // Replace with your API endpoint
-  const payload = {
-    projectId: `${PROJECT_ID}`,
-    namespace: `${NAMESPACE}`,
-    stage: 'RUNTIME',
-    eventData: JSON.stringify(
-      {
-        projectId: `${PROJECT_ID}`,
-        slaveRepo: `${SLAVE_REPO}`,
-        commit: `${COMMIT}`
-      }
-    )
-  }
-  const options = {
-    method: 'POST', // or 'POST', 'PUT', etc.
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload), // Add body for POST/PUT requests
-  };
-
-  fetch(url, options)
     .then((response) => {
       if (!response.ok) {
+        sendMessageToPopup(onErrorMessagePayload);
         throw new Error('Network response was not ok');
       }
       return response.json();
@@ -113,7 +86,26 @@ function sendStatRuntimeEvent () {
     })
     .catch((error) => {
       console.error('Error sending HTTP request:', error);
+      sendMessageToPopup(onErrorMessagePayload);
     });
-};
+}
 
-
+// export interface BusEvent<T = Record<string, unknown>> {
+//   from: string;
+//   to: string;
+//   event: string;
+//   payload: T;
+//   self?: true;
+//   status?: string;
+// }
+function sendMessageToPopup(data) {
+  chrome.runtime.sendMessage(data, (response) => {
+    if (chrome.runtime.lastError) {
+      console.error('Error sending message:');
+      console.error(chrome.runtime.lastError)
+    } else {
+      console.log('Message sent successfully. Response:');
+      console.log(response)
+    }
+  });
+}
