@@ -2,12 +2,24 @@
   <ng-container [ngSwitch]="state.name">
     <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
     <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">
-      <div class="back" (click)="setState(StateName.READY)">Назад</div>
-      <h1>Сохранено</h1>
+      <h1>Билет добавлен</h1>
+      <div class="ctaBlock">
+        <div class="mainBtnWtapper">
+          <a class="btn"  (click)="closeExtension()">
+            <span class="countdown" *ngIf="countdown">{{ countdown }}</span>
+            Закрыть
+          </a>
+        </div>
+        <a class="btn" (click)="backToForm()">Назад</a>
+        <a class="btn ml40" (click)="clearForm()">Добавить еще</a>
+      </div>
     </div>
     <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
-      <div class="back" (click)="setState(StateName.READY)">Назад</div>
-      <h1>Ошибка сохранения</h1><span>{{state.payload}}</span></div>
+      <h1>Ошибка сохранения</h1><span>{{state.payload}}</span>
+      <div class="ctaBlock">
+        <a class="btn" (click)="backToForm()">Назад</a>
+      </div>
+    </div>
     <div *ngSwitchCase="StateName.READY">
       <form (ngSubmit)="onSubmit()">
         <div class="flex">
@@ -16,6 +28,7 @@
           </select>
           <ng-conteiner *ngIf="isTopicVisible">
             <select name="topic" id="topic" [(ngModel)]="newTicket.topicId" title="Раздел">
+              <option value="0">Нет темы</option>
               <option *ngFor="let item of availableTopics" [value]="item.id">{{item.name}}</option>
             </select>
           </ng-conteiner>
