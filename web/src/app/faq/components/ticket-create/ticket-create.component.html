@@ -1,0 +1,30 @@
+<div class="wrapper" *ngIf="state$ | async as state">
+  <ng-container [ngSwitch]="state.name">
+    <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
+    <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">
+      <div class="back" (click)="setState(StateName.READY)">Назад</div>
+      <h1>Сохранено</h1>
+    </div>
+    <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
+      <div class="back" (click)="setState(StateName.READY)">Назад</div>
+      <h1>Ошибка сохранения</h1><span>{{state.payload}}</span></div>
+    <div *ngSwitchCase="StateName.READY">
+      <form (ngSubmit)="onSubmit()">
+        <div class="flex">
+          <select name="folder" id="folder" [(ngModel)]="newTicket.folderId" title="Папка">
+            <option *ngFor="let item of dict['folders']" [value]="item.id">{{item.name}}</option>
+          </select>
+          <ng-conteiner *ngIf="isTopicVisible">
+            <select name="topic" id="topic" [(ngModel)]="newTicket.topicId" title="Раздел">
+              <option *ngFor="let item of availableTopics" [value]="item.id">{{item.name}}</option>
+            </select>
+          </ng-conteiner>
+        </div>
+        <input [(ngModel)]="newTicket.title" name="title" placeholder="Заголовок" title="Заголовок">
+        <textarea [(ngModel)]="newTicket.question" name="question" placeholder="Вопрос" title="Вопрос" required></textarea>
+        <textarea [(ngModel)]="newTicket.rightAnswer" name="rightAnswer" placeholder="Ответ" title="Ответ" required></textarea>
+        <button type="submit" [disabled]="!newTicket.question.length">Сохранить</button>
+      </form>
+    </div>
+  </ng-container>
+</div>

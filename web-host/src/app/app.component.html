@@ -1,8 +1,13 @@
-<span>host app container </span>| 
+<span>host</span>| 
 <a (click)="showOldestTicket()">showOldest</a> | 
-<a [routerLink]="['/faq/ticket', 1]">{{ 'ticket.title' }}</a>
+<a [routerLink]="['/faq/ticket', 1]">{{ 'id 1' }}</a>
 {{ ' | '}}
-<a [routerLink]="['/faq']">{{ 'home' }}</a>
+<a [routerLink]="['/faq/ticket']">{{ 'oldest' }}</a>
+{{ ' | '}}
+<a [routerLink]="['/faq/ticketList']">{{ 'list' }}</a>
+{{ ' | '}}
+<a [routerLink]="['/faq/ticketCreate']">{{ 'create' }}</a>
+
 <div class="host-container">
   <div class="mfeWrapper" #placeHolder></div>
   <router-outlet></router-outlet>

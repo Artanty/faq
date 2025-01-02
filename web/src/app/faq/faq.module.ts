@@ -8,19 +8,42 @@ import { TicketListComponent } from "./components/ticket-list/ticket-list.compon
 import { FaqComponent } from "./faq.component";
 import { BusEvent, EVENT_BUS } from "typlib";
 import { BehaviorSubject } from "rxjs";
+import { TicketCreateComponent } from './components/ticket-create/ticket-create.component';
 
+// export const CHILD_ROUTES = [
+//     {
+//         path: '',
+//         component: FaqComponent,
+//     },
+//     { path: 'ticket', component: TicketDetailComponent },
+//     { path: 'ticket/:id', component: TicketDetailComponent }, 
+// ]
 export const CHILD_ROUTES = [
     {
         path: '',
         component: FaqComponent,
-    },
-    { path: 'ticket/:id', component: TicketDetailComponent },
+        children: [
+            {
+                path: 'ticket', component: TicketDetailComponent
+            },
+            { 
+                path: 'ticket/:id', component: TicketDetailComponent
+            }, 
+            {
+                path: 'ticketCreate', component: TicketCreateComponent
+            },
+            { 
+                path: 'ticketList', component: TicketListComponent
+            }, 
+        ]
+    }, 
 ]
 @NgModule({
     declarations: [
         FaqComponent,
         TicketListComponent,
-        TicketDetailComponent
+        TicketDetailComponent,
+        TicketCreateComponent
     ],
     imports: [
         CommonModule,

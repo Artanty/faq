@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, Inject, InjectionToken, OnInit, Opt
 
 import { BehaviorSubject, filter, Observable } from "rxjs";
 import { BusEvent, EVENT_BUS } from "typlib";
+import { ApiService } from "./services/api.service";
+import { GetOldestTicketRequest } from "./services/api.service.types";
 
 export const EVENT_BUS_LISTENER = new InjectionToken<Observable<BusEvent>>('');
 export const EVENT_BUS_PUSHER = new InjectionToken<
@@ -43,6 +45,7 @@ export class FaqComponent implements OnInit{
         // private router: Router,
         @Inject(EVENT_BUS_LISTENER)
         private readonly eventBusListener$: Observable<BusEvent>,
+        private readonly _apiService: ApiService
         // @Inject(EVENT_BUS_PUSHER)
         // private eventBusPusher: (busEvent: BusEvent) => void
     ) {
@@ -52,7 +55,20 @@ export class FaqComponent implements OnInit{
 
     ngOnInit(): void {
       // this.router.navigate)
-      this.eventBusListener$.subscribe(res=>console.log(res))
+      this.eventBusListener$.subscribe(res=>{
+        console.log('faq.comp: ' + res.event)
+        if (res.event === 'SHOW_OLDEST_TICKET') {
+          const req: GetOldestTicketRequest = {
+            userId: 1,
+            folderId: 1,
+            topicId: 1,
+            quantity: 1,
+          }
+          this._apiService.getOldestTicket(req).subscribe(res => {
+            console.log(res)
+          })
+        }
+      })
     }
     
 }

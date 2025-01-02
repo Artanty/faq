@@ -2,6 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const ticketRoutes = require('./routes/tickets');
 const answerRoutes = require('./routes/answers');
+const dictRoutes =   require('./routes/dictionaries');
+
 const axios = require('axios');
 const cors = require('cors');
 const checkDBConnection = require('./core/db_check_connection')
@@ -17,7 +19,7 @@ app.use(express.json());
 // Routes
 app.use('/tickets', ticketRoutes);
 app.use('/answers', answerRoutes);
-
+app.use('/dictionaries', dictRoutes);
 
 async function sendRuntimeEventToStat(triggerIP) {
   try {

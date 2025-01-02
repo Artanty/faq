@@ -114,7 +114,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.chromeMessagingService.messages.subscribe((message: ChromeMessage) => {
       console.log('Angular received event: ' + message.event);
-      if (message.event === 'SHOW_RANDOM_TICKET') {
+      if (message.event === 'SHOW_OLDEST_TICKET') {
         this.showOldestTicket()
       }
       if (message.event === 'RETRY_SEND_STAT') {

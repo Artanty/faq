@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ticket } from '../models/ticket.model';
 import { Answer } from '../models/answer.model';
-import { GetOldestTicketRequest, GetOldestTicketResponse } from './api.service.types';
+import { CreateTicketRequest, GetOldestTicketRequest, GetOldestTicketResponse, GetTicketByIdRequest, GetUserTicketsRequest } from './api.service.types';
+import { Dict } from '../models/dict.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,16 +16,16 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  getTickets(): Observable<Ticket[]> {
-    return this.http.get<Ticket[]>(`${this.baseUrl}/tickets`);
+  getTickets(data: GetUserTicketsRequest): Observable<Ticket[]> {
+    return this.http.post<Ticket[]>(`${this.baseUrl}/tickets/all`, data);
   }
 
-  getTicketById(id: number): Observable<Ticket> {
-    return this.http.get<Ticket>(`${this.baseUrl}/tickets/${id}`);
+  getTicketById(data: GetTicketByIdRequest): Observable<Ticket> {
+    return this.http.post<Ticket>(`${this.baseUrl}/tickets/one`, data);
   }
 
-  createTicket(ticket: { title: string; question: string; rightAnswer: string }): Observable<Ticket> {
-    return this.http.post<Ticket>(`${this.baseUrl}/tickets`, ticket);
+  createTicket(data: CreateTicketRequest): Observable<Ticket> {
+    return this.http.post<Ticket>(`${this.baseUrl}/tickets/create`, data);
   }
 
   getAnswersByTicketId(ticketId: number): Observable<Answer[]> {
@@ -41,5 +42,9 @@ export class ApiService {
     }
     
     return this.http.post<GetOldestTicketResponse[]>(`${this.baseUrl}/tickets/oldest`, data)
+  }
+
+  getDictionaries(): Observable<Dict> { // todo add user?
+    return this.http.post<Dict>(`${this.baseUrl}/dictionaries/all`, null);
   }
 }

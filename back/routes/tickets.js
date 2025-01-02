@@ -3,21 +3,22 @@ const Ticket = require('../models/Ticket');
 const router = express.Router();
 
 // Create a new ticket
-router.post('/', async (req, res) => {
+router.post('/create', async (req, res) => {
   try {
-    const { title, question, rightAnswer } = req.body;
-    const ticketId = await Ticket.create({ title, question, rightAnswer });
-    res.status(201).json({ id: ticketId, title, question, rightAnswer });
+    console.log(req.body)
+    const { title, question, rightAnswer, folderId, topicId, userId } = req.body;
+    const ticketId = await Ticket.create({ title, question, rightAnswer, folderId, topicId, userId });
+    res.status(201).json({ id: ticketId, title, question, rightAnswer, folderId, topicId, userId });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });
 
 // Get all tickets of user
-router.get('/all', async (req, res) => {
-  console.log(req)
+router.post('/all', async (req, res) => {
+  // console.log(req)
   try {
-    const tickets = await Ticket.findAll(req.query.userId);
+    const tickets = await Ticket.findAll(req.body.userId);
     res.json(tickets);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -25,9 +26,9 @@ router.get('/all', async (req, res) => {
 });
 
 // Get a specific ticket by ID
-router.get('/one', async (req, res) => {
+router.post('/one', async (req, res) => {
   try {
-    const ticket = await Ticket.findById(req.query.userId);
+    const ticket = await Ticket.findById(req.body.ticketId);
     if (!ticket) {
       return res.status(404).json({ message: 'Ticket not found' });
     }
@@ -36,16 +37,15 @@ router.get('/one', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-// folder
-// topic
-router.get('/oldest', async (req, res) => {
+
+router.post('/oldest', async (req, res) => {
   // console.log(req)
   try {
     const ticket = await Ticket.findOldest({
-      userId: req.query.userId, 
-      folderId: req.query.folderId, 
-      topicId: req.query.topicId,
-      quantity: req.query.quantity || 1
+      userId: req.body.userId, 
+      folderId: req.body.folderId, 
+      topicId: req.body.topicId,
+      quantity: req.body.quantity || 1
     });
     if (!ticket) {
       return res.status(404).json({ message: 'Ticket not found' });

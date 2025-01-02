@@ -9,12 +9,13 @@ class Ticket {
 // -- Insert a new ticket
 // INSERT INTO tickets (title, question, rightAnswer, folder, topic, answersQuantity)
 // VALUES ('Sample Title', 'What is 2 + 2?', '4', @folder, @topic, @quantity);
-  static async create({ title, question, rightAnswer }) {
+  static async create({ title, question, rightAnswer, folderId, topicId, userId }) {
+    console.log({ title, question, rightAnswer, folderId, topicId, userId })
     const pool = createPool()
     const connection = await pool.getConnection();
     const [result] = await connection.query(
-      'INSERT INTO tickets (title, question, rightAnswer) VALUES (?, ?, ?)',
-      [title, question, rightAnswer]
+      'INSERT INTO tickets (title, question, rightAnswer, folderId, topicId, userId) VALUES (?, ?, ?, ?, ?, ?)',
+      [title, question, rightAnswer, folderId, topicId, userId]
     );
     connection.release();
     return result.insertId;

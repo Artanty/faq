@@ -17,3 +17,19 @@ export interface GetOldestTicketResponse {
     "topicId": number
     "userId": number
 }
+
+export interface GetUserTicketsRequest {
+    userId: number
+}
+
+export interface GetTicketByIdRequest {
+    ticketId: number
+}
+
+export interface CreateTicketRequest {
+    title: string
+    question: string
+    rightAnswer: string
+    folderId: number
+    topicId?: number
+}
