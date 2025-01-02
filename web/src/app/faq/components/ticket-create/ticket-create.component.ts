@@ -76,7 +76,7 @@ export class TicketCreateComponent implements OnInit {
       });
   }
 
-  public closeExtension() {
+  public closeExtension(): void {
     const closeExtBusEvent: BusEvent = {
       event: "CLOSE_EXT",
       from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
@@ -86,12 +86,12 @@ export class TicketCreateComponent implements OnInit {
     this.eventBusPusher(closeExtBusEvent)
   }
 
-  public backToForm () {
+  public backToForm (): void {
     this._resetCountdown()
     this.state$.next({ name: StateName.READY })
   }
 
-  public clearForm() {
+  public clearForm(): void {
     this.newTicket = {
       title: '',
       question: '',
@@ -146,18 +146,15 @@ export class TicketCreateComponent implements OnInit {
     return serviceFolder.id;
   }
 
-  private _loadDictionariesAndProfile() {
+  private _loadDictionariesAndProfile(): void {
     this._apiService.getDictionaries().subscribe((res: Dict) => {
       this.dict = res
       this.newTicket.folderId = this.serviceFolderId
-      // this.mock()
       this.state$.next({ name: StateName.READY })
-      // this.state$.next({ name: StateName.SUBMITTED })
-      // this.countdownToClose()
     })
   }
 
-  private countdownToClose () {
+  private countdownToClose (): void {
     this.countdown = this._userService.getCloseCountdown()
     this.countdownId = setInterval(() => {
       this.countdown--
@@ -169,14 +166,8 @@ export class TicketCreateComponent implements OnInit {
     }, 1000)
   }
 
-  private _resetCountdown () {
+  private _resetCountdown (): void {
     clearInterval(this.countdownId)
     this.countdownId = null  
-  }
-
-  mock () {
-    this.newTicket.question = "Какие типы данных есть в JS?"
-    this.newTicket.rightAnswer = "- Число (number)\n - Строка (string)\nБулевый (логический) тип (boolean)\n - BigInt\n - Symbol\n - null\n - undefiend\n - Object"
-    this.newTicket.title = "Типы данных"
   }
 }

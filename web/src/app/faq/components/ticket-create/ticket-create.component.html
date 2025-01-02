@@ -15,7 +15,8 @@
       </div>
     </div>
     <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
-      <h1>Ошибка сохранения</h1><span>{{state.payload}}</span>
+      <h1>Ошибка сохранения</h1>
+      <span>{{state.payload}}</span>
       <div class="ctaBlock">
         <a class="btn" (click)="backToForm()">Назад</a>
       </div>

@@ -6,4 +6,9 @@ export interface Ticket {
     date: string;
     lastShownDate: string;
     answersQuantity: number;
+    folderId: number
+    topicId: number | null
+    userId: number
   }
+
+  

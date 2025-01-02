@@ -4,10 +4,10 @@ const Ticket = require('../models/Ticket');
 const router = express.Router();
 
 // Submit an answer for a ticket
-router.post('/', async (req, res) => {
+router.post('/save', async (req, res) => {
   try {
-    const { ticketId, body, rate } = req.body;
-    const answerId = await Answer.create({ ticketId, body, rate });
+    const { ticketId, body, rate, userId } = req.body;
+    const answerId = await Answer.create({ ticketId, body, rate, userId });
 
     // Update the ticket's answersQuantity and lastShownDate
     await Ticket.incrementAnswersQuantity(ticketId);

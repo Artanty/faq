@@ -1,8 +1,28 @@
 <div class="ticketDetailsWtapper" *ngIf="state$ | async as state">
   <ng-container [ngSwitch]="state.name">
-    <div class="loading" *ngSwitchCase="StateName.LOADING">Loading</div>
-    <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">Отправлено</div>
-    <div class="errorBlock" *ngSwitchCase="StateName.ERROR">Ошибка отправки</div>
+    <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
+    <!-- <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">Отправлено</div> -->
+    <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">
+      <h1>Ответ принят</h1>
+      <div class="ctaBlock">
+        <div class="mainBtnWtapper">
+          <a class="btn" (click)="closeExtension()">
+            <span class="countdown" *ngIf="countdown">{{ countdown }}</span>
+            Закрыть
+          </a>
+        </div>
+        <!-- <a class="btn" (click)="backToForm()">Назад</a> -->
+        <a class="btn" (click)="showNextTicket()">Следующий билет</a>
+      </div>
+    </div>
+    
+    <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
+      <h1>Ошибка отправки</h1>
+      <span>{{state.payload}}</span>
+      <div class="ctaBlock">
+        <a class="btn" (click)="backToForm()">Назад</a>
+      </div>
+    </div>
     <div *ngSwitchCase="StateName.READY">
       <h3>{{ ticket?.question }}</h3>
       <form (ngSubmit)="onSubmit()">

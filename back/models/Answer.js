@@ -1,12 +1,12 @@
 const createPool = require('../core/db_connection')
 
 class Answer {
-  static async create({ ticketId, body, rate }) {
+  static async create({ ticketId, body, rate, userId }) {
     const pool = createPool()
     const connection = await pool.getConnection();
     const [result] = await connection.query(
-      'INSERT INTO answers (ticketId, body, rate) VALUES (?, ?, ?)',
-      [ticketId, body, rate]
+      'INSERT INTO answers (ticketId, body, rate, userId) VALUES (?, ?, ?, ?)',
+      [ticketId, body, rate, userId]
     );
     connection.release();
     return result.insertId;

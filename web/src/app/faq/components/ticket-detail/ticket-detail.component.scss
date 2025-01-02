@@ -79,5 +79,64 @@ button[type="submit"]:hover {
   color: #fff;
   font-family: "Roboto", sans-serif;
   font-size: 16px;
+  position: relative;
+  & h1{
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+}
 
+.errorBlock{
+  flex-direction: column;
+  
+  & span {
+    line-break: anywhere;
+    font-size: 14px;
+    font-weight: 500;
+    // margin-top: 8px;
+  }
+}
+.postSubmitBlock{
+  flex-direction: column;
+}
+
+.ctaBlock{
+  margin-top: 20px;
+  & .btn {
+    text-transform: uppercase;
+    font-size: 12px;
+    border-radius: 25px;
+    // border: 1px solid #fff;
+    padding: 8px 25px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+  }
+  & .mainBtnWtapper{
+    margin-bottom: 50px;
+    text-align: center;
+    & .btn{
+      display: inline-flex;
+      align-items: center;
+      column-gap: 8px;
+      padding: 10px 15px;
+      font-size: 17px;
+      & .countdown{
+        width: 20px;
+        height: 20px;
+        border-radius: 50px;
+        // background-color: #fff;
+        // color: #000;
+        border: 1px solid #fff;
+        display: block;
+        line-height: 1.2;
+        font-size: 19px;
+        /* border: 1px solid #fff; */
+        padding: 3px;
+      }
+    }
+  }
+  .ml40{
+    margin-left: 40px;
+  }
 }

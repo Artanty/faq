@@ -45,7 +45,7 @@ router.post('/oldest', async (req, res) => {
       userId: req.body.userId, 
       folderId: req.body.folderId, 
       topicId: req.body.topicId,
-      quantity: req.body.quantity || 1
+      quantity: req.body.quantity
     });
     if (!ticket) {
       return res.status(404).json({ message: 'Ticket not found' });

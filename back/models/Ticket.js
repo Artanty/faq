@@ -82,24 +82,39 @@ class Ticket {
   // topicId: number
   // quantity: number
   static async findOldest(data) {
-
-    const { userId, folderId, topicId, quantity } = data
-
-    if ( !userId || !folderId || !topicId || !quantity) {
-      throw new Error('wrong input params models/Ticket.findOldest()')
+    const { userId, folderId, topicId, quantity } = data;
+  
+    // Validate required fields
+    if (!userId || !quantity) {
+      throw new Error('Missing required input params: userId and quantity in models/Ticket.findOldest()');
     }
-
-    const query = `
+  
+    // Build the query dynamically based on provided parameters
+    let query = `
       SELECT * 
       FROM tickets 
-      WHERE userId = ? AND folderId = ? AND topicId = ? 
-      ORDER BY lastShownDate ASC, answersQuantity ASC 
-      LIMIT ?;
-      `
-
-    const queryVars = [userId, folderId, topicId, +quantity]
-    
-    const pool = createPool()
+      WHERE userId = ?
+    `;
+  
+    const queryVars = [userId];
+  
+    // Add folderId to the query if provided
+    if (folderId) {
+      query += ' AND folderId = ?';
+      queryVars.push(folderId);
+    }
+  
+    // Add topicId to the query if provided
+    if (topicId) {
+      query += ' AND topicId = ?';
+      queryVars.push(topicId);
+    }
+  
+    // Add sorting and limit
+    query += ' ORDER BY lastShownDate ASC, answersQuantity ASC LIMIT ?';
+    queryVars.push(+quantity);
+  
+    const pool = createPool();
     const connection = await pool.getConnection();
     try {
       // Execute the query

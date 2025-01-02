@@ -1,8 +1,8 @@
 export interface GetOldestTicketRequest {
     userId: number
-    folderId: number
-    topicId: number
-    quantity: number
+    folderId?: number
+    topicId?: number
+    quantity?: number
 }
 
 export interface GetOldestTicketResponse {

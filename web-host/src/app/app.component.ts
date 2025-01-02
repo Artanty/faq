@@ -104,13 +104,6 @@ export class AppComponent implements OnInit {
     // console.log(this.router)
   }
 
-  // SHOW_OLDEST_TICKET
-  // RETRY_SEND_STAT
-  // obj:
-  // from: 'ext-service-worker',
-  //   to: 'web-host',
-  //   event: 'RETRY_SEND_STAT',
-  //   payload: statPayload
   ngOnInit(): void {
     this.chromeMessagingService.messages.subscribe((message: ChromeMessage) => {
       console.log('Angular received event: ' + message.event);
@@ -121,7 +114,12 @@ export class AppComponent implements OnInit {
         console.log('RETRY_SEND_STAT')
       }
     });
-    this.eventBusListener$.subscribe(res=> console.log(res))
+    this.eventBusListener$.subscribe(res=> {
+      console.log(res)
+      if (res.event === "CLOSE_EXT") {
+        window.close();
+      }
+    })
   }
 
   showOldestTicket () {

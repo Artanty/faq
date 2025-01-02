@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { Ticket } from '../../models/ticket.model';
@@ -6,6 +6,8 @@ import { Answer } from '../../models/answer.model';
 import { BehaviorSubject, catchError } from 'rxjs';
 import { GetOldestTicketRequest } from '../../services/api.service.types';
 import { UserService } from '../../services/user.service';
+import { BusEvent } from 'typlib';
+import { EVENT_BUS_PUSHER } from '../../faq.component';
 export enum StateName {
   LOADING = 'LOADING',
   READY = 'READY',
@@ -22,6 +24,8 @@ export interface TicketDetailState {
   styleUrls: ['./ticket-detail.component.scss'],
 })
 export class TicketDetailComponent implements OnInit {
+  countdown: number = 5
+  countdownId: any = null
   StateName = StateName
   state$ = new BehaviorSubject<TicketDetailState>({ name: StateName.LOADING })
   ticket: Ticket | null = null;
@@ -34,11 +38,12 @@ export class TicketDetailComponent implements OnInit {
     private route: ActivatedRoute, 
     private apiService: ApiService,
     private cdr: ChangeDetectorRef,
-    private readonly _userService: UserService
+    private readonly _userService: UserService,
+    @Inject(EVENT_BUS_PUSHER)
+    private eventBusPusher: (busEvent: BusEvent) => void
   ) {}
 
   ngOnInit(): void {
-    this.state$.next({ name: StateName.LOADING })
     if (this._isTicketIdInUrl) {
       this._getTicketById(this._ticketId)
     } else {
@@ -50,7 +55,7 @@ export class TicketDetailComponent implements OnInit {
     if (this.ticket) {
       this.state$.next({ name: StateName.LOADING })
       this.apiService
-        .submitAnswer({ ticketId: this.ticket.id, ...this.newAnswer })
+        .submitAnswer({ ticketId: this.ticket.id, ...this.newAnswer, userId: this.ticket.userId })
         .pipe(
           catchError((e: any) => {
             this.state$.next({ name: StateName.ERROR, payload: JSON.stringify(e) })
@@ -59,17 +64,55 @@ export class TicketDetailComponent implements OnInit {
           })
         )
         .subscribe((data) => {
-          this.newAnswer = { body: '', rate: 1 };
           this.state$.next({ name: StateName.SUBMITTED })
+          this.countdownToClose()
         });
     }
   }
 
+  public closeExtension(): void {
+      const closeExtBusEvent: BusEvent = {
+        event: "CLOSE_EXT",
+        from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+        to: "",
+        payload: {}
+      }
+      this.eventBusPusher(closeExtBusEvent)
+    }
+
+  public backToForm (): void {
+    this._resetCountdown()
+    this.state$.next({ name: StateName.READY })
+  }
+
+  public showNextTicket() {
+    this._resetCountdown()
+    this._getOldestTicket()
+  }
+  
+  private countdownToClose (): void {
+    this.countdown = this._userService.getCloseCountdown()
+    this.countdownId = setInterval(() => {
+      this.countdown--
+      this.cdr.detectChanges()
+      if (!this.countdown) {
+        this._resetCountdown()
+        this.closeExtension()
+      }
+    }, 1000)
+  }
+
+  private _resetCountdown (): void {
+    clearInterval(this.countdownId)
+    this.countdownId = null  
+  }
+
   private _getOldestTicket () {
+    this.state$.next({ name: StateName.LOADING })
     const req: GetOldestTicketRequest = {
       userId: this._userService.getUser(),
-      folderId: 1,
-      topicId: 1,
+      // folderId: 1,
+      // topicId: 1,
       quantity: 1,
     }
     if (req.quantity !== 1) throw new Error('wrong req params for this component')
@@ -90,6 +133,7 @@ export class TicketDetailComponent implements OnInit {
   }
 
   private _getTicketById (ticketId: number) {
+    this.state$.next({ name: StateName.LOADING })
     this.apiService.getTicketById({ ticketId })
       .pipe(
         catchError((e: any) => {

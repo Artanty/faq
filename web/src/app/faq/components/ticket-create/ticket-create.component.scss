@@ -125,7 +125,7 @@ button[type="submit"]:hover {
   
   & span {
     line-break: anywhere;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: 500;
     // margin-top: 8px;
   }
@@ -134,14 +134,6 @@ button[type="submit"]:hover {
   flex-direction: column;
 }
 
-.back {
-  position: absolute;
-  bottom: 5px;
-  left: 5px;
-  font-size: 13px;
-  font-family: "Roboto", sans-serif;
-  cursor: pointer;
-}
 .ctaBlock{
   margin-top: 20px;
   & .btn {

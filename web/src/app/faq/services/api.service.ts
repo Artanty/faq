@@ -32,8 +32,8 @@ export class ApiService {
     return this.http.get<Answer[]>(`${this.baseUrl}/answers/ticket/${ticketId}`);
   }
 
-  submitAnswer(answer: { ticketId: number; body: string; rate: number }): Observable<Answer> {
-    return this.http.post<Answer>(`${this.baseUrl}/answers`, answer);
+  submitAnswer(answer: { ticketId: number; body: string; rate: number, userId: number }): Observable<Answer> {
+    return this.http.post<Answer>(`${this.baseUrl}/answers/save`, answer);
   }
 
   getOldestTicket (data: GetOldestTicketRequest): Observable<GetOldestTicketResponse[]> {
