@@ -11,7 +11,7 @@ sharedMappings.register(
 
 module.exports = {
   output: {
-    uniqueName: "webHost",
+    uniqueName: "faq",
     publicPath: "auto",
     scriptType: 'text/javascript'
   },
@@ -28,28 +28,24 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: "webHost",
+      name: "faq",
       filename: "remoteEntry.js",
       exposes: {
         './Component': './src/app/faq/faq.component.ts',
         './Module': './src/app/faq/faq.module.ts',
       },
-      // name: "webHost",
-      // remotes: {
-      //   // "doro": "doro@assets/mfe/doro/remoteEntry.js",
-      // },
       shared: share({
         "@angular/core": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
         "@angular/common": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
         "@angular/common/http": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
         "@angular/router": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-        // "typlib": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+        "typlib": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
         ...sharedMappings.getDescriptors()
       })
     }),
     sharedMappings.getPlugin(),
     new Dotenv({
-      path: './.env', // Path to .env file (this is the default)
+      path: './.env',
     })
   ],
 };

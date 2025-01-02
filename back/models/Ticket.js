@@ -1,6 +1,14 @@
 const createPool = require('../core/db_connection')
 
 class Ticket {
+//   -- Define variables
+// SET @folder = 'Math';
+// SET @topic = 'Algebra';
+// SET @quantity = 5;
+
+// -- Insert a new ticket
+// INSERT INTO tickets (title, question, rightAnswer, folder, topic, answersQuantity)
+// VALUES ('Sample Title', 'What is 2 + 2?', '4', @folder, @topic, @quantity);
   static async create({ title, question, rightAnswer }) {
     const pool = createPool()
     const connection = await pool.getConnection();
@@ -12,12 +20,38 @@ class Ticket {
     return result.insertId;
   }
 
-  static async findAll() {
-    const pool = createPool()
+  static async findAll(userId) {
+    const pool = createPool();
     const connection = await pool.getConnection();
-    const [rows] = await connection.query('SELECT * FROM tickets');
-    connection.release();
-    return rows;
+  
+    try {
+      // Define the query with JOINs and a WHERE clause for userId
+      const query = `
+        SELECT 
+          t.id AS ticketId,
+          t.title,
+          t.question,
+          t.rightAnswer,
+          f.name AS folderName,
+          tp.name AS topicName,
+          u.username AS user
+        FROM tickets t
+        JOIN folders f ON t.folderId = f.id
+        JOIN topics tp ON t.topicId = tp.id
+        JOIN users u ON t.userId = u.id
+        WHERE u.id = ?;
+      `;
+  
+      // Execute the query with userId as a parameter
+      const [rows] = await connection.query(query, [userId]);
+      return rows;
+    } catch (error) {
+      // Handle any errors
+      throw new Error(`Error in models/Ticket.findAll(): ${error.message}`);
+    } finally {
+      // Always release the connection
+      connection.release();
+    }
   }
 
   static async findById(id) {
@@ -40,6 +74,43 @@ class Ticket {
     const connection = await pool.getConnection();
     await connection.query('UPDATE tickets SET answersQuantity = answersQuantity + 1 WHERE id = ?', [id]);
     connection.release();
+  }
+  // data:
+  // userId: number
+  // folderId: number
+  // topicId: number
+  // quantity: number
+  static async findOldest(data) {
+
+    const { userId, folderId, topicId, quantity } = data
+
+    if ( !userId || !folderId || !topicId || !quantity) {
+      throw new Error('wrong input params models/Ticket.findOldest()')
+    }
+
+    const query = `
+      SELECT * 
+      FROM tickets 
+      WHERE userId = ? AND folderId = ? AND topicId = ? 
+      ORDER BY lastShownDate ASC, answersQuantity ASC 
+      LIMIT ?;
+      `
+
+    const queryVars = [userId, folderId, topicId, +quantity]
+    
+    const pool = createPool()
+    const connection = await pool.getConnection();
+    try {
+      // Execute the query
+      const [rows] = await connection.query(query, queryVars);
+      return rows;
+    } catch (error) {
+      // Handle any errors
+      throw new Error(`db Error in models/Ticket.findOldest(): ${error.message}`);
+    } finally {
+      // Always release the connection
+      connection.release();
+    }
   }
 }
 

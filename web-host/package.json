@@ -24,6 +24,7 @@
     "dotenv-webpack": "^8.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "typlib": "^0.0.4",
     "zone.js": "~0.14.0"
   },
   "devDependencies": {
@@ -32,7 +33,6 @@
     "@angular/compiler-cli": "^17.0.5",
     "@types/chrome": "^0.0.287",
     "ngx-build-plus": "^17.0.0",
-    "typescript": "~5.2.0",
-    "typlib": "^0.0.4"
+    "typescript": "~5.2.0"
   }
 }

@@ -38,9 +38,9 @@ function openPopup() {
           this.sendStatEvent({ stage: 'UNKNOWN', data: `chrome.action.openPopup error: ${error}` });
         } else {
           const data = {
-            from: 'web-host',
+            from: 'ext-service-worker',
             to: 'faq',
-            event: 'showRandomTicket',
+            event: 'SHOW_OLDEST_TICKET',
             payload: null
           }
           sendMessageToPopup(data);
@@ -63,7 +63,7 @@ function sendStatEvent(eventStage, eventData) {
   const onErrorMessagePayload = {
     from: 'ext-service-worker',
     to: 'web-host',
-    event: 'retrySendStat',
+    event: 'RETRY_SEND_STAT',
     payload: statPayload
   }
 

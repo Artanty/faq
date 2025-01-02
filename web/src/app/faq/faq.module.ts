@@ -1,11 +1,14 @@
 import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, Injector } from "@angular/core";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { TicketDetailComponent } from "./components/ticket-detail/ticket-detail.component";
 import { TicketListComponent } from "./components/ticket-list/ticket-list.component";
 import { FaqComponent } from "./faq.component";
+import { BusEvent, EVENT_BUS } from "typlib";
+import { BehaviorSubject } from "rxjs";
+
 export const CHILD_ROUTES = [
     {
         path: '',
@@ -24,16 +27,18 @@ export const CHILD_ROUTES = [
         ReactiveFormsModule,
         FormsModule,
         RouterModule.forChild(CHILD_ROUTES),
+        // RouterModule.forChild([]),
         HttpClientModule,
     ],
-    providers: [
-        // { provide: 'routes', useValue: CHILD_ROUTES}
-    ],
+    // providers: [
+    //     // { provide: 'routes', useValue: CHILD_ROUTES}
+    //     { provide: EVENT_BUS, useValue: eventBus$ },
+    // ],
     exports: [
         FaqComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class FaqModule {
-    static routes = CHILD_ROUTES;
+    // static routes = CHILD_ROUTES;
 }

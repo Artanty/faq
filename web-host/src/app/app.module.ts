@@ -9,6 +9,15 @@ import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component";
 import { TestComponent } from './components/test/test.component'
 
+export const initBusEvent: BusEvent = {
+  event: "INIT",
+  from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+  to: "",
+  payload: {}
+}
+
+const eventBus$ = new BehaviorSubject(initBusEvent)
+
 @NgModule({
   declarations: [AppComponent, TestComponent],
   imports: [
@@ -19,8 +28,9 @@ import { TestComponent } from './components/test/test.component'
     HttpClientModule,
   ],
   providers: [
+    { provide: EVENT_BUS, useValue: eventBus$ },
     { provide: 'routes', useValue: [] }
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent], 
 })
 export class AppModule {}

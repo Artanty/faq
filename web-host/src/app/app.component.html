@@ -1,11 +1,10 @@
 <span>host app container </span>| 
-<a [routerLink]="['/child/ticket', 1]">{{ 'ticket.title' }}</a>
+<a (click)="showOldestTicket()">showOldest</a> | 
+<a [routerLink]="['/faq/ticket', 1]">{{ 'ticket.title' }}</a>
 {{ ' | '}}
-<a [routerLink]="['/child']">{{ 'home' }}</a>
-<br>
-<p>Message: {{ message }}</p>
+<a [routerLink]="['/faq']">{{ 'home' }}</a>
 <div class="host-container">
-  <!-- <div class="mfeWrapper" #placeHolder></div> -->
+  <div class="mfeWrapper" #placeHolder></div>
   <router-outlet></router-outlet>
 </div>
 

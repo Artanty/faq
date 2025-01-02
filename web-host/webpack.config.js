@@ -28,7 +28,7 @@ module.exports = {
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: "webHost1",
+      name: "webHost",
       remotes: {
         // "doro": "doro@assets/mfe/doro/remoteEntry.js",
       },
@@ -37,7 +37,7 @@ module.exports = {
         "@angular/common": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
         "@angular/common/http": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
         "@angular/router": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-        // "typlib": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+        "typlib": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
         ...sharedMappings.getDescriptors()
       })
     }),

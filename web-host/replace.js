@@ -60,7 +60,7 @@ fs.readFile(inputFile, 'utf8', (err, data) => {
   }
 
   // Replace the placeholder with the environment variable
-  let replacedData = data.replace(/STAT_BACK_URL_PLACEHOLDER/g, process.env.API_URL);
+  let replacedData = data.replace(/STAT_BACK_URL_PLACEHOLDER/g, process.env.STAT_BACK_URL);
   replacedData = replacedData.replace(/PROJECT_ID_PLACEHOLDER/g, process.env.PROJECT_ID);
   replacedData = replacedData.replace(/NAMESPACE_PLACEHOLDER/g, process.env.NAMESPACE);
   replacedData = replacedData.replace(/SLAVE_REPO_PLACEHOLDER/g, process.env.SLAVE_REPO);

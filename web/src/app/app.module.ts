@@ -9,22 +9,14 @@ import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component";
 import { FaqModule } from "./faq/faq.module"
 
+export const initBusEvent: BusEvent = {
+  event: "INIT",
+  from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+  to: "",
+  payload: {}
+}
 
-
-// export const authStrategyBusEvent: BusEvent = {
-//   from: "CHRM",
-//   to: "AU",
-//   event: "authStrategy",
-//   payload: {
-//     authStrategy: "backend",
-//     checkBackendUrl: "http://localhost:3600/check",
-//     signInByDataUrl: "http://localhost:3600/login",
-//     signInByTokenUrl: "http://localhost:3600/loginByToken",
-//     status: "init",
-//   },
-// }
-
-// const eventBus$ = new BehaviorSubject(authStrategyBusEvent)
+const eventBus$ = new BehaviorSubject(initBusEvent)
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,22 +29,13 @@ import { FaqModule } from "./faq/faq.module"
     FormsModule,
     FaqModule
   ],
-  // providers: [
-  //   { provide: EVENT_BUS, useValue: eventBus$ },
-  //   { provide: HOST_NAME, useValue: "CHRM" },
-  //   {
-  //     provide: "components",
-  //     useValue: {},
-  //     multi: true,
-  //   },
-  // ],
+  /**
+   * Эти провайдеры для standalone сборки приложения faq-web
+   * при mfe сборке будут работать провайдеры host'а.
+   */
+  providers: [
+    { provide: EVENT_BUS, useValue: eventBus$ },
+  ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
-
-// checkBackendUrl: 'https://cs99850.tmweb.ru/login',
-// signInByDataUrl: 'https://cs99850.tmweb.ru/login',
-// signInByTokenUrl: 'https://cs99850.tmweb.ru/loginByToken',
-// },
-// from: 'product',
-// status: 'init',
+export class AppModule {} 
