@@ -29,7 +29,6 @@ const eventBus$ = new BehaviorSubject(initBusEvent)
   ],
   providers: [
     { provide: EVENT_BUS, useValue: eventBus$ },
-    { provide: 'routes', useValue: [] }
   ],
   bootstrap: [AppComponent], 
 })

@@ -99,14 +99,12 @@ export class AppComponent implements OnInit {
     private eventBusPusher: (busEvent: BusEvent) => void,
     private injector: Injector,
   ) {
-    
     this.loadComponent('faq')
-    // console.log(this.router)
   }
 
   ngOnInit(): void {
     this.chromeMessagingService.messages.subscribe((message: ChromeMessage) => {
-      console.log('Angular received event: ' + message.event);
+      console.log('HOST received WORKER event: ' + message.event);
       if (message.event === 'SHOW_OLDEST_TICKET') {
         this.showOldestTicket()
       }
@@ -114,8 +112,8 @@ export class AppComponent implements OnInit {
         console.log('RETRY_SEND_STAT')
       }
     });
-    this.eventBusListener$.subscribe(res=> {
-      console.log(res)
+    this.eventBusListener$.subscribe((res: BusEvent)=> {
+      console.log('HOST received BUS event: ' + res.event)
       if (res.event === "CLOSE_EXT") {
         window.close();
       }
@@ -127,22 +125,26 @@ export class AppComponent implements OnInit {
       from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
       to: `${process.env['PROJECT_ID']}@web`,
       event: 'SHOW_OLDEST_TICKET',
-      payload: { status: '' },
+      payload: { routerPath: remotes['faq'].routerPath },
     };
     this.eventBusPusher(busEvent);
   }
 
   async loadComponent(projectId: string): Promise<void> {
-    
-    const m = await loadRemoteModule(remotes[projectId as keyof typeof remotes].remoteModuleScript)
-    
+        
     const childRoutes: Routes = [
       {
         path: remotes[projectId as keyof typeof remotes].routerPath,
-        loadChildren: () => m[remotes[projectId as keyof typeof remotes].moduleName],
+        loadChildren: () => {
+          return loadRemoteModule(remotes[projectId as keyof typeof remotes].remoteModuleScript).then((m) => {
+            return m[remotes[projectId as keyof typeof remotes].moduleName]
+          })
+        },
       },
     ];
+    
     this.router.resetConfig([...this.router.config, ...childRoutes]);
-    // this.router.navigate(['/child/ticket/1']);
+
+    this.router.navigate([remotes['faq'].routerPath]);
   }
 }

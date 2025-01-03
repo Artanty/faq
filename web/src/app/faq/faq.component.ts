@@ -5,6 +5,7 @@ import { BusEvent, EVENT_BUS } from "typlib";
 import { ApiService } from "./services/api.service";
 import { GetOldestTicketRequest } from "./services/api.service.types";
 import { UserService } from "./services/user.service";
+import { Router } from "@angular/router";
 
 export const EVENT_BUS_LISTENER = new InjectionToken<Observable<BusEvent>>('');
 export const EVENT_BUS_PUSHER = new InjectionToken<
@@ -43,7 +44,7 @@ export class FaqComponent implements OnInit{
     constructor (
       // @Optional() @SkipSelf() @Inject(EVENT_BUS) private eb: BehaviorSubject<BusEvent>,
         // @Inject(EVENT_BUS) private eb: BehaviorSubject<BusEvent>,
-        // private router: Router,
+        private router: Router,
         @Inject(EVENT_BUS_LISTENER)
         private readonly eventBusListener$: Observable<BusEvent>,
         private readonly _apiService: ApiService,
@@ -60,18 +61,15 @@ export class FaqComponent implements OnInit{
       this.eventBusListener$.subscribe(res=>{
         console.log('faq.comp: ' + res.event)
         if (res.event === 'SHOW_OLDEST_TICKET') {
-          const req: GetOldestTicketRequest = {
-            userId: this._userService.getUser(),
-            // folderId: 1,
-            // topicId: 1,
-            quantity: 1,
-          }
-          this._apiService.getOldestTicket(req).subscribe(res => {
-            console.log(res)
-          })
+          this.router.navigateByUrl(this.buildUrl(res, 'ticket'))
         }
       })
     }
-    
+    public buildUrl (busEvent: BusEvent, localUrl: string): string {
+      if (busEvent.payload["routerPath"]) {
+        return `${busEvent.payload["routerPath"]}/${localUrl}`
+      }
+      return localUrl
+    }
 }
 

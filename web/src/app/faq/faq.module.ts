@@ -9,6 +9,7 @@ import { FaqComponent } from "./faq.component";
 import { BusEvent, EVENT_BUS } from "typlib";
 import { BehaviorSubject } from "rxjs";
 import { TicketCreateComponent } from './components/ticket-create/ticket-create.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
 
 // export const CHILD_ROUTES = [
 //     {
@@ -23,6 +24,9 @@ export const CHILD_ROUTES = [
         path: '',
         component: FaqComponent,
         children: [
+            {
+                path: '', component: WelcomeComponent
+            },
             {
                 path: 'ticket', component: TicketDetailComponent
             },
@@ -43,7 +47,8 @@ export const CHILD_ROUTES = [
         FaqComponent,
         TicketListComponent,
         TicketDetailComponent,
-        TicketCreateComponent
+        TicketCreateComponent,
+        WelcomeComponent
     ],
     imports: [
         CommonModule,

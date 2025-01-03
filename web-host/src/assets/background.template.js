@@ -43,7 +43,7 @@ function openPopup() {
             event: 'SHOW_OLDEST_TICKET',
             payload: null
           }
-          sendMessageToPopup(data);
+          sendMessageToHost(data);
         }
       });
     } else {
@@ -76,7 +76,7 @@ function sendStatEvent(eventStage, eventData) {
   })
     .then((response) => {
       if (!response.ok) {
-        sendMessageToPopup(onErrorMessagePayload);
+        sendMessageToHost(onErrorMessagePayload);
         throw new Error('Network response was not ok');
       }
       return response.json();
@@ -86,7 +86,7 @@ function sendStatEvent(eventStage, eventData) {
     })
     .catch((error) => {
       console.error('Error sending HTTP request:', error);
-      sendMessageToPopup(onErrorMessagePayload);
+      sendMessageToHost(onErrorMessagePayload);
     });
 }
 
@@ -98,7 +98,7 @@ function sendStatEvent(eventStage, eventData) {
 //   self?: true;
 //   status?: string;
 // }
-function sendMessageToPopup(data) {
+function sendMessageToHost(data) {
   chrome.runtime.sendMessage(data, (response) => {
     if (chrome.runtime.lastError) {
       console.error('Error sending message:');
