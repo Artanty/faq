@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4221",
+    "start": "node replace-env.js serve && ng serve --port 4221",
+    "prebuild": "node replace-env.js build",
     "build": "ng build",
     "postbuild": "node copy-dist.js",
     "buildall": "npm run build && cd ../web-host && npm run build",

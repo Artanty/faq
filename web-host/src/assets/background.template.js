@@ -104,8 +104,9 @@ function sendMessageToHost(data) {
       console.error('Error sending message:');
       console.error(chrome.runtime.lastError)
     } else {
-      console.log('Message sent successfully. Response:');
-      console.log(response)
+      // console.log('Message sent successfully. Response:');
+      // console.log(response)
+      // todo добавить настройку частоты, слушать ее здесь
     }
   });
 }

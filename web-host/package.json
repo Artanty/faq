@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node replace-env.js serve && ng serve",
+    "prebuild": "node replace-env.js build",
     "build": "ng build",
     "postbuild": "node replace.js",
     "buildall": "cd ../web && npm run build && cd ../web-host && npm run build",
