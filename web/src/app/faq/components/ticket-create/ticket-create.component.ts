@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectorRef, Component, Inject, isDevMode, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, catchError } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { UserService } from '../../services/user.service';
@@ -30,8 +30,10 @@ export class TicketCreateComponent implements OnInit {
     folders: [],
     topics: [],
   }
+  value = 'eee'
   constructor(
     private route: ActivatedRoute, 
+    private router: Router,
     private _apiService: ApiService,
     private cdr: ChangeDetectorRef,
     private readonly _userService: UserService,

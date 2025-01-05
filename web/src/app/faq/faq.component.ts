@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, InjectionToken, OnInit, Optional, SkipSelf } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Inject, InjectionToken, isDevMode, OnInit, Optional, SkipSelf } from "@angular/core";
 
 import { BehaviorSubject, filter, Observable } from "rxjs";
 import { BusEvent, EVENT_BUS } from "typlib";
@@ -57,8 +57,14 @@ export class FaqComponent implements OnInit{
     }
 
     ngOnInit(): void {
-      console.log('web faq.comp onInit')
+      // console.log('web faq.comp onInit')
       // this.router.navigate)
+      console.log('isDevMode(): ' + isDevMode())
+      if (isDevMode()) {
+        this.router.navigate(['/ticketCreate']).catch(() => {
+          this.router.navigate(['/faq/ticketCreate'])
+        })
+      }
       this.eventBusListener$.subscribe(res=>{
         console.log('faq.comp: ' + res.event)
         if (res.event === 'SHOW_OLDEST_TICKET') {
