@@ -8,7 +8,9 @@ import { Observable, Subject } from 'rxjs';
 export class StatService {
     constructor(private http: HttpClient) {}
 
-    sendStatData(payload: any): Observable<any> {
-        return this.http.post<any>(`${process.env['STAT_BACK_URL']}/tickets`, payload);
-      }
+    sendStatData(payload: any): void {
+      this.http.post<any>(`${process.env['STAT_BACK_URL']}/add-event`, payload).subscribe(res=> {
+        console.log('stat sent')
+      })
+    }
 }

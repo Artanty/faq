@@ -13,6 +13,7 @@ import { Router, Routes } from "@angular/router"
 import { ChromeMessagingService } from "./services/chrome-messaging.service"
 import { BusEvent, EVENT_BUS } from 'typlib';
 import { BehaviorSubject, filter, Observable } from "rxjs";
+import { StatService } from "./services/stat-service";
 
 export interface SendStatData {
   projectId: string
@@ -26,7 +27,7 @@ export interface ChromeMessagePayload {
   eventData: string | SendStatData
 }
 
-export interface ChromeMessage {
+export interface ChromeMessage { // todo change to busEvent, add payload generic to busEvent
   from: string
   to: string
   event: string
@@ -98,21 +99,25 @@ export class AppComponent implements OnInit {
     @Inject(EVENT_BUS_PUSHER)
     private eventBusPusher: (busEvent: BusEvent) => void,
     private injector: Injector,
+    private _statService: StatService
   ) {
     this.loadComponent('faq')
   }
+  currentRoute: string = '';
 
   ngOnInit(): void {
     this.chromeMessagingService.messages.subscribe((message: ChromeMessage) => {
       console.log('HOST received WORKER event: ' + message.event);
-      if (message.event === 'SHOW_OLDEST_TICKET') {
+      
+      if (message.event === 'SHOW_OLDEST_TICKET' && this.isAllowedAction(message)) {
         this.showOldestTicket()
       }
       if (message.event === 'RETRY_SEND_STAT') {
-        console.log('RETRY_SEND_STAT')
+        // console.log('RETRY_SEND_STAT')
+        this._statService.sendStatData(message.payload)
       }
     });
-    this.eventBusListener$.subscribe((res: BusEvent)=> {
+    this.eventBusListener$.subscribe((res: BusEvent) => {
       console.log('HOST received BUS event: ' + res.event)
       if (res.event === "CLOSE_EXT") {
         window.close();
@@ -146,5 +151,16 @@ export class AppComponent implements OnInit {
     this.router.resetConfig([...this.router.config, ...childRoutes]);
 
     this.router.navigate([remotes['faq'].routerPath]);
+  }
+
+  private isAllowedAction(chromeEvent: ChromeMessage): boolean {
+    if (chromeEvent.event === 'SHOW_OLDEST_TICKET') {
+      if (this.router.url === '/faq') {
+        return true
+      }
+      console.log('Bypass route change')
+      return false
+    }
+    return true
   }
 }

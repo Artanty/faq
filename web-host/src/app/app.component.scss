@@ -1,9 +1,25 @@
 .host-container{
-  max-width: 360px;
+  // max-width: 360px;
   min-width: 250px;
   overflow: hidden;
-  height: 436px;
+  // height: 436px;
+  width: 700px;
+  height: 550px;
+  background: #24C6DC;  /* fallback for old browsers */
+  // background: -webkit-linear-gradient(to bottom right, #7071df, #4e8cc1, #32c5da);  /* Chrome 10-25, Safari 5.1-6 */
+  // background: linear-gradient(to bottom right, #7071df, #4e8cc1, #32c5da); /* Standard syntax */
+  background: -webkit-linear-gradient(to bottom right, #7071df, #32c5da);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom right, #7071df, #32c5da); /* Standard syntax */
+  padding: 15px;
 }
 h3{
   color:#fff;
+}
+body{
+  position: relative;
+}
+.scaffold {
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }

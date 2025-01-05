@@ -1,8 +1,23 @@
 # faq
 
+service-worker@ background.js 
+- knows when to open popup (interval)
+- opens popup
+- runs message down to host to go to route to answer ticket
+
+web-host@
+- receives routing message from service-worker and make desicion what to do
+- triggers dynamic-added child routing from web@
+- can close popup
+
+web@
+- listens to web-host@ and goes to routes
+- sends callback messages to web-host@ f.e.: "CLOSE_EXT"
+
 stories:
 
-1. see question, input answer, submit.
+1. see ticket, input answer, submit.
+2. create ticket
 
 
 CREATE TABLE users (

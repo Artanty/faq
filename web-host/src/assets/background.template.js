@@ -9,23 +9,45 @@ const PROJECT_ID = 'PROJECT_ID_PLACEHOLDER' + '@github'
 const NAMESPACE = 'NAMESPACE_PLACEHOLDER'
 const SLAVE_REPO = 'SLAVE_REPO_PLACEHOLDER'
 const COMMIT = 'COMMIT_PLACEHOLDER'
-
+let count = 0
 chrome.alarms.create('openPopup', { periodInMinutes: 1 });
 
 chrome.alarms.create('sendStat', { periodInMinutes: 1 });
 
-chrome.alarms.onAlarm.addListener((alarm) => {
+chrome.alarms.onAlarm.addListener( async (alarm) => {
   if (alarm.name === 'openPopup') {
+    // Check if the popup is already open
+    const popupIsOpen = await isPopupOpen();
+    if (popupIsOpen) {
+      console.log('Popup is already open. Skipping openPopup.');
+      return; // Exit if the popup is already open
+    }
+
+    // Open the popup if it's not already open
     openPopup();
   }
   if (alarm.name === 'sendStat') {
-    sendStatEvent({ stage: 'RUNTIME', data: {
-      projectId: `${PROJECT_ID}`,
-      slaveRepo: `${SLAVE_REPO}`,
-      commit: `${COMMIT}`
-    } });
+    sendStatEvent({ 
+      stage: 'RUNTIME', 
+      data: JSON.stringify({
+        projectId: `${PROJECT_ID}`,
+        slaveRepo: `${SLAVE_REPO}`,
+        commit: `${COMMIT}`
+      })
+    });
   }
 });
+
+async function isPopupOpen() {
+  // var views = chrome.extension?.getViews({ type: "popup" });
+  // console.log('views')
+  // console.log(views)
+  const windows = await chrome.windows.getAll();
+  console.log('windows')
+  console.log(windows)
+  const popups = windows.filter((window) => window.type === 'popup');
+  return popups.length > 0; // Returns true if a popup is open, otherwise false
+}
 
 function openPopup() {
   // Check if there is an active browser window
@@ -52,12 +74,14 @@ function openPopup() {
   });
 }
 
-function sendStatEvent(eventStage, eventData) {
+function sendStatEvent(props) {
+  console.log('props')
+  console.log(props)
   const statPayload = {
     projectId: `${PROJECT_ID}`,
     namespace: 'web-host',
-    stage: eventStage,
-    eventData,
+    stage: props.stage,
+    eventData: props.data,
   }
 
   const onErrorMessagePayload = {
@@ -66,13 +90,14 @@ function sendStatEvent(eventStage, eventData) {
     event: 'RETRY_SEND_STAT',
     payload: statPayload
   }
-
+  console.log('statPayload')
+  console.log(statPayload)
   fetch(`${STAT_BACK_URL}/add-event`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(statPayload)
+    body: JSON.stringify(statPayload),
   })
     .then((response) => {
       if (!response.ok) {
@@ -104,9 +129,10 @@ function sendMessageToHost(data) {
       console.error('Error sending message:');
       console.error(chrome.runtime.lastError)
     } else {
-      // console.log('Message sent successfully. Response:');
-      // console.log(response)
+      console.log('WORKER received HOST event: ');
+      console.log(response)
       // todo добавить настройку частоты, слушать ее здесь
     }
   });
 }
+

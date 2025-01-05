@@ -40,7 +40,7 @@ export const EVENT_BUS_PUSHER = new InjectionToken<
 })
 
 export class FaqComponent implements OnInit{
-
+  
     constructor (
       // @Optional() @SkipSelf() @Inject(EVENT_BUS) private eb: BehaviorSubject<BusEvent>,
         // @Inject(EVENT_BUS) private eb: BehaviorSubject<BusEvent>,
@@ -57,6 +57,7 @@ export class FaqComponent implements OnInit{
     }
 
     ngOnInit(): void {
+      console.log('web faq.comp onInit')
       // this.router.navigate)
       this.eventBusListener$.subscribe(res=>{
         console.log('faq.comp: ' + res.event)

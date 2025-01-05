@@ -1,12 +1,13 @@
-<span>host</span>| 
-<a (click)="showOldestTicket()">oldest bus</a> | 
-<a [routerLink]="['/faq/ticket', 1]">{{ 'id 1' }}</a>
-{{ ' | '}}
-<a [routerLink]="['/faq/ticket']">{{ 'oldest' }}</a>
-{{ ' | '}}
-<a [routerLink]="['/faq']">{{ 'faq' }}</a>
-{{ ' | '}}
-<a [routerLink]="['/faq/ticketCreate']">{{ 'create' }}</a>
+<div class="scaffold">
+  <a (click)="showOldestTicket()">oldest bus</a> | 
+  <a [routerLink]="['/faq/ticket', 1]">{{ 'id 1' }}</a>
+  {{ ' | '}}
+  <a [routerLink]="['/faq/ticket']">{{ 'oldest' }}</a>
+  {{ ' | '}}
+  <a [routerLink]="['/faq']">{{ 'faq' }}</a>
+  {{ ' | '}}
+  <a [routerLink]="['/faq/ticketCreate']">{{ 'create' }}</a>
+</div>
 
 <div class="host-container">
   <div class="mfeWrapper" #placeHolder></div>
