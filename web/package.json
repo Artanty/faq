@@ -25,6 +25,7 @@
     "dotenv-webpack": "^8.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "typicons.font": "^2.1.2",
     "typlib": "^0.0.4",
     "zone.js": "~0.14.0"
   },

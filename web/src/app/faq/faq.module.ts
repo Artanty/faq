@@ -12,6 +12,7 @@ import { TicketCreateComponent } from './components/ticket-create/ticket-create.
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { TextareaComponent } from './components/textarea/textarea.component';
 import { SelectComponent } from './components/select/select.component';
+import { ButtonComponent } from './components/button/button.component';
 
 export const CHILD_ROUTES = [
     {
@@ -46,6 +47,7 @@ export const CHILD_ROUTES = [
         WelcomeComponent,
         TextareaComponent,
         SelectComponent,
+        ButtonComponent,
     ],
     imports: [
         CommonModule,

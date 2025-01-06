@@ -1,4 +1,5 @@
-<div class="ticketDetailsWtapper" *ngIf="state$ | async as state">
+<i class="typcn typcn-arrow-down-outline"></i> Home
+<div class="wrapper" *ngIf="state$ | async as state">
   <ng-container [ngSwitch]="state.name">
     <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
     <!-- <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">Отправлено</div> -->
@@ -26,8 +27,14 @@
     <div *ngSwitchCase="StateName.READY">
       <h3>{{ ticket?.question }}</h3>
       <form (ngSubmit)="onSubmit()">
-        <textarea [(ngModel)]="newAnswer.body" name="body" required></textarea>
-        <button type="submit" [disabled]="!newAnswer.body.length">Сохранить</button>
+        <app-textarea [(value)]="newAnswer.body" label="Ответ" [textarea]="true" [rows]="18"></app-textarea>
+        <app-button 
+          type="submit" 
+          [disabled]="!newAnswer.body.length" 
+          [title]="!newAnswer.body.length ? 'Введите ответ' : ''"
+          color="red"
+        >Сохранить</app-button>
+        <!-- <button type="submit" [disabled]="!newAnswer.body.length">Сохранить</button> -->
       </form>
     </div>
   </ng-container>

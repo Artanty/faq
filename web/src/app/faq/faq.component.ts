@@ -61,8 +61,8 @@ export class FaqComponent implements OnInit{
       // this.router.navigate)
       console.log('isDevMode(): ' + isDevMode())
       if (isDevMode()) {
-        this.router.navigate(['/ticketCreate']).catch(() => {
-          this.router.navigate(['/faq/ticketCreate'])
+        this.router.navigate(['/ticket']).catch(() => {
+          this.router.navigate(['/faq/ticket'])
         })
       }
       this.eventBusListener$.subscribe(res=>{

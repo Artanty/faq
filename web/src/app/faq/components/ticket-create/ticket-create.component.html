@@ -1,4 +1,5 @@
 <div class="wrapper" *ngIf="state$ | async as state">
+  <i class="typcn typcn-arrow-down-outline"></i> Home
   <ng-container [ngSwitch]="state.name">
     <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
     <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">
@@ -44,10 +45,11 @@
         <app-textarea [(value)]="newTicket.question" label="Вопрос" [textarea]="true"></app-textarea>
         <app-textarea [(value)]="newTicket.rightAnswer" label="Ответ" [textarea]="true" [rows]="8"></app-textarea>
         
-        <button type="submit" 
+        <app-button 
+          type="submit" 
           [disabled]="!newTicket.question.length" 
           [title]="!newTicket.question.length ? 'Введите вопрос' : ''"
-        >Сохранить</button>
+        >Сохранить</app-button>
       </form>
     </div>
   </ng-container>
