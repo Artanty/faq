@@ -1,0 +1,12 @@
+<div class="box">
+  <div class="form-group">
+    <label class="form-label">{{ label }}</label>
+    <select
+      class="custom-select"
+      [(ngModel)]="value"
+      (ngModelChange)="onValueChange($event)"
+    >
+      <option *ngFor="let option of options" [value]="option.id">{{ option.name }}</option>
+    </select>
+  </div>
+</div>

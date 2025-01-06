@@ -1,28 +1,9 @@
-.wrapper-top{
-  background-color: grey;
-  height: 30px;
-  width: 300px;
-  padding: 10px;
-}
-.placeholder{
-  height: 200px;
-  background-color: rgb(65, 42, 42);
-}
 .wrapper {
-  // min-height: 412px;
-  // background-image: linear-gradient(to bottom, #3d3dd1, #3f54d9, #4869df, #577de4, #6990e6, #819ee9, #97adeb, #acbced, #c5cbf1, #dadcf5, #eeedfa, #ffffff);
+  width: 400px;
   height: 100%;
   padding: 12px;
-}
-.wrapper {
-  background: linear-gradient(to bottom left, #0f172a, #1e1a78, #0f172a);
-}
-
-h3{
-  padding-top: 3px;
-  margin-top: 0;
-  color: #fff;
-  font-family: "Roboto", sans-serif;
+  background-color: rgb(25,29,58);
+  border-radius: 10px;
 }
 
 form{
@@ -30,7 +11,7 @@ form{
   margin: 0;
   display: flex;
   flex-direction: column;
-  // align-items: center;
+  row-gap: 10px;
 }
 .flex{
   display: flex;
@@ -38,70 +19,32 @@ form{
   column-gap: 12px;
   & > *{
     min-width: 48%;
+    width: 49%;
   }
 }
-select {
-  padding-left: 3px;
-  min-height: 32px;
-  margin-bottom: 10px;
-  width: 100%;
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 600;
-  color: #272727;
-  text-transform: uppercase;
-}
-
-input {
-  min-height: 32px;
-  border-radius: 4px;
-  font-size: 16px;
-  font-family: "Roboto", sans-serif;
-  outline: 2px solid transparent;
-  border: none;
-  padding-left: 8px;
-}
-
-textarea{
-  margin-top: 12px;
-  // width: 100%;
-  // height: 300px;
-  min-height: 100px;
-  resize: none;
-  border-radius: 4px;
-  border: none;
-  display: block;
-  outline: 2px solid transparent;
-  padding: 8px;
-  font-size: 16px;
-  font-family: "Roboto", sans-serif;
-}
-textarea:focus, input:focus{
-  // outline: 2px solid #adb0dd;
-  outline: 2px solid #ffffff73;
-}
-// *:focus {
-//   outline: none;
-// }
-
+ 
 button[type="submit"] {
-  background-color: #4CAF50;
+  background: linear-gradient(to right, #00ffa3, #21bdb1);
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-family: "Roboto", sans-serif;
   outline: 2px solid transparent;
-  margin-top: 13px;
-  font-size: 14px;
-  text-transform: uppercase;
-  // width: 120px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: 0.4s box-shadow;
+  &:hover{
+    box-shadow: 0px 0px 10px 5px rgb(0 255 177);
+  }
 }
 button[type="submit"]:disabled{
   background-color: #ced4ce;
   outline: 2px solid transparent;
+  box-shadow: none;
+  opacity: 0.7;
+  cursor: not-allowed;
   &:hover{
     background-color: #ced4ce;
     outline: 2px solid transparent;
@@ -137,7 +80,6 @@ button[type="submit"]:hover {
     line-break: anywhere;
     font-size: 14px;
     font-weight: 500;
-    // margin-top: 8px;
   }
 }
 .postSubmitBlock{
@@ -150,7 +92,6 @@ button[type="submit"]:hover {
     text-transform: uppercase;
     font-size: 12px;
     border-radius: 25px;
-    // border: 1px solid #fff;
     padding: 8px 25px;
     text-align: center;
     display: inline-block;
@@ -169,13 +110,10 @@ button[type="submit"]:hover {
         width: 20px;
         height: 20px;
         border-radius: 50px;
-        // background-color: #fff;
-        // color: #000;
         border: 1px solid #fff;
         display: block;
         line-height: 1.2;
         font-size: 19px;
-        /* border: 1px solid #fff; */
         padding: 3px;
       }
     }

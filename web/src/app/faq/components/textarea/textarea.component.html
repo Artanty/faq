@@ -1,0 +1,21 @@
+<div class="form__group">
+  @if (textarea) {
+    <textarea id="message" 
+      [(ngModel)]="value"
+      (ngModelChange)="onValueChange($event)"
+      class="form__field" 
+      placeholder="Your Message" 
+      [rows]="rows"
+      [required]="required"
+    ></textarea>
+  } @else {
+    <input id="message" 
+      [(ngModel)]="value"
+      (ngModelChange)="onValueChange($event)"
+      class="form__field" 
+      placeholder="Your Message" 
+      [required]="required"
+    />
+  }
+  <label for="message" class="form__label">{{ label }}</label>
+</div>

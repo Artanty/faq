@@ -10,19 +10,9 @@ import { BusEvent, EVENT_BUS } from "typlib";
 import { BehaviorSubject } from "rxjs";
 import { TicketCreateComponent } from './components/ticket-create/ticket-create.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { TextareaComponent } from './components/textarea/textarea.component';
+import { SelectComponent } from './components/select/select.component';
 
-// export const CHILD_ROUTES = [
-//     {
-//         path: '',
-//         component: FaqComponent,
-//     },
-//     { path: 'ticket', component: TicketDetailComponent },
-//     { path: 'ticket/:id', component: TicketDetailComponent }, 
-// ]
 export const CHILD_ROUTES = [
     {
         path: '',
@@ -46,20 +36,16 @@ export const CHILD_ROUTES = [
         ]
     }, 
 ]
-const matModules = [
-    MatFormFieldModule, 
-    MatInputModule, 
-    FormsModule, 
-    MatButtonModule, 
-    MatIconModule
-]
+
 @NgModule({
     declarations: [
         FaqComponent,
         TicketListComponent,
         TicketDetailComponent,
         TicketCreateComponent,
-        WelcomeComponent
+        WelcomeComponent,
+        TextareaComponent,
+        SelectComponent,
     ],
     imports: [
         CommonModule,
@@ -68,10 +54,9 @@ const matModules = [
         RouterModule.forChild(CHILD_ROUTES),
         // RouterModule.forChild([]),
         HttpClientModule,
-        ...matModules,
     ],
     // providers: [
-    //     // { provide: 'routes', useValue: CHILD_ROUTES}
+    //     { provide: 'routes', useValue: CHILD_ROUTES}
     //     { provide: EVENT_BUS, useValue: eventBus$ },
     // ],
     exports: [

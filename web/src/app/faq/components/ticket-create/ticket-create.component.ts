@@ -8,7 +8,7 @@ import { CreateTicketRequest } from '../../services/api.service.types';
 import { Dict, Folder, Topic } from '../../models/dict.model';
 import { BusEvent } from 'typlib';
 import { EVENT_BUS_PUSHER } from '../../faq.component';
-
+export type PreCreateTicket = Required<CreateTicketRequest>
 @Component({
   selector: 'app-ticket-create',
   templateUrl: './ticket-create.component.html',
@@ -19,7 +19,7 @@ export class TicketCreateComponent implements OnInit {
   countdownId: any = null
   StateName = StateName
   state$ = new BehaviorSubject<TicketDetailState>({ name: StateName.LOADING })
-  newTicket: CreateTicketRequest = {
+  newTicket: PreCreateTicket = {
     title: '',
     question: '',
     rightAnswer: '',
@@ -31,6 +31,7 @@ export class TicketCreateComponent implements OnInit {
     topics: [],
   }
   value = 'eee'
+  parentValue: string = '1';
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
@@ -52,7 +53,11 @@ export class TicketCreateComponent implements OnInit {
   }
 
   public get availableTopics (): any[] {
-    return this.dict['topics'].filter(el => el.folderId === Number(this.newTicket.folderId))
+    return [
+      { id: 0, name: 'Нет темы' },
+      ...this.dict['topics']
+        .filter(el => el.folderId === Number(this.newTicket.folderId))
+    ]
   }
 
   public onSubmit(): void {
@@ -111,7 +116,7 @@ export class TicketCreateComponent implements OnInit {
    * - no topic selected
    * - selected topic doesn't belong to selected folder
    */
-  private validateTopic (rawResult: CreateTicketRequest) {
+  private validateTopic (rawResult: CreateTicketRequest | PreCreateTicket) {
     if (+rawResult.folderId === +this.serviceFolderId){
       delete rawResult.topicId
       this.newTicket.topicId = 0

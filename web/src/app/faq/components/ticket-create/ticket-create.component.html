@@ -1,34 +1,3 @@
-<div class="wrapper-top">
-  <div class="placeholder">
-
-  </div>
-
-  <mat-form-field class="example-form-field">
-    <mat-label>Clearable input</mat-label>
-    <input matInput type="text" [(ngModel)]="value">
-    @if (value) {
-      <button matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-        <mat-icon>close</mat-icon>
-      </button>
-    }
-  </mat-form-field>
-  
-  <form class="example-form">
-    <mat-form-field class="example-full-width">
-      <mat-label>Favorite food</mat-label>
-      <input matInput placeholder="Ex. Pizza" value="Sushi">
-    </mat-form-field>
-  
-    <mat-form-field class="example-full-width">
-      <mat-label>Leave a comment</mat-label>
-      <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
-    </mat-form-field>
-  </form>
-  
-
-</div>
-
-<!-- 
 <div class="wrapper" *ngIf="state$ | async as state">
   <ng-container [ngSwitch]="state.name">
     <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
@@ -55,21 +24,31 @@
     <div *ngSwitchCase="StateName.READY">
       <form (ngSubmit)="onSubmit()">
         <div class="flex">
-          <select name="folder" id="folder" [(ngModel)]="newTicket.folderId" title="Папка">
-            <option *ngFor="let item of dict['folders']" [value]="item.id">{{item.name}}</option>
-          </select>
+
+          <app-select 
+            label="Папка"
+            [(value)]="newTicket.folderId"
+            [options]="dict['folders']"
+          ></app-select>
+
           <ng-conteiner *ngIf="isTopicVisible">
-            <select name="topic" id="topic" [(ngModel)]="newTicket.topicId" title="Раздел">
-              <option value="0">Нет темы</option>
-              <option *ngFor="let item of availableTopics" [value]="item.id">{{item.name}}</option>
-            </select>
+            <app-select 
+              label="Раздел"
+              [(value)]="newTicket.topicId"
+              [options]="availableTopics"
+            ></app-select>
+      
           </ng-conteiner>
         </div>
-        <input [(ngModel)]="newTicket.title" name="title" placeholder="Заголовок" title="Заголовок">
-        <textarea [(ngModel)]="newTicket.question" name="question" placeholder="Вопрос" title="Вопрос" required></textarea>
-        <textarea [(ngModel)]="newTicket.rightAnswer" name="rightAnswer" placeholder="Ответ" title="Ответ" required></textarea>
-        <button type="submit" [disabled]="!newTicket.question.length">Сохранить</button>
+        <app-textarea [(value)]="newTicket.title" label="Заголовок"></app-textarea>
+        <app-textarea [(value)]="newTicket.question" label="Вопрос" [textarea]="true"></app-textarea>
+        <app-textarea [(value)]="newTicket.rightAnswer" label="Ответ" [textarea]="true" [rows]="8"></app-textarea>
+        
+        <button type="submit" 
+          [disabled]="!newTicket.question.length" 
+          [title]="!newTicket.question.length ? 'Введите вопрос' : ''"
+        >Сохранить</button>
       </form>
     </div>
   </ng-container>
-</div> -->
+</div>
