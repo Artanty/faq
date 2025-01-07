@@ -33,3 +33,11 @@ export interface CreateTicketRequest {
     folderId: number
     topicId?: number
 }
+
+export interface DeleteWithAnswersRequest {
+    ticketId: number
+}
+
+export interface GetAnswersByTicketIdRequest {
+    ticketId: number
+}

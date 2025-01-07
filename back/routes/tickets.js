@@ -56,4 +56,16 @@ router.post('/oldest', async (req, res) => {
   }
 });
 
+router.post('/deleteWithAnswers', async (req, res) => {
+  // console.log(req)
+  try {
+    const result = await Ticket.deleteTicketAndAnswers(req.body.ticketId);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
 module.exports = router;

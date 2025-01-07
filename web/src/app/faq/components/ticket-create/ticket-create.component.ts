@@ -8,6 +8,7 @@ import { CreateTicketRequest } from '../../services/api.service.types';
 import { Dict, Folder, Topic } from '../../models/dict.model';
 import { BusEvent } from 'typlib';
 import { EVENT_BUS_PUSHER } from '../../faq.component';
+import { changeLastUrlSegment } from '../../services/route-builder';
 export type PreCreateTicket = Required<CreateTicketRequest>
 @Component({
   selector: 'app-ticket-create',
@@ -98,6 +99,10 @@ export class TicketCreateComponent implements OnInit {
     this.state$.next({ name: StateName.READY })
   }
 
+  public goToTicketList(): void {
+    this.router.navigateByUrl(changeLastUrlSegment(this.router.url, `ticket-list`))
+  }
+
   public clearForm(): void {
     this.newTicket = {
       title: '',
@@ -177,4 +182,5 @@ export class TicketCreateComponent implements OnInit {
     clearInterval(this.countdownId)
     this.countdownId = null  
   }
+  
 }

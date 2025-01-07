@@ -1,5 +1,5 @@
 <div class="wrapper" *ngIf="state$ | async as state">
-  <i class="typcn typcn-arrow-down-outline"></i> Home
+
   <ng-container [ngSwitch]="state.name">
     <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
     <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">
@@ -11,8 +11,11 @@
             Закрыть
           </a>
         </div>
-        <a class="btn" (click)="backToForm()">Назад</a>
-        <a class="btn ml40" (click)="clearForm()">Добавить еще</a>
+        <div class="secondaryBtnWrapper">
+          <app-button (click)="backToForm()"><i class="typcn typcn-media-play-reverse"></i></app-button>
+          <app-button w="120px" (click)="goToTicketList()"><i class="typcn typcn-th-list"></i></app-button>
+          <app-button (click)="clearForm()"><i class="typcn typcn-plus"></i></app-button>
+        </div>
       </div>
     </div>
     <div class="errorBlock" *ngSwitchCase="StateName.ERROR">

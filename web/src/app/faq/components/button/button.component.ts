@@ -6,10 +6,11 @@ import { Component, Input } from '@angular/core';
   styleUrl: './button.component.scss'
 })
 export class ButtonComponent {
-
-  @Input() type: string = 'button'; // Default to 'button' if not provided
-  @Input() disabled: boolean = false; // Default to false if not provided
-  @Input() title: string = ''; // Tooltip text
+  @Input() w: string | undefined;
+  @Input() p: string | undefined;
+  @Input() type: string = 'button';
+  @Input() disabled: boolean = false;
+  @Input() title: string = '';
   @Input() color: string = 'green'
-      
+  
 }

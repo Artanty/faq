@@ -1,9 +1,11 @@
-@import '~typicons.font/src/font/typicons.css';
+@import '~@assets/typicons/typicons.css';
+
 .typcn {
-  font-size: 24px; /* Adjust size */
-  color: #007bff; /* Change color */
-  margin-right: 8px; /* Add spacing */
+  font-size: 24px;
+  color: rgb(248 251 255 / 74%);
+  cursor:pointer;
 }
+
 .wrapper {
   max-width: 400px;
   height: 100%;
@@ -12,6 +14,28 @@
   border-radius: 10px;
 }
 
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  & i {
+    font-size: 16px;
+  }
+}
+.secondRow {
+  display: flex;
+  justify-content: space-between;
+  & .actions {
+    & .typcn:hover {
+      color: rgb(248 251 255 / 100%);
+    }
+  }
+}
+
+.flexVert{
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+}
 h3{
   padding-top: 3px;
   margin-top: 0;
@@ -59,6 +83,7 @@ form{
 }
 
 .ctaBlock{
+  width: 100%;
   margin-top: 20px;
   & .btn {
     text-transform: uppercase;
@@ -69,7 +94,7 @@ form{
     display: inline-block;
     cursor: pointer;
   }
-  & .mainBtnWtapper{
+  & .mainBtnWrapper{
     margin-bottom: 50px;
     text-align: center;
     & .btn{
@@ -89,5 +114,19 @@ form{
         padding: 3px;
       }
     }
+  }
+  & .secondaryBtnWrapper{
+    display: flex;
+    justify-content: center;
+    column-gap:12px;
+    & .typcn {
+      display: block;
+      transition: transform 0.4s;
+    }
+    &>*:hover{
+      & .typcn{
+        transform: scale(1.2);
+      }
+    } 
   }
 }

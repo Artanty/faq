@@ -4,4 +4,5 @@ export interface Answer {
     body: string;
     date: string;
     rate: number;
+    userId: number
   }

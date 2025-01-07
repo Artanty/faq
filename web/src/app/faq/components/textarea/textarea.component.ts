@@ -12,10 +12,10 @@ export class TextareaComponent {
   @Input() rows: number= 6;
   @Input() helperText: string = '';
   @Input() required: boolean = false;
+  @Input() disallow: boolean = false;
 
-  @Output() valueChange = new EventEmitter<string>(); // Output property to emit changes
+  @Output() valueChange = new EventEmitter<string>();
 
-  // Method to update the value and emit changes
   onValueChange(newValue: string) {
     this.value = newValue;
     this.valueChange.emit(newValue);

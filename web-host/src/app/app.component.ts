@@ -150,7 +150,8 @@ export class AppComponent implements OnInit {
     
     this.router.resetConfig([...this.router.config, ...childRoutes]);
 
-    this.router.navigate([remotes['faq'].routerPath]);
+    this.router.navigate([remotes[projectId as keyof typeof remotes].routerPath]);
+    this.sendRoutePathToRemoteMfe(projectId)
   }
 
   private isAllowedAction(chromeEvent: ChromeMessage): boolean {
@@ -162,5 +163,15 @@ export class AppComponent implements OnInit {
       return false
     }
     return true
+  }
+
+  private sendRoutePathToRemoteMfe(projectId: string) {
+    const routePathBusEvent: BusEvent = {
+      event: "ROUTER_PATH",
+      from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+      to: `${projectId}@web`,
+      payload: { routerPath: remotes[projectId as keyof typeof remotes].routerPath },
+    }
+    this.eventBusPusher(routePathBusEvent);
   }
 }

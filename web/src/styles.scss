@@ -1,7 +1,6 @@
 /* Import the font definition */
 @import './assets/fonts';
 
-
 /* Use the font in your app */
 // body {
 //   font-family: 'Roboto', sans-serif;
@@ -10,13 +9,7 @@
 body{
   background-color: grey;
 }
-/* You can add global styles to this file, and also import other style files */
-.nav-wrapper{
-  background-color: red;
-}
-.container {
-  background-color:#3dadef;
-}
+
 
 ::-webkit-scrollbar {
   width: 10px;

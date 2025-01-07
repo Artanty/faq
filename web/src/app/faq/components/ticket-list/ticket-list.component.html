@@ -1,7 +1,74 @@
-<h2>Tickets</h2>
-<ul>
-  <li *ngFor="let ticket of tickets">
-    <!-- <a [routerLink]="['/ticket', ticket.id]">{{ ticket.title }}</a> -->
-    <a [routerLink]="['/ticket', 1]">{{ ticket }}</a>
-  </li>
-</ul>
+<div class="wrapper" *ngIf="state$ | async as state">
+  <ng-container [ngSwitch]="state.name">
+      <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
+      
+      <!-- <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">
+          <h1>Ответ принят</h1>
+          <div class="ctaBlock">
+              <div class="mainBtnWrapper">
+              <a class="btn" (click)="closeExtension()">
+                  <span class="countdown" *ngIf="countdown">{{ countdown }}</span>
+                  Закрыть
+              </a>
+              </div>
+              <div class="secondaryBtnWrapper">
+              <app-button (click)="backToForm()"><i class="typcn typcn-media-play-reverse-outline"></i></app-button>
+              <app-button w="120px" (click)="goToAnswerList()"><i class="typcn typcn-chart-bar-outline"></i></app-button>
+              <app-button (click)="showNextTicket()"><i class="typcn typcn-media-fast-forward-outline"></i></app-button>
+              </div>
+          </div>
+      </div> -->
+      
+      <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
+      <h1>Ошибка отправки</h1>
+      <span>{{state.payload.message}}</span>
+      <div class="ctaBlock">
+          <!-- <a class="btn" (click)="backToForm()">Назад</a> -->
+          <div class="secondaryBtnWrapper">
+              <app-button (click)="goBack()"><i class="typcn typcn-media-play-reverse-outline"></i></app-button>
+              <!-- <app-button w="120px" (click)="goToAnswerList()"><i class="typcn typcn-chart-bar-outline"></i></app-button> -->
+              <app-button color="purple" (click)="reload()"><i class="typcn typcn-arrow-sync"></i></app-button>
+          </div>
+      </div>
+      </div>
+      <div *ngSwitchCase="StateName.READY">
+          <div class="topRow">
+              <div class="action">
+                <app-button w="50px" p="4px" (click)="goBack()"><i class="typcn typcn-media-play-reverse-outline"></i></app-button>
+              </div>
+              <div class="title">
+                <h1>Билеты</h1>
+              </div>
+          </div>
+          <div class="list">
+              @for (item of data; track item.id) {
+                  <div class="item">
+                    <div class="item__topRow">
+                        <div>
+                            <div>
+                                <i class="typcn typcn-folder"></i>
+                                {{ item.folderName }}
+                            </div>
+                            <div *ngIf="item.topicName">
+                                <i class="typcn typcn-bookmark"></i>
+                                {{ item.topicName }}
+                            </div>
+                        </div>
+                        <div>
+                            <app-button w="50px" p="0px" color="green" (click)="goToTicket(item.id)">
+                                <i class="typcn typcn-media-play fz20"></i>
+                            </app-button>
+                            <app-button w="50px" p="0px" color="ginger" (click)="deleteWithAnswers(item.id)">
+                                <i class="typcn typcn-trash fz20"></i>
+                            </app-button>
+                        </div>
+                    </div>
+                    <div class="item__body">
+                        {{ item.question }}
+                    </div>
+                  </div>
+              }
+          </div>
+      </div>
+  </ng-container>
+</div>

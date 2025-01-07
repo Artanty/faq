@@ -1,4 +1,6 @@
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const fs = require('fs')
 const mf = require("@angular-architects/module-federation/webpack");
 const path = require("path");
 const share = mf.share;
@@ -8,6 +10,17 @@ const sharedMappings = new mf.SharedMappings();
 sharedMappings.register(
   path.join(__dirname, 'tsconfig.json'),
   [/* mapped paths to share */]);
+
+function CopyWebpackPluginHelper(sourceFolder, allowedExtensions, destFolder) {
+  const source = path.resolve(__dirname, sourceFolder);
+  const files = fs.readdirSync(source);
+  return files
+    .filter(file => allowedExtensions.includes(path.extname(file).toLowerCase()))
+    .map(file => ({
+      from: path.resolve(source, file),
+      to: path.resolve(__dirname, destFolder, file)
+    }));
+}
 
 module.exports = {
   output: {
@@ -21,6 +34,7 @@ module.exports = {
   resolve: {
     alias: {
       ...sharedMappings.getAliases(),
+      '@assets': path.resolve(__dirname, 'src/assets'),
     }
   },
   experiments: {

@@ -1,9 +1,5 @@
-@import '~typicons.font/src/font/typicons.css';
-.typcn {
-  font-size: 24px; /* Adjust size */
-  color: #007bff; /* Change color */
-  margin-right: 8px; /* Add spacing */
-}
+@import '~@assets/typicons/typicons.css';
+
 .wrapper {
   max-width: 400px;
   height: 100%;
@@ -61,6 +57,7 @@ form{
 }
 
 .ctaBlock{
+  width: 100%;
   margin-top: 20px;
   & .btn {
     text-transform: uppercase;
@@ -91,6 +88,20 @@ form{
         padding: 3px;
       }
     }
+  }
+  & .secondaryBtnWrapper{
+    display: flex;
+    justify-content: center;
+    column-gap:12px;
+    & .typcn {
+      display: block;
+      transition: transform 0.4s;
+    }
+    &>*:hover{
+      & .typcn{
+        transform: scale(1.2);
+      }
+    } 
   }
   .ml40{
     margin-left: 40px;

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ticket } from '../models/ticket.model';
 import { Answer } from '../models/answer.model';
-import { CreateTicketRequest, GetOldestTicketRequest, GetOldestTicketResponse, GetTicketByIdRequest, GetUserTicketsRequest } from './api.service.types';
+import { CreateTicketRequest, DeleteWithAnswersRequest, GetAnswersByTicketIdRequest, GetOldestTicketRequest, GetOldestTicketResponse, GetTicketByIdRequest, GetUserTicketsRequest } from './api.service.types';
 import { Dict } from '../models/dict.model';
 
 @Injectable({
@@ -28,11 +28,11 @@ export class ApiService {
     return this.http.post<Ticket>(`${this.baseUrl}/tickets/create`, data);
   }
 
-  getAnswersByTicketId(ticketId: number): Observable<Answer[]> {
-    return this.http.get<Answer[]>(`${this.baseUrl}/answers/ticket/${ticketId}`);
+  getAnswersByTicketId(data: GetAnswersByTicketIdRequest): Observable<Answer[]> {
+    return this.http.get<Answer[]>(`${this.baseUrl}/answers/ticket/${data.ticketId}`);
   }
 
-  submitAnswer(answer: { ticketId: number; body: string; rate: number, userId: number }): Observable<Answer> {
+  submitAnswer(answer: { ticketId: number; body: string; userId: number; rate: number }): Observable<Answer> {
     return this.http.post<Answer>(`${this.baseUrl}/answers/save`, answer);
   }
 
@@ -46,5 +46,9 @@ export class ApiService {
 
   getDictionaries(): Observable<Dict> { // todo add user?
     return this.http.post<Dict>(`${this.baseUrl}/dictionaries/all`, null);
+  }
+
+  deleteWithAnswers (data: DeleteWithAnswersRequest): Observable<any> {
+    return this.http.post<any>( `${this.baseUrl}/tickets/deleteWithAnswers`, data)
   }
 }

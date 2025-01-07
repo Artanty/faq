@@ -1,0 +1,13 @@
+<div class="flip-container">
+    <div class="flip-card" [ngStyle]="{ transform: 'rotateY(' + rotation + 'deg)' }">
+      <!-- Front Side -->
+      <div class="front">
+        <ng-content select="[front]"></ng-content> <!-- Project front content -->
+      </div>
+  
+      <!-- Back Side -->
+      <div class="back">
+        <ng-content select="[back]"></ng-content> <!-- Project back content -->
+      </div>
+    </div>
+  </div>

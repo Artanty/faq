@@ -1,0 +1,24 @@
+/* flip-card.component.css */
+.flip-container {
+    perspective: 1000px; /* Adds 3D perspective */
+  }
+  
+  .flip-card {
+    height: 430px;
+    position: relative;
+    transform-style: preserve-3d; /* Ensures child elements are rendered in 3D space */
+    transition: transform 0.6s; /* Smooth transition for the flip effect */
+  }
+  
+  .flip-card .front,
+  .flip-card .back {
+    width: 100%;
+    position: absolute;
+    backface-visibility: hidden; /* Hide the back side of the card */
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flip-card .back {
+    transform: rotateY(180deg);
+  }

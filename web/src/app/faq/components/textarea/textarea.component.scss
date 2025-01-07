@@ -5,6 +5,25 @@
     font-family: 'Roboto', sans-serif;
     background: rgb(255 255 255 / 10%);
     border-radius: 10px;
+    &.disabled{
+      padding: 0;
+      background-color: transparent;
+      &:focus-within{
+        outline: none;
+      }
+      & .form__label{
+        display: none;
+      }
+      & .form__field{
+        padding: 0;
+      }
+      & label:focus ~ .form__label{
+        display: none;
+      }
+      & .form__field:focus ~ .form__label{
+        display: none;
+      }
+    }
   }
   
   .form__field {

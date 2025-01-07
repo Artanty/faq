@@ -7,7 +7,7 @@ import { BehaviorSubject } from "rxjs"
 import { BusEvent, EVENT_BUS, HOST_NAME } from "typlib"
 import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component";
-import { FaqModule } from "./faq/faq.module"
+import { FaqModule } from "./faq/faq.module";
 
 export const initBusEvent: BusEvent = {
   event: "INIT",

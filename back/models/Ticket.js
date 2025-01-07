@@ -26,10 +26,9 @@ class Ticket {
     const connection = await pool.getConnection();
   
     try {
-      // Define the query with JOINs and a WHERE clause for userId
       const query = `
         SELECT 
-          t.id AS ticketId,
+          t.id,
           t.title,
           t.question,
           t.rightAnswer,
@@ -38,13 +37,14 @@ class Ticket {
           u.username AS user
         FROM tickets t
         JOIN folders f ON t.folderId = f.id
-        JOIN topics tp ON t.topicId = tp.id
+        LEFT JOIN topics tp ON t.topicId = tp.id
         JOIN users u ON t.userId = u.id
-        WHERE u.id = ?;
+        WHERE t.userId = ?;
       `;
   
       // Execute the query with userId as a parameter
       const [rows] = await connection.query(query, [userId]);
+      console.log(rows)
       return rows;
     } catch (error) {
       // Handle any errors
@@ -125,6 +125,33 @@ class Ticket {
       throw new Error(`db Error in models/Ticket.findOldest(): ${error.message}`);
     } finally {
       // Always release the connection
+      connection.release();
+    }
+  }
+
+  static async deleteTicketAndAnswers(id) {
+    const pool = createPool();
+    const connection = await pool.getConnection();
+  
+    try {
+      // Start a transaction to ensure atomicity
+      await connection.beginTransaction();
+  
+      // Delete all answers related to the ticket
+      await connection.query('DELETE FROM answers WHERE ticketId = ?', [id]);
+  
+      // Delete the ticket
+      const deleteResult = await connection.query('DELETE FROM tickets WHERE id = ?', [id]);
+  
+      // Commit the transaction
+      await connection.commit();
+      return deleteResult[0];
+    } catch (error) {
+      // Rollback the transaction in case of an error
+      await connection.rollback();
+      throw error; // Re-throw the error to handle it in the calling function
+    } finally {
+      // Release the connection back to the pool
       connection.release();
     }
   }

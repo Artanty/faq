@@ -1,4 +1,8 @@
 <button
+  [ngStyle]="{
+    width: w ? w : null,
+    padding: p ? p : null
+  }"
   [type]="type"
   [disabled]="disabled"
   [title]="title"

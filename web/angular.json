@@ -50,7 +50,7 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss", "node_modules/typicons.font/src/font/typicons.css"],
+            "styles": ["src/styles.scss"],
             "scripts": [],
             "main": "src/main.ts",
             "extraWebpackConfig": "webpack.config.js",

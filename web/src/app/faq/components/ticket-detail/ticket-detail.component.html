@@ -1,40 +1,78 @@
-<i class="typcn typcn-arrow-down-outline"></i> Home
 <div class="wrapper" *ngIf="state$ | async as state">
   <ng-container [ngSwitch]="state.name">
     <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
-    <!-- <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">Отправлено</div> -->
+    
     <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">
       <h1>Ответ принят</h1>
       <div class="ctaBlock">
-        <div class="mainBtnWtapper">
+        <div class="mainBtnWrapper">
           <a class="btn" (click)="closeExtension()">
             <span class="countdown" *ngIf="countdown">{{ countdown }}</span>
             Закрыть
           </a>
         </div>
-        <!-- <a class="btn" (click)="backToForm()">Назад</a> -->
-        <a class="btn" (click)="showNextTicket()">Следующий билет</a>
+        <div class="secondaryBtnWrapper">
+          <app-button (click)="backToForm()"><i class="typcn typcn-media-play-reverse-outline"></i></app-button>
+          <app-button w="120px" (click)="goToAnswerList()"><i class="typcn typcn-chart-bar-outline"></i></app-button>
+          <app-button color="purple" (click)="showNextTicket()"><i class="typcn typcn-media-fast-forward-outline"></i></app-button>
+        </div>
       </div>
     </div>
     
     <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
       <h1>Ошибка отправки</h1>
-      <span>{{state.payload}}</span>
+      <span>{{state.payload.message}}</span>
       <div class="ctaBlock">
         <a class="btn" (click)="backToForm()">Назад</a>
       </div>
     </div>
     <div *ngSwitchCase="StateName.READY">
-      <h3>{{ ticket?.question }}</h3>
+      <div class="topRow">
+        <app-button w="50px" p="4px" (click)="goToTicketList()"><i class="typcn typcn-th-list"></i></app-button>
+        <app-button w="100px" p="4px" color="blue" (click)="showCorrectAnswer()" [disabled]="!answer.body.length" >
+          @if (currentSide === 'front') {
+            <i class="typcn typcn-eye-outline"></i>
+          } 
+          @else {
+            <i class="typcn typcn-media-play-reverse-outline"></i>
+          }
+        </app-button>
+        
+      </div>
+      <div class="secondRow">
+        <div class="title">
+          <h3>{{ ticket?.question }}</h3>
+        </div>
+        <div class="actions">
+          <!-- <i class="typcn typcn-trash" (click)="deleteWithAnswersAndLoadOldest()"></i> -->
+        </div>
+      </div>
+      
       <form (ngSubmit)="onSubmit()">
-        <app-textarea [(value)]="newAnswer.body" label="Ответ" [textarea]="true" [rows]="18"></app-textarea>
-        <app-button 
-          type="submit" 
-          [disabled]="!newAnswer.body.length" 
-          [title]="!newAnswer.body.length ? 'Введите ответ' : ''"
-          color="red"
-        >Сохранить</app-button>
-        <!-- <button type="submit" [disabled]="!newAnswer.body.length">Сохранить</button> -->
+
+        <div>
+          <app-flip [side]="currentSide">
+            <!-- Front Side Content -->
+            <div front>
+              <div class="flexVert">
+                <app-textarea [(value)]="answer.body" label="Ответ" [textarea]="true" [rows]="18"></app-textarea>
+                <app-button 
+                  type="submit" 
+                  [disabled]="!answer.body.length" 
+                  [title]="!answer.body.length ? 'Введите ответ' : ''"
+                  color="red"
+                >Сохранить</app-button>
+              </div>
+            </div>
+          
+            <!-- Back Side Content -->
+            <div back>
+              <app-textarea [(value)]="ticket!.rightAnswer" label="Ответ" [textarea]="true" [rows]="18"></app-textarea>
+            </div>
+          </app-flip>
+  
+        </div>
+        
       </form>
     </div>
   </ng-container>
