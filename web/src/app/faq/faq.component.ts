@@ -10,6 +10,7 @@ import { APP_BASE_HREF, PlatformLocation } from "@angular/common";
 import { FontInitializerService } from "./services/font-initializer.service";
 import { buildUrl } from "./services/route-builder";
 import { CoreService } from "./services/core.service";
+import { OpenerService } from "./services/opener.service";
 
 export const EVENT_BUS_LISTENER = new InjectionToken<Observable<BusEvent>>('');
 export const EVENT_BUS_PUSHER = new InjectionToken<
@@ -52,7 +53,8 @@ export class FaqComponent implements OnInit{
         private _coreService: CoreService,
         private fontInitializer: FontInitializerService,
         @Inject('WEBPACK_PUBLIC_PATH')
-        private webpack_public_path: string
+        private webpack_public_path: string,
+        private _openerService: OpenerService
     ) {}
     
     ngOnInit(): void {
@@ -60,11 +62,7 @@ export class FaqComponent implements OnInit{
       this.fontInitializer.initializeFonts();
      
       // console.log('isDevMode(): ' + isDevMode())
-      if (isDevMode()) {
-        this.router.navigate(['/ticket-list']).catch(() => {
-          this.router.navigate(['/faq/ticket-list'])
-        })
-      }
+      
       this.eventBusListener$.subscribe((res: BusEvent)=>{
         console.log('faq.comp: ' + res.event)
         console.log(res)
@@ -75,6 +73,15 @@ export class FaqComponent implements OnInit{
           this._coreService.setRouterPath((res.payload as any).routerPath)
         }
       })
+
+      if (isDevMode()) { 
+        console.log(buildUrl('schedule-create', this._coreService.getRouterPath()))
+        this.router.navigateByUrl(buildUrl('schedule-create', this._coreService.getRouterPath()))
+        .catch(() => {
+          console.log('BAD')
+        })
+        this._openerService.maybeOpenModal()
+      }
     }
     
 }

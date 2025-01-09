@@ -1,0 +1,56 @@
+<div class="wrapper" *ngIf="state$ | async as state">
+
+    <ng-container [ngSwitch]="state.name">
+      <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
+      <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">
+        <h1>Билет добавлен</h1>
+        <div class="ctaBlock">
+          <div class="mainBtnWtapper">
+            <a class="btn"  (click)="closeExtension()">
+              <span class="countdown" *ngIf="countdown">{{ countdown }}</span>
+              Закрыть
+            </a>
+          </div>
+          <div class="secondaryBtnWrapper">
+            <app-button (click)="backToForm()"><i class="typcn typcn-media-play-reverse"></i></app-button>
+            <app-button w="120px" (click)="goToTicketList()"><i class="typcn typcn-th-list"></i></app-button>
+            <app-button (click)="clearForm()"><i class="typcn typcn-plus"></i></app-button>
+          </div>
+        </div>
+      </div>
+      <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
+        <h1>Ошибка сохранения</h1>
+        <span>{{state.payload}}</span>
+        <div class="ctaBlock">
+          <a class="btn" (click)="backToForm()">Назад</a>
+        </div>
+      </div>
+      <div *ngSwitchCase="StateName.READY">
+        <form (ngSubmit)="onSubmit()">
+          <div class="flex">
+  
+            <app-select 
+              label="Папка"
+              [(value)]="form.folderId"
+              [options]="dict['folders']"
+            ></app-select>
+  
+            <ng-conteiner *ngIf="isTopicVisible">
+              <app-select 
+                label="Раздел"
+                [(value)]="form.topicId"
+                [options]="availableTopics"
+              ></app-select>
+        
+            </ng-conteiner>
+          </div>
+          <!-- <app-textarea [(value)]="form.title" label="Заголовок"></app-textarea> -->
+          
+          <app-date-picker></app-date-picker>
+          <app-button 
+            type="submit" 
+          >Сохранить</app-button>
+        </form>
+      </div>
+    </ng-container>
+  </div>

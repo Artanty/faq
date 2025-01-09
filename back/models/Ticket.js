@@ -82,7 +82,7 @@ class Ticket {
   // topicId: number
   // quantity: number
   static async findOldest(data) {
-    const { userId, folderId, topicId, quantity } = data;
+    const { userId, folderId, topicId, dateFrom, dateTo, quantity} = data;
   
     // Validate required fields
     if (!userId || !quantity) {
@@ -108,6 +108,12 @@ class Ticket {
     if (topicId) {
       query += ' AND topicId = ?';
       queryVars.push(topicId);
+    }
+  
+    // Add dateFrom and dateTo to the query if both are provided
+    if (dateFrom && dateTo) {
+      query += ' AND date BETWEEN ? AND ?';
+      queryVars.push(dateFrom, dateTo);
     }
   
     // Add sorting and limit

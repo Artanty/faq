@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { Ticket } from '../../models/ticket.model';
 import { Answer } from '../../models/answer.model';
 import { BehaviorSubject, catchError, concatMap, map, Observable, tap } from 'rxjs';
-import { DeleteWithAnswersRequest, GetOldestTicketRequest, GetOldestTicketResponse } from '../../services/api.service.types';
+import { DeleteWithAnswersRequest, GetOldestTicketRequest } from '../../services/api.service.types';
 import { UserService } from '../../services/user.service';
 import { BusEvent } from 'typlib';
 import { EVENT_BUS_PUSHER } from '../../faq.component';
@@ -31,7 +31,7 @@ const ticketDetailAnswerDTODefault = { body: '' }
   templateUrl: './ticket-detail.component.html',
   styleUrls: ['./ticket-detail.component.scss'],
 })
-export class TicketDetailComponent implements OnInit {
+export class TicketDetailComponent implements OnInit, OnDestroy {
   countdown: number = 5
   countdownId: any = null
   StateName = StateName
@@ -59,6 +59,10 @@ export class TicketDetailComponent implements OnInit {
     } else {
       this._getOldestTicket().subscribe()
     }
+  }
+
+  ngOnDestroy(): void {
+    this._resetCountdown()
   }
 
   public onSubmit(): void {
@@ -129,7 +133,7 @@ export class TicketDetailComponent implements OnInit {
     this.countdownId = null  
   }
 
-  private _getOldestTicket (): Observable<GetOldestTicketResponse> {
+  private _getOldestTicket (): Observable<Ticket> {
     this.state$.next({ name: StateName.LOADING })
     this.answer = ticketDetailAnswerDTODefault;
     const req: GetOldestTicketRequest = {
@@ -189,12 +193,14 @@ export class TicketDetailComponent implements OnInit {
   }
 
   public goToAnswerList () {
+    this._resetCountdown()
     if (this.ticket?.id) {
       this.router.navigateByUrl(buildUrl(`answer-list/${this.ticket.id}`, this._coreService.getRouterPath()))
     }
   }
   
   public goToTicketList(): void {
+    this._resetCountdown()
     this.router.navigateByUrl(buildUrl(`ticket-list`, this._coreService.getRouterPath()))
   }
 

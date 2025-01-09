@@ -13,6 +13,8 @@ import { SelectComponent } from './components/select/select.component';
 import { ButtonComponent } from './components/button/button.component';
 import { AnswerListComponent } from './components/answer-list/answer-list.component';
 import { FlipComponent } from './components/flip/flip.component';
+import { ScheduleCreateComponent } from './components/schedule-create/schedule-create.component';
+import { DatePickerComponent } from './components/date-picker/date-picker.component';
 
   
 export const CHILD_ROUTES = [
@@ -37,7 +39,10 @@ export const CHILD_ROUTES = [
             }, 
             { 
                 path: 'answer-list/:id', component: AnswerListComponent
-            }, 
+            },
+            {
+                path: 'schedule-create', component: ScheduleCreateComponent
+            }
         ]
     }, 
 ]
@@ -54,6 +59,8 @@ export const CHILD_ROUTES = [
         ButtonComponent,
         AnswerListComponent,
         FlipComponent,
+        ScheduleCreateComponent,
+        DatePickerComponent,
         
     ],
     imports: [

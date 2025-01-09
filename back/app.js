@@ -2,7 +2,9 @@ const express = require('express');
 const dotenv = require('dotenv');
 const ticketRoutes = require('./routes/tickets');
 const answerRoutes = require('./routes/answers');
-const dictRoutes =   require('./routes/dictionaries');
+const dictRoutes = require('./routes/dictionaries');
+const scheduleRoutes = require('./routes/schedules');
+const test = require('./test');
 
 const axios = require('axios');
 const cors = require('cors');
@@ -20,6 +22,7 @@ app.use(express.json());
 app.use('/tickets', ticketRoutes);
 app.use('/answers', answerRoutes);
 app.use('/dictionaries', dictRoutes);
+app.use('/schedule', scheduleRoutes);
 
 async function sendRuntimeEventToStat(triggerIP) {
   try {
@@ -101,4 +104,5 @@ app.get('/get-updates', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   checkDBConnection()
+  test()
 });

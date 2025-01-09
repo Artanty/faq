@@ -1,0 +1,20 @@
+<div class="date-picker">
+  <app-select 
+    label="Год"
+    [(value)]="selectedYear"
+    [options]="years"
+    (valueChange)="onYearChange()"
+  ></app-select>
+  <app-select 
+    label="Месяц"
+    [(value)]="selectedMonth"
+    [options]="months"
+    (valueChange)="onMonthChange()"
+  ></app-select>
+  <app-select 
+    label="День"
+    [(value)]="selectedDay"
+    [options]="days"
+    (valueChange)="onDayChange()"
+  ></app-select>
+</div>

@@ -72,6 +72,23 @@ CREATE TABLE answers (
   FOREIGN KEY (userId) REFERENCES users(id)
 ) ENGINE=InnoDB;
 
+CREATE TABLE schedules (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  userId INT NOT NULL,
+  folderId INT DEFAULT NULL,
+  topicId INT DEFAULT NULL,
+  ticketId INT DEFAULT NULL,
+  dateFrom VARCHAR(255) DEFAULT NULL, -- String representation of the start date
+  dateTo VARCHAR(255) DEFAULT NULL,   -- String representation of the end date
+  frequency INT NOT NULL,             -- Frequency in minutes
+  weekdays VARCHAR(7) NOT NULL,       -- Weekdays pattern like '1001001'
+  active BOOLEAN DEFAULT TRUE,        -- Whether the schedule is active
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (userId) REFERENCES users(id),
+  FOREIGN KEY (folderId) REFERENCES folders(id),
+  FOREIGN KEY (topicId) REFERENCES topics(id),
+  FOREIGN KEY (ticketId) REFERENCES tickets(id)
+) ENGINE=InnoDB;
 
 ===
 

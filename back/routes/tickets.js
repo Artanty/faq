@@ -45,6 +45,8 @@ router.post('/oldest', async (req, res) => {
       userId: req.body.userId, 
       folderId: req.body.folderId, 
       topicId: req.body.topicId,
+      dateFrom: req.body.dateFrom, 
+      dateTo: req.body.dateTo,
       quantity: req.body.quantity
     });
     if (!ticket) {
