@@ -196,3 +196,71 @@ export function formatDate(
       return `${diffInYears} ${yearsText} назад`;
     }
   }
+
+
+  export function getDateRangeFromToday(description: string): { startDate: string; endDate: string } | null {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    const currentDay = today.getDate();
+    const currentDayOfWeek = (today.getDay() + 6) % 7; // Adjust so Monday is 0 and Sunday is 6
+  
+    // Helper function to format a date as 'YYYY-MM-DD'
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+  
+    // Calculate start and end dates for each variant
+    const variants: { [key: string]: { startDate: string; endDate: string } } = {
+      'all': {
+        startDate: '2025-01-01',
+        endDate: formatDate(today),
+      },
+      // 1. Start of this month, today
+      'this_month_today': {
+        startDate: formatDate(new Date(currentYear, currentMonth, 1)),
+        endDate: formatDate(today),
+      },
+      // 2. Start of previous month, end of previous month
+      '1_m_ago': {
+        startDate: formatDate(new Date(currentYear, currentMonth - 1, 1)),
+        endDate: formatDate(new Date(currentYear, currentMonth, 0)),
+      },
+      // 3. Start of previous previous month, end of previous previous month
+      '2_m_ago': {
+        startDate: formatDate(new Date(currentYear, currentMonth - 2, 1)),
+        endDate: formatDate(new Date(currentYear, currentMonth - 1, 0)),
+      },
+      // 4. Start of previous previous month, today
+      '2_m_ago_today': {
+        startDate: formatDate(new Date(currentYear, currentMonth - 2, 1)),
+        endDate: formatDate(today),
+      },
+      // 5. Start of previous previous previous month, today
+      '3_m_ago_today': {
+        startDate: formatDate(new Date(currentYear, currentMonth - 3, 1)),
+        endDate: formatDate(today),
+      },
+      // 6. Start of this year, today
+      'this_year_today': {
+        startDate: formatDate(new Date(currentYear, 0, 1)),
+        endDate: formatDate(today),
+      },
+      // 7. Start of previous week, end of previous week
+      'prev_week': {
+        startDate: formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() - currentDayOfWeek - 7)),
+        endDate: formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() - currentDayOfWeek - 1)),
+      },
+      // 8. Start of this week, today
+      'this_week_today': {
+        startDate: formatDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() - currentDayOfWeek)),
+        endDate: formatDate(today),
+      },
+    };
+  
+    // Return the requested variant or null if not found
+    return variants[description] || null;
+  }

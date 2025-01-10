@@ -7,8 +7,6 @@ button {
   cursor: pointer;
   font-family: "Roboto", sans-serif;
   outline: 2px solid transparent;
-  font-size: 16px;
-  font-weight: 600;
   transition: 0.4s box-shadow;
 }
 
@@ -42,6 +40,14 @@ button.blue {
     box-shadow: 0px 0px 10px 5px #153fe8;
   }
 }
+button.darkgrey {
+  background: linear-gradient(to right, #464755, #2c2d34);
+  &:hover{
+    box-shadow: 0px 0px 10px 5px #464755;
+  }
+}
+
+
 
 
 

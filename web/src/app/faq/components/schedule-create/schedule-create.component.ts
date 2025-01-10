@@ -9,6 +9,7 @@ import { Dict, Folder, Topic } from '../../models/dict.model';
 import { BusEvent } from 'typlib';
 import { EVENT_BUS_PUSHER } from '../../faq.component';
 import { changeLastUrlSegment } from '../../services/route-builder';
+import { getDateRangeFromToday } from '../../services/helpers';
 export type PreCreateSchedule = Required<Pick<CreateScheduleRequest, 'weekdays' | 'frequency' | 'folderId' | 'topicId' | 'dateFrom' | 'dateTo'>>
 @Component({
   selector: 'app-schedule-create',
@@ -23,18 +24,19 @@ export class ScheduleCreateComponent implements OnInit {
   form: PreCreateSchedule = {
     folderId: 0,
     topicId: 0,
-    dateFrom: '',
-    dateTo: '',
+    dateFrom: '2025-01-01',
+    dateTo: '2025-01-01',
     frequency: 180,
-    weekdays: '1111111'
+    weekdays: '1101101'
   }
 
   dict: Dict = {
     folders: [],
     topics: [],
   }
-  preDateFrom = 'TODO'
-  parentValue: string = '1';
+
+  public weekdays: string[] = ['Пн', 'Вт', "Ср", "Чт", "Пт", "Сб", "Вс"]
+  
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
@@ -51,6 +53,45 @@ export class ScheduleCreateComponent implements OnInit {
     this._loadDictionariesAndProfile()
   }
 
+  public toggleWeekday(i: number) {
+    let strArray = this.form.weekdays.split('');
+
+    strArray[i] = strArray[i] === '1'
+    ? "0"
+    : "1"
+
+    this.form.weekdays = strArray.join('')
+  }
+
+  public isWeekdayActive (i: number): number {
+    return +this.form.weekdays[i]
+  }
+
+  public frequencies: { name: string, value: number }[] = [
+    { name: '1 мин.', value: 1 },
+    { name: '2 мин.', value: 2 },
+    { name: '3 мин.', value: 3 },
+    { name: '5 мин.', value: 5 },
+    { name: '10 мин.', value: 10 },
+    { name: '15 мин.', value: 15 },
+    { name: 'пол часа', value: 30 },
+    { name: '45 мин.', value: 45 },
+    { name: 'час', value: 60 },
+    { name: '2 часа', value: 120 },
+    { name: '3 часа', value: 180 },
+    { name: '4 часа', value: 240 },
+  ]
+
+  public setFrequency (data: unknown) {
+    this.form.frequency = Number(data)
+    console.log(this.form.frequency)
+    this.cdr.detectChanges()
+  }
+
+  public isFrequencyActive (item: unknown) {
+    return this.form.frequency === Number(item)
+  }
+
   public get isTopicVisible (): boolean {
     const selectedFolder = Number(this.form.folderId)
     return this.dict.folders?.find(el => el.id === selectedFolder)?.service !== 1
@@ -65,26 +106,27 @@ export class ScheduleCreateComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    this.state$.next({ name: StateName.LOADING })
+    // this.state$.next({ name: StateName.LOADING })
 
-    const rawResult = JSON.parse(JSON.stringify(this.form))
+    // const rawResult = JSON.parse(JSON.stringify(this.form))
     
-    this.validateTopic(rawResult)
+    // this.validateTopic(rawResult)
     
-    rawResult.userId = this._userService.getUser()
+    // rawResult.userId = this._userService.getUser()
 
-    this._apiService
-      .createTicket(rawResult)
-      .pipe(
-        catchError((e: any) => {
-          this.state$.next({ name: StateName.ERROR, payload: e.error.message })
-          throw new Error(e)
-        })
-      )
-      .subscribe((res) => {
-        this.state$.next({ name: StateName.SUBMITTED })
-        this.countdownToClose()
-      });
+    // this._apiService
+    //   .createTicket(rawResult)
+    //   .pipe(
+    //     catchError((e: any) => {
+    //       this.state$.next({ name: StateName.ERROR, payload: e.error.message })
+    //       throw new Error(e)
+    //     })
+    //   )
+    //   .subscribe((res) => {
+    //     this.state$.next({ name: StateName.SUBMITTED })
+    //     this.countdownToClose()
+    //   });
+    console.log(this.form)
   }
 
   public closeExtension(): void {
@@ -116,9 +158,37 @@ export class ScheduleCreateComponent implements OnInit {
       weekdays: '1111111'
     }
     this._resetCountdown()
+    // this.setPredefinedRange('1_m_ago')
+    // this.setPredefinedRange('all')
     this.state$.next({ name: StateName.READY })
   }
 
+  public onDateFromChange(data: string) {
+    // todo validate form?
+  }
+  public onDateToChange(data: string) {
+    // todo validate form?
+  }
+
+  public predefinedRanges: { id: string, name: string }[] = [
+    { id: 'all', name: 'все' },
+    { id: 'this_month_today', name: 'месяц' },
+    { id: '1_m_ago', name: 'тот месяц' },
+    // { id: '2_m_ago', name: 'прев. 2 мес.' },
+    { id: '2_m_ago_today', name: '2 месяца' },
+    { id: '3_m_ago_today', name: '3 месяца' },
+    { id: 'this_year_today', name: 'год' },
+    { id: 'prev_week', name: 'та неделя' },
+    { id: 'this_week_today', name: 'эта неделя' },
+    
+  ]
+
+  public setPredefinedRange (desc: string) {
+    const { startDate, endDate } = JSON.parse(JSON.stringify(getDateRangeFromToday(desc)))!
+    this.form.dateFrom = startDate
+    this.form.dateTo = endDate
+    this.cdr.detectChanges()
+  }
   /**
    * delete topic if:
    * - no folder selected

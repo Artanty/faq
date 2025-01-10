@@ -12,5 +12,7 @@ export class ButtonComponent {
   @Input() disabled: boolean = false;
   @Input() title: string = '';
   @Input() color: string = 'green'
+  @Input() fz: string = '16px'
+  @Input() fw: string = '600'
   
 }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 
 interface SelectObject {
   id: number | string;
@@ -17,9 +17,13 @@ export class SelectComponent {
   @Input() value: SelectObject["id"] = '';
   @Output() valueChange = new EventEmitter<SelectObject["id"]>();
 
+  constructor (
+    private cdr: ChangeDetectorRef
+  ) {}
   onValueChange(event: any) {
     this.value = event;
     this.valueChange.emit(this.tryToNumber(this.value));
+    // this.cdr.detectChanges()
   }
 
   private tryToNumber (stringValue: SelectObject["id"]): string | number {

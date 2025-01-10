@@ -46,7 +46,49 @@
           </div>
           <!-- <app-textarea [(value)]="form.title" label="Заголовок"></app-textarea> -->
           
-          <app-date-picker></app-date-picker>
+          <div class="scheduleBlock formBlock">
+            <div class="block-label">Билеты какого периода показывать</div>
+            <div class="predefinedRanges">
+              @for (item of predefinedRanges; track item.id) {
+                <app-button w="initial"
+                p="2px 8px" color="darkgrey" fz="12px" fw="500" (click)="setPredefinedRange(item.id)">{{item.name}}</app-button>
+              }
+            </div>
+            <app-date-picker [(ngModel)]="form.dateFrom" (dateChange)="onDateFromChange($event)" name="dateFrom"></app-date-picker>  
+            <div class="date-pickers-btw-wrap">
+              <div>
+                <i class="typcn typcn-arrow-up"></i><span class="control-label">Начало</span>
+              </div>
+              <div>
+                <i class="typcn typcn-arrow-down"></i><span class="control-label">Окончание</span>
+              </div>
+            </div>        
+            <app-date-picker [(ngModel)]="form.dateTo" (dateChange)="onDateToChange($event)" name="dateTo"></app-date-picker>
+          </div>
+
+          <div class="weekdaysBlock formBlock">
+            <div class="block-label">По каким дням показывать</div>
+            <div class="weekdays">
+              
+              @for (item of weekdays; track item; let i = $index) {
+                <app-button w="initial"
+                p="2px 8px" [color]="isWeekdayActive(i) === 1 ? 'purple' : 'darkgrey'" fz="12px" fw="500" (click)="toggleWeekday(i)">{{item}}</app-button>
+              }
+            </div>
+          </div>
+
+          <div class="weekdaysBlock formBlock">
+            <div class="block-label">Показывать через каждые</div>
+            <div class="weekdays">
+              
+              @for (item of frequencies; track item;) {
+                <app-button w="initial"
+                p="2px 8px" [color]="isFrequencyActive(item.value) ? 'purple' : 'darkgrey'" 
+                fz="12px" fw="500" (click)="setFrequency(item.value)">{{item.name}}</app-button>
+              }
+            </div>
+          </div>
+
           <app-button 
             type="submit" 
           >Сохранить</app-button>
