@@ -48,7 +48,6 @@ export class TicketListComponent implements OnInit {
       this._getTicketsApi()
     ]).pipe(
       map(([dict, data]) => {
-        console.log(data)
         this.dict = dict
         this.data = data;
       }),

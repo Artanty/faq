@@ -3,20 +3,7 @@
     <ng-container [ngSwitch]="state.name">
       <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
       <div class="postSubmitBlock" *ngSwitchCase="StateName.SUBMITTED">
-        <h1>Билет добавлен</h1>
-        <div class="ctaBlock">
-          <div class="mainBtnWtapper">
-            <a class="btn"  (click)="closeExtension()">
-              <span class="countdown" *ngIf="countdown">{{ countdown }}</span>
-              Закрыть
-            </a>
-          </div>
-          <div class="secondaryBtnWrapper">
-            <app-button (click)="backToForm()"><i class="typcn typcn-media-play-reverse"></i></app-button>
-            <app-button w="120px" (click)="goToTicketList()"><i class="typcn typcn-th-list"></i></app-button>
-            <app-button (click)="clearForm()"><i class="typcn typcn-plus"></i></app-button>
-          </div>
-        </div>
+        <h1>Расписание добавлено</h1>
       </div>
       <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
         <h1>Ошибка сохранения</h1>
@@ -41,10 +28,8 @@
                 [(value)]="form.topicId"
                 [options]="availableTopics"
               ></app-select>
-        
             </ng-conteiner>
           </div>
-          <!-- <app-textarea [(value)]="form.title" label="Заголовок"></app-textarea> -->
           
           <div class="scheduleBlock formBlock">
             <div class="block-label">Билеты какого периода показывать</div>
@@ -83,8 +68,8 @@
               
               @for (item of frequencies; track item;) {
                 <app-button w="initial"
-                p="2px 8px" [color]="isFrequencyActive(item.value) ? 'purple' : 'darkgrey'" 
-                fz="12px" fw="500" (click)="setFrequency(item.value)">{{item.name}}</app-button>
+                  p="2px 8px" [color]="isFrequencyActive(item.value) ? 'purple' : 'darkgrey'" 
+                  fz="12px" fw="500" (click)="setFrequency(item.value)">{{item.name}}</app-button>
               }
             </div>
           </div>

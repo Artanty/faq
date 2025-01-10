@@ -75,8 +75,8 @@ export class FaqComponent implements OnInit{
       })
 
       if (isDevMode()) { 
-        console.log(buildUrl('schedule-create', this._coreService.getRouterPath()))
-        this.router.navigateByUrl(buildUrl('schedule-create', this._coreService.getRouterPath()))
+        // console.log(buildUrl('schedule-create', this._coreService.getRouterPath()))
+        this.router.navigateByUrl(buildUrl('schedule-list', this._coreService.getRouterPath()))
         .catch(() => {
           console.log('BAD')
         })

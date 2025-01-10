@@ -15,6 +15,7 @@ import { AnswerListComponent } from './components/answer-list/answer-list.compon
 import { FlipComponent } from './components/flip/flip.component';
 import { ScheduleCreateComponent } from './components/schedule-create/schedule-create.component';
 import { DatePickerComponent } from './components/date-picker/date-picker.component';
+import { ScheduleListComponent } from './components/schedule-list/schedule-list.component';
 
   
 export const CHILD_ROUTES = [
@@ -42,6 +43,9 @@ export const CHILD_ROUTES = [
             },
             {
                 path: 'schedule-create', component: ScheduleCreateComponent
+            },
+            {
+                path: 'schedule-list', component: ScheduleListComponent
             }
         ]
     }, 
@@ -61,6 +65,7 @@ export const CHILD_ROUTES = [
         FlipComponent,
         ScheduleCreateComponent,
         DatePickerComponent,
+        ScheduleListComponent,
         
     ],
     imports: [

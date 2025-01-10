@@ -106,46 +106,36 @@ export class ScheduleCreateComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    // this.state$.next({ name: StateName.LOADING })
+    this.state$.next({ name: StateName.LOADING })
 
-    // const rawResult = JSON.parse(JSON.stringify(this.form))
+    const rawResult = JSON.parse(JSON.stringify(this.form))
     
-    // this.validateTopic(rawResult)
+    this.validateTopic(rawResult)
     
-    // rawResult.userId = this._userService.getUser()
-
-    // this._apiService
-    //   .createTicket(rawResult)
-    //   .pipe(
-    //     catchError((e: any) => {
-    //       this.state$.next({ name: StateName.ERROR, payload: e.error.message })
-    //       throw new Error(e)
-    //     })
-    //   )
-    //   .subscribe((res) => {
-    //     this.state$.next({ name: StateName.SUBMITTED })
-    //     this.countdownToClose()
-    //   });
-    console.log(this.form)
-  }
-
-  public closeExtension(): void {
-    const closeExtBusEvent: BusEvent = {
-      event: "CLOSE_EXT",
-      from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
-      to: "",
-      payload: {}
-    }
-    this.eventBusPusher(closeExtBusEvent)
+    rawResult.userId = this._userService.getUser()
+    // console.log(this.form)
+    this._apiService 
+      .createSchedule(rawResult)
+      .pipe(
+        catchError((e: any) => {
+          this.state$.next({ name: StateName.ERROR, payload: e.error.message })
+          throw new Error(e)
+        })
+      )
+      .subscribe((res) => {
+        this.state$.next({ name: StateName.SUBMITTED })
+        setTimeout(() => {
+          this.goToScheduleList()
+        }, 1000)
+      });
   }
 
   public backToForm (): void {
-    this._resetCountdown()
     this.state$.next({ name: StateName.READY })
   }
 
-  public goToTicketList(): void {
-    this.router.navigateByUrl(changeLastUrlSegment(this.router.url, `ticket-list`))
+  public goToScheduleList(): void {
+    this.router.navigateByUrl(changeLastUrlSegment(this.router.url, `schedule-list`))
   }
 
   public clearForm(): void {
@@ -157,9 +147,6 @@ export class ScheduleCreateComponent implements OnInit {
       frequency: 180,
       weekdays: '1111111'
     }
-    this._resetCountdown()
-    // this.setPredefinedRange('1_m_ago')
-    // this.setPredefinedRange('all')
     this.state$.next({ name: StateName.READY })
   }
 
@@ -239,22 +226,4 @@ export class ScheduleCreateComponent implements OnInit {
       this.state$.next({ name: StateName.READY })
     })
   }
-
-  private countdownToClose (): void {
-    this.countdown = this._userService.getCloseCountdown()
-    this.countdownId = setInterval(() => {
-      this.countdown--
-      this.cdr.detectChanges()
-      if (!this.countdown) {
-        this._resetCountdown()
-        this.closeExtension()
-      }
-    }, 1000)
-  }
-
-  private _resetCountdown (): void {
-    clearInterval(this.countdownId)
-    this.countdownId = null  
-  }
-  
 }

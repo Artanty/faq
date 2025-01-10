@@ -59,4 +59,5 @@ export class ApiService {
   createSchedule (data: CreateScheduleRequest): Observable<number> {
     return this.http.post<any>(`${this.baseUrl}/schedule/create`, data)
   }
+  
 }

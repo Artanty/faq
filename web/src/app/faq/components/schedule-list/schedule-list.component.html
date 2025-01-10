@@ -1,0 +1,73 @@
+<div class="wrapper" *ngIf="state$ | async as state">
+    <ng-container [ngSwitch]="state.name">
+        <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
+        
+        
+        <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
+        <h1>Ошибка отправки</h1>
+        <span>{{state.payload.message}}</span>
+        <div class="ctaBlock">
+            <!-- <a class="btn" (click)="backToForm()">Назад</a> -->
+            <div class="secondaryBtnWrapper">
+                <app-button (click)="goBack()"><i class="typcn typcn-media-play-reverse-outline"></i></app-button>
+                <!-- <app-button w="120px" (click)="goToAnswerList()"><i class="typcn typcn-chart-bar-outline"></i></app-button> -->
+                <app-button color="purple" (click)="reload()"><i class="typcn typcn-arrow-sync"></i></app-button>
+            </div>
+        </div>
+        </div>
+        <div *ngSwitchCase="StateName.READY">
+            <div class="topRow">
+                <div class="action">
+                  <app-button w="50px" p="4px" (click)="goBack()"><i class="typcn typcn-media-play-reverse-outline"></i></app-button>
+                </div>
+                <div class="title">
+                  <h1>Расписания</h1>
+                </div>
+            </div>
+            <div class="list">
+                @for (item of data; track item.id) {
+                    <div class="item">
+                      <div class="row">
+                        <div class="side1">
+                            <div class="item__topRow">
+                                <div>
+                                    <div>
+                                        <i class="typcn typcn-folder"></i>
+                                        {{ item.folderName }}
+                                    </div>
+                                    <div>
+                                        <i class="typcn typcn-bookmark"></i>
+                                        {{ item.topicName }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row2">
+                              <div class="dates">
+                                  @if (item.dateFrom) {
+                                      {{ item.dateFrom }} - {{ item.dateTo }}
+                                  }
+                                  </div>
+                            </div>
+                          </div>
+                          <div class="side2">
+                           каждые {{ item.frequency }} минут
+                          </div>
+                      </div>
+                      <div class="item__middleRow">
+                        
+                         <div class="weekdays">
+              
+                            @for (weekday of weekdays; track weekday; let i = $index) {
+                            <app-button w="initial"
+                            p="2px 8px" [color]="isWeekdayActive(item.weekdays, i) === 1 ? 'blue' : 'darkgrey'" fz="12px" fw="500">{{weekday}}</app-button>
+                            }
+                        </div>
+                        
+                      </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </ng-container>
+  </div>
+ 
