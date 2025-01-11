@@ -197,8 +197,8 @@ export function formatDate(
     }
   }
 
-
-  export function getDateRangeFromToday(description: string): { startDate: string; endDate: string } | null {
+  export function getDateRangeFromToday(description: string): 
+  { startDate: string | null, endDate: string | null } {
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
@@ -214,10 +214,10 @@ export function formatDate(
     };
   
     // Calculate start and end dates for each variant
-    const variants: { [key: string]: { startDate: string; endDate: string } } = {
+    const variants: { [key: string]: { startDate: string | null; endDate: string | null } } = {
       'all': {
-        startDate: '2025-01-01',
-        endDate: formatDate(today),
+        startDate: null,
+        endDate: null,
       },
       // 1. Start of this month, today
       'this_month_today': {
@@ -260,7 +260,6 @@ export function formatDate(
         endDate: formatDate(today),
       },
     };
-  
-    // Return the requested variant or null if not found
-    return variants[description] || null;
+    
+    return variants[description] || variants['all']
   }

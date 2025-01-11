@@ -31,15 +31,17 @@
             </ng-conteiner>
           </div>
           
-          <div class="scheduleBlock formBlock">
+          <div class="scheduleBlock formBlock"  [class.all]="!form.dateFrom">
             <div class="block-label">Билеты какого периода показывать</div>
             <div class="predefinedRanges">
               @for (item of predefinedRanges; track item.id) {
                 <app-button w="initial"
-                p="2px 8px" color="darkgrey" fz="12px" fw="500" (click)="setPredefinedRange(item.id)">{{item.name}}</app-button>
+                p="2px 8px" 
+                [color]="isPredefinedRangeActive(item) ? 'purple' : 'darkgrey'" 
+                fz="12px" fw="500" (click)="setPredefinedRange(item)">{{item.name}}</app-button>
               }
             </div>
-            <app-date-picker [(ngModel)]="form.dateFrom" (dateChange)="onDateFromChange($event)" name="dateFrom"></app-date-picker>  
+            <app-date-picker [(ngModel)]="form.dateFrom" (dateChange)="onDateFromChange($event)" name="dateFrom" [class.overlay]="!form.dateFrom"></app-date-picker>  
             <div class="date-pickers-btw-wrap">
               <div>
                 <i class="typcn typcn-arrow-up"></i><span class="control-label">Начало</span>

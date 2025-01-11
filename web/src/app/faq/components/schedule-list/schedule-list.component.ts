@@ -6,7 +6,7 @@ import { Ticket } from '../../models/ticket.model';
 import { ApiService } from '../../services/api.service';
 import { DeleteWithAnswersRequest } from '../../services/api.service.types';
 import { CoreService } from '../../services/core.service';
-import { buildUrl } from '../../services/route-builder';
+import { buildUrl, changeLastUrlSegment } from '../../services/route-builder';
 import { UserService } from '../../services/user.service';
 import { StateName, TicketDetailState } from '../ticket-detail/ticket-detail.component';
 import { Location } from '@angular/common';
@@ -48,6 +48,10 @@ export class ScheduleListComponent {
     return +weekdays[i]
   }
 
+  public deleteSchedule (scheduleId: number) {
+
+  }
+
   private _getItems () {
     this.state$.next({ name: StateName.LOADING })
     forkJoin([
@@ -66,10 +70,15 @@ export class ScheduleListComponent {
           if (el.topicId) {
             el.topicName = dict.topics.find(f => f.id === el.topicId)?.name
           } else {
-            el.topicName = "-"
+            el.topicName = "wfjh9fjh9jir4edff32mk43"
           }
           if (el.dateFrom) {
             el.dateFrom = formatDate(el.dateFrom, { day: true, 
+              month: true, 
+              year: true }, )
+          }
+          if (el.dateTo) {
+            el.dateTo = formatDate(el.dateTo, { day: true, 
               month: true, 
               year: true }, )
           }
@@ -106,10 +115,7 @@ export class ScheduleListComponent {
     this.location.back();
   }
 
-  // public goToTicket(ticketId: number) {
-  //   console.log(buildUrl(`ticket/${ticketId}`, this._coreService.getRouterPath()))
-  //   this.router.navigateByUrl(buildUrl(`ticket/${ticketId}`, this._coreService.getRouterPath()))
-  // }
-
-  
+  public goToCreateSchedule() {
+    this.router.navigateByUrl(buildUrl(`schedule-create`, this._coreService.getRouterPath()))
+  }
 }

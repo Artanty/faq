@@ -11,6 +11,9 @@ import { EVENT_BUS_PUSHER } from '../../faq.component';
 import { changeLastUrlSegment } from '../../services/route-builder';
 import { getDateRangeFromToday } from '../../services/helpers';
 export type PreCreateSchedule = Required<Pick<CreateScheduleRequest, 'weekdays' | 'frequency' | 'folderId' | 'topicId' | 'dateFrom' | 'dateTo'>>
+export interface PredefinedRange {
+  id: string, name: string, dateFrom?: string, dateTo?: string
+}
 @Component({
   selector: 'app-schedule-create',
   templateUrl: './schedule-create.component.html',
@@ -24,8 +27,8 @@ export class ScheduleCreateComponent implements OnInit {
   form: PreCreateSchedule = {
     folderId: 0,
     topicId: 0,
-    dateFrom: '2025-01-01',
-    dateTo: '2025-01-01',
+    dateFrom: null,
+    dateTo: null,
     frequency: 180,
     weekdays: '1101101'
   }
@@ -106,28 +109,29 @@ export class ScheduleCreateComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    this.state$.next({ name: StateName.LOADING })
+    // this.state$.next({ name: StateName.LOADING })
 
     const rawResult = JSON.parse(JSON.stringify(this.form))
     
     this.validateTopic(rawResult)
     
     rawResult.userId = this._userService.getUser()
-    // console.log(this.form)
-    this._apiService 
-      .createSchedule(rawResult)
-      .pipe(
-        catchError((e: any) => {
-          this.state$.next({ name: StateName.ERROR, payload: e.error.message })
-          throw new Error(e)
-        })
-      )
-      .subscribe((res) => {
-        this.state$.next({ name: StateName.SUBMITTED })
-        setTimeout(() => {
-          this.goToScheduleList()
-        }, 1000)
-      });
+    console.log(this.form)
+    console.log(rawResult)
+    // this._apiService 
+    //   .createSchedule(rawResult)
+    //   .pipe(
+    //     catchError((e: any) => {
+    //       this.state$.next({ name: StateName.ERROR, payload: e.error.message })
+    //       throw new Error(e)
+    //     })
+    //   )
+    //   .subscribe((res) => {
+    //     this.state$.next({ name: StateName.SUBMITTED })
+    //     setTimeout(() => {
+    //       this.goToScheduleList()
+    //     }, 1000)
+    //   });
   }
 
   public backToForm (): void {
@@ -142,8 +146,8 @@ export class ScheduleCreateComponent implements OnInit {
     this.form = {
       folderId: 0,
       topicId: 0,
-      dateFrom: '',
-      dateTo: '',
+      dateFrom: null,
+      dateTo: null,
       frequency: 180,
       weekdays: '1111111'
     }
@@ -157,7 +161,7 @@ export class ScheduleCreateComponent implements OnInit {
     // todo validate form?
   }
 
-  public predefinedRanges: { id: string, name: string }[] = [
+  public predefinedRanges: PredefinedRange[] = [
     { id: 'all', name: 'все' },
     { id: 'this_month_today', name: 'месяц' },
     { id: '1_m_ago', name: 'тот месяц' },
@@ -167,13 +171,24 @@ export class ScheduleCreateComponent implements OnInit {
     { id: 'this_year_today', name: 'год' },
     { id: 'prev_week', name: 'та неделя' },
     { id: 'this_week_today', name: 'эта неделя' },
-    
   ]
+  
+  private enrichPredefinedRanges () {
+    this.predefinedRanges = this.predefinedRanges.map(el => {
+      const { startDate, endDate } = JSON.parse(JSON.stringify(getDateRangeFromToday(el.id)))!
+      el.dateFrom = startDate
+      el.dateTo = endDate
+      return el
+    })
+  }
 
-  public setPredefinedRange (desc: string) {
-    const { startDate, endDate } = JSON.parse(JSON.stringify(getDateRangeFromToday(desc)))!
-    this.form.dateFrom = startDate
-    this.form.dateTo = endDate
+  public isPredefinedRangeActive (range: PredefinedRange): boolean {
+    return range.dateFrom === this.form.dateFrom && range.dateTo === this.form.dateTo
+  }
+
+  public setPredefinedRange (range: PredefinedRange) {
+    this.form.dateFrom = range.dateFrom || null
+    this.form.dateTo = range.dateTo || null
     this.cdr.detectChanges()
   }
   /**
@@ -225,5 +240,6 @@ export class ScheduleCreateComponent implements OnInit {
       this.form.folderId = this.serviceFolderId
       this.state$.next({ name: StateName.READY })
     })
+    this.enrichPredefinedRanges()
   }
 }

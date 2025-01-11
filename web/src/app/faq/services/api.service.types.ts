@@ -59,6 +59,6 @@ export interface GetSchedulesByUserIdResponseItem {
     "folderId"?: number
     "topicId"?: number
     "ticketId"?: number
-    "dateFrom"?: string
-    "dateTo"?: string
+    "dateFrom"?: string | null
+    "dateTo"?: string | null
   }

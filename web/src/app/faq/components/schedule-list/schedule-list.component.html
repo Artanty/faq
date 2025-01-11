@@ -16,54 +16,69 @@
         </div>
         </div>
         <div *ngSwitchCase="StateName.READY">
-            <div class="topRow">
-                <div class="action">
-                  <app-button w="50px" p="4px" (click)="goBack()"><i class="typcn typcn-media-play-reverse-outline"></i></app-button>
+            <div class="titleRow">
+                <div>
+                    <div class="action">
+                        <app-button w="50px" p="4px" (click)="goBack()"><i class="typcn typcn-media-play-reverse-outline"></i></app-button>
+                      </div>
+                      <div class="title">
+                        <h1>Расписания</h1>
+                      </div>
                 </div>
-                <div class="title">
-                  <h1>Расписания</h1>
+                <div class="action">
+                    <app-button w="50px" p="4px" (click)="goToCreateSchedule()"><i class="typcn typcn-plus"></i></app-button>
                 </div>
             </div>
             <div class="list">
                 @for (item of data; track item.id) {
                     <div class="item">
-                      <div class="row">
-                        <div class="side1">
-                            <div class="item__topRow">
-                                <div>
+                        <div class="row row1">
+                            <div class="side side1">
+                                <div class="folder-topic">
                                     <div>
-                                        <i class="typcn typcn-folder"></i>
-                                        {{ item.folderName }}
+                                        @if (item.folderId) {
+                                            <i class="typcn typcn-folder"></i>
+                                            <span>{{ item.folderName }}</span>
+                                        }
+                                        
                                     </div>
                                     <div>
-                                        <i class="typcn typcn-bookmark"></i>
-                                        {{ item.topicName }}
+                                        @if(item.topicId) {
+                                            <i class="typcn typcn-bookmark"></i>
+                                            <span>{{ item.topicName }}</span>
+                                        }
                                     </div>
                                 </div>
+                                <div class="dates" title="Билеты какого периода показываются">
+                                    @if (item.dateFrom) {
+                                        {{ item.dateFrom }} - {{ item.dateTo }}
+                                    }
+                                </div>
                             </div>
-                            <div class="row2">
-                              <div class="dates">
-                                  @if (item.dateFrom) {
-                                      {{ item.dateFrom }} - {{ item.dateTo }}
-                                  }
-                                  </div>
+                            <div class="side side2">
+                                <div class="number">{{ item.frequency <= 60 ? item.frequency : (item.frequency / 60)}}</div>
+                                <div class="text">
+                                    каждые <br> {{ item.frequency <= 60 ? 'минут' : 'часов'}}
+                                </div>  
                             </div>
-                          </div>
-                          <div class="side2">
-                           каждые {{ item.frequency }} минут
-                          </div>
-                      </div>
-                      <div class="item__middleRow">
-                        
-                         <div class="weekdays">
-              
-                            @for (weekday of weekdays; track weekday; let i = $index) {
-                            <app-button w="initial"
-                            p="2px 8px" [color]="isWeekdayActive(item.weekdays, i) === 1 ? 'blue' : 'darkgrey'" fz="12px" fw="500">{{weekday}}</app-button>
-                            }
                         </div>
-                        
-                      </div>
+                        <div class="row row2">
+                            <div class="weekdays">
+                                @for (weekday of weekdays; track weekday; let i = $index) {
+                                    <app-button 
+                                        w="initial"
+                                        p="2px 8px" 
+                                        [color]="isWeekdayActive(item.weekdays, i) === 1 ? 'blue' : 'darkgrey'" 
+                                        fz="12px" fw="500"
+                                        [disabled]="true"
+                                    >{{weekday}}</app-button>
+                                }                            
+                            </div>
+    
+                            <app-button w="50px" p="0px" color="ginger" (click)="deleteSchedule(item.id)">
+                                <i class="typcn typcn-trash fz20"></i>
+                            </app-button>
+                        </div>
                     </div>
                 }
             </div>
