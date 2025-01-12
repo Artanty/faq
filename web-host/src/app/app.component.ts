@@ -1,19 +1,35 @@
+import { webComponentService } from 'typlib';
 import { loadRemoteModule, LoadRemoteModuleScriptOptions } from "@angular-architects/module-federation"
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   Inject,
   InjectionToken,
   Injector,
   NgModuleRef,
+  OnDestroy,
   OnInit,
+  Renderer2,
   ViewChild,
   ViewContainerRef,
 } from "@angular/core"
 import { Router, Routes } from "@angular/router"
 import { ChromeMessagingService } from "./services/chrome-messaging.service"
-import { BusEvent, EVENT_BUS } from 'typlib';
-import { BehaviorSubject, filter, Observable } from "rxjs";
+import {  EVENT_BUS } from 'typlib';
+import { BehaviorSubject, filter, Observable, Subject } from "rxjs";
 import { StatService } from "./services/stat-service";
+import { RegisterComponentsBusEvent, RegisterComponentsBusEventPayload } from './app.component.types';
+import { FunctionQueueService } from './services/function-queue.service';
+
+export interface BusEvent<T = Record<string, any>> {
+  from: string;
+  to: string;
+  event: string;
+  payload: T;
+  self?: true;
+  status?: string;
+}
 
 export interface SendStatData {
   projectId: string
@@ -88,9 +104,13 @@ const remotes: Remotes = {
     },
   ],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("placeHolder", { read: ViewContainerRef })
   viewContainer!: ViewContainerRef
+
+  @ViewChild('remoteButtonContainer', { static: false }) remoteButtonContainer!: ElementRef;
+
+  ngAfterViewInit$ = new BehaviorSubject<boolean>(false);
   constructor(
     private router: Router,
     private chromeMessagingService: ChromeMessagingService,
@@ -99,7 +119,9 @@ export class AppComponent implements OnInit {
     @Inject(EVENT_BUS_PUSHER)
     private eventBusPusher: (busEvent: BusEvent) => void,
     private injector: Injector,
-    private _statService: StatService
+    private _statService: StatService,
+    private renderer: Renderer2, private el: ElementRef,
+    private functionQueueService: FunctionQueueService
   ) {
     this.loadComponent('faq')
   }
@@ -122,7 +144,24 @@ export class AppComponent implements OnInit {
       if (res.event === "CLOSE_EXT") {
         window.close();
       }
+      if (res.event === 'REGISTER_COMPONENTS') {
+        // (res as RegisterComponentsBusEvent).payload.customElementName
+        this.functionQueueService.addToQueue(
+          this.appendRemoteButton,
+          this,
+          (res as RegisterComponentsBusEvent).payload.customElementName,
+          this.ngAfterViewInit$
+        );
+      }
     })
+  }
+
+  ngAfterViewInit() {
+    this.ngAfterViewInit$.next(true);
+  }
+
+  ngOnDestroy() {
+    //
   }
 
   showOldestTicket () {
@@ -152,6 +191,7 @@ export class AppComponent implements OnInit {
 
     this.router.navigate([remotes[projectId as keyof typeof remotes].routerPath]);
     this.sendRoutePathToRemoteMfe(projectId)
+    
   }
 
   private isAllowedAction(chromeEvent: ChromeMessage): boolean {
@@ -173,5 +213,23 @@ export class AppComponent implements OnInit {
       payload: { routerPath: remotes[projectId as keyof typeof remotes].routerPath },
     }
     this.eventBusPusher(routePathBusEvent);
+  }
+
+  private appendRemoteButton(customElementName: string) {
+    try {
+      webComponentService.getComponent(customElementName)
+    } catch (e) { console.warn(e)}
+    const remoteButton = this.renderer.createElement(customElementName);
+    this.renderer.setAttribute(remoteButton, 'id', 'remoteButton');
+    const container = this.remoteButtonContainer.nativeElement;
+    this.renderer.appendChild(container, remoteButton);
+    this.renderer.listen(remoteButton, 'remoteButtonClick', (event: CustomEvent<string>) => {
+      console.log(event.detail); // Output: "Button clicked!"
+    });
+  }
+
+  check() {
+    // // webComponentService.getComponent('remote-button') // check for existence
+    // this.appendRemoteButton('remote-button')
   }
 }

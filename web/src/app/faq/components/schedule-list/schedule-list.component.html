@@ -2,7 +2,6 @@
     <ng-container [ngSwitch]="state.name">
         <div class="loading" *ngSwitchCase="StateName.LOADING">Загрузка</div>
         
-        
         <div class="errorBlock" *ngSwitchCase="StateName.ERROR">
         <h1>Ошибка отправки</h1>
         <span>{{state.payload.message}}</span>

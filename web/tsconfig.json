@@ -28,6 +28,9 @@
     "types": [
       "node"
     ],
+    "paths": {
+      "@assets/*": ["./src/assets/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

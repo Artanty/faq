@@ -10,7 +10,7 @@ export class FontInitializerService {
   constructor(
     private rendererFactory: RendererFactory2
     ) {
-        this.renderer = this.rendererFactory.createRenderer(null, null);
+      this.renderer = this.rendererFactory.createRenderer(null, null);
     }
 
   initializeFonts(): void {

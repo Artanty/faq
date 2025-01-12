@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "web-host": {
+    "faq": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -44,7 +44,7 @@
         "build": {
           "builder": "ngx-build-plus:browser",
           "options": {
-            "outputPath": "dist/web-host",
+            "outputPath": "dist/faq",
             "index": "src/index.html",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
@@ -93,11 +93,11 @@
           "builder": "ngx-build-plus:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "web-host:build:production",
+              "buildTarget": "faq:build:production",
               "extraWebpackConfig": "webpack.prod.config.js"
             },
             "development": {
-              "buildTarget": "web-host:build:development"
+              "buildTarget": "faq:build:development"
             }
           },
           "defaultConfiguration": "development",
@@ -110,7 +110,7 @@
         "extract-i18n": {
           "builder": "ngx-build-plus:extract-i18n",
           "options": {
-            "buildTarget": "web-host:build",
+            "buildTarget": "faq:build",
             "extraWebpackConfig": "webpack.config.js"
           }
         }

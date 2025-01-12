@@ -1,16 +1,14 @@
-import { ChangeDetectionStrategy, Component, Inject, InjectionToken, isDevMode, OnInit, Optional, Renderer2, SkipSelf } from "@angular/core";
-
-import { BehaviorSubject, filter, Observable } from "rxjs";
+import { ChangeDetectionStrategy, Component, Inject, InjectionToken, Injector, isDevMode, OnInit } from "@angular/core";
+import { registerRemoteButtonComponent } from './components/_remotes/product-button.remote';
+import { BehaviorSubject, Observable } from "rxjs";
 import { BusEvent, EVENT_BUS } from "typlib";
-import { ApiService } from "./services/api.service";
-import { GetOldestTicketRequest } from "./services/api.service.types";
-import { UserService } from "./services/user.service";
 import { Router } from "@angular/router";
-import { APP_BASE_HREF, PlatformLocation } from "@angular/common";
 import { FontInitializerService } from "./services/font-initializer.service";
 import { buildUrl } from "./services/route-builder";
 import { CoreService } from "./services/core.service";
 import { OpenerService } from "./services/opener.service";
+import { createCustomElement } from "@angular/elements";
+import { ProductButtonRemote3Component } from "./components/_remotes/product-button/product-button.component";
 
 export const EVENT_BUS_LISTENER = new InjectionToken<Observable<BusEvent>>('');
 export const EVENT_BUS_PUSHER = new InjectionToken<
@@ -54,7 +52,10 @@ export class FaqComponent implements OnInit{
         private fontInitializer: FontInitializerService,
         @Inject('WEBPACK_PUBLIC_PATH')
         private webpack_public_path: string,
-        private _openerService: OpenerService
+        private _openerService: OpenerService,
+        @Inject(EVENT_BUS_PUSHER)
+        private readonly eventBusPusher: (busEvent: BusEvent) => void,
+        private injector: Injector
     ) {}
     
     ngOnInit(): void {
@@ -71,6 +72,7 @@ export class FaqComponent implements OnInit{
         }
         if (res.event === 'ROUTER_PATH') {
           this._coreService.setRouterPath((res.payload as any).routerPath)
+          this.shareComponentsWithHost()
         }
       })
 
@@ -83,7 +85,31 @@ export class FaqComponent implements OnInit{
         this._openerService.maybeOpenModal()
       }
     }
+
+    shareComponentsWithHost() {
+      registerRemoteButtonComponent();
+      this.registerRemoteButtonElement()
+      const busEvent: BusEvent = {
+        from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+        to: `${process.env['PROJECT_ID']}@web-host`,
+        event: 'REGISTER_COMPONENTS',
+        payload: { 
+          target: 'PRODUCT_BUTTON',
+          customElementName: 'remote-product-button-faq2'
+        },
+      };
+      this.eventBusPusher(busEvent);
+    }
     
+    public registerRemoteButtonElement() {
+      // Convert the Angular component to a custom element
+      const remoteButtonElement = createCustomElement(ProductButtonRemote3Component, {
+        injector: this.injector,
+      });
+  
+      // Register the custom element with the browser
+      customElements.define('remote-product-button-faq2', remoteButtonElement);
+    }
 }
 
 

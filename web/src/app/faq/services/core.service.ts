@@ -7,7 +7,7 @@ export class CoreService {
     private _routerPath = '/'
 
     public setRouterPath (data: string) {
-        console.warn('Router path changed: ' + data)
+        console.log('Router path changed: ' + data)
         this._routerPath = data
     }
 
