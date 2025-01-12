@@ -50,8 +50,7 @@ export class FaqComponent implements OnInit{
         private readonly eventBusListener$: Observable<BusEvent>,
         private _coreService: CoreService,
         private fontInitializer: FontInitializerService,
-        @Inject('WEBPACK_PUBLIC_PATH')
-        private webpack_public_path: string,
+       
         private _openerService: OpenerService,
         @Inject(EVENT_BUS_PUSHER)
         private readonly eventBusPusher: (busEvent: BusEvent) => void,
@@ -59,7 +58,7 @@ export class FaqComponent implements OnInit{
     ) {}
     
     ngOnInit(): void {
-      console.log(this.webpack_public_path) // todo try in build
+      
       this.fontInitializer.initializeFonts();
      
       // console.log('isDevMode(): ' + isDevMode())
@@ -94,8 +93,9 @@ export class FaqComponent implements OnInit{
         to: `${process.env['PROJECT_ID']}@web-host`,
         event: 'REGISTER_COMPONENTS',
         payload: { 
-          target: 'PRODUCT_BUTTON',
-          customElementName: 'remote-product-button-faq2'
+          componentType: 'PRODUCT_BUTTON',
+          customElementName: 'remote-product-button-faq2',
+          url: buildUrl('schedule-list', this._coreService.getRouterPath())
         },
       };
       this.eventBusPusher(busEvent);

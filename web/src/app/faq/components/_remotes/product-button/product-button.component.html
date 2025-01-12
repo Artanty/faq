@@ -1,9 +1,11 @@
-<button
+<!-- <button
     [ngStyle]="{ 'background-image': 'url(' + imageUrl + ')' }"
     (click)="onClick()"
 >
-<i class="typcn typcn-media-play-reverse-outline"></i>
-    Click Me 3
-</button>
 
-<div class="card" assetUrlUpdate></div>
+    Click Me 3
+</button> -->
+
+<div class="card" assetUrlUpdate (click)="onClick()">
+    <i class="typcn typcn-stopwatch"></i>
+</div>

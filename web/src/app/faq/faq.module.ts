@@ -20,6 +20,7 @@ import { ProductButtonRemote2Component } from "./components/_remotes/product-but
 import { createCustomElement } from "@angular/elements";
 import { ProductButtonRemote3Component } from "./components/_remotes/product-button/product-button.component";
 import { AssetUrlUpdateDirective } from "./directives/asset-url-update.directive";
+import { CoreService } from "./services/core.service";
 
 
 
@@ -84,8 +85,8 @@ export const CHILD_ROUTES = [
         HttpClientModule,
     ],
     providers: [
-        { provide: 'WEBPACK_PUBLIC_PATH', useValue: __webpack_public_path__ },
-        { provide: APP_BASE_HREF, useValue: __webpack_public_path__ },
+        CoreService,
+       
     ],
     exports: [
         FaqComponent

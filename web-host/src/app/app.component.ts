@@ -149,7 +149,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         this.functionQueueService.addToQueue(
           this.appendRemoteButton,
           this,
-          (res as RegisterComponentsBusEvent).payload.customElementName,
+          {
+            customElementName: (res as RegisterComponentsBusEvent).payload.customElementName,
+            url: (res as RegisterComponentsBusEvent).payload.url
+          },
           this.ngAfterViewInit$
         );
       }
@@ -215,7 +218,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.eventBusPusher(routePathBusEvent);
   }
 
-  private appendRemoteButton(customElementName: string) {
+  private appendRemoteButton({customElementName, url}: {customElementName: string, url: string}) {
+    console.log(customElementName)
     try {
       webComponentService.getComponent(customElementName)
     } catch (e) { console.warn(e)}
@@ -225,6 +229,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.renderer.appendChild(container, remoteButton);
     this.renderer.listen(remoteButton, 'remoteButtonClick', (event: CustomEvent<string>) => {
       console.log(event.detail); // Output: "Button clicked!"
+      this.router.navigateByUrl(url)
     });
   }
 

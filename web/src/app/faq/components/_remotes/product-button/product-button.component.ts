@@ -10,7 +10,6 @@ export class ProductButtonRemote3Component {
   @Output() remoteButtonClick = new EventEmitter<string>(); // Output event
 
   onClick() {
-    console.log(console.log(__webpack_public_path__))
     this.remoteButtonClick.emit('Button clicked!'); // Emit the event
   }
 }

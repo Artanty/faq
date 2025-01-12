@@ -1,16 +1,14 @@
 .host-container{
-  // max-width: 360px;
   min-width: 250px;
   overflow: hidden;
-  // height: 436px;
   width: 700px;
   height: 550px;
-  background: #24C6DC;  /* fallback for old browsers */
-  // background: -webkit-linear-gradient(to bottom right, #7071df, #4e8cc1, #32c5da);  /* Chrome 10-25, Safari 5.1-6 */
-  // background: linear-gradient(to bottom right, #7071df, #4e8cc1, #32c5da); /* Standard syntax */
+  background: #24C6DC;
   background: -webkit-linear-gradient(to bottom right, #7071df, #32c5da);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to bottom right, #7071df, #32c5da); /* Standard syntax */
   padding: 15px;
+  display: flex;
+  // column-gap: 15px;
 }
 h3{
   color:#fff;
@@ -24,7 +22,9 @@ body{
   left: 0;
 }
 .remoteButtonContainer{
-  position: absolute;
-    right: 0;
-    top: 0;
+  margin-left: 15px;
+}
+
+.routerDiv{
+  width: 400px;
 }
