@@ -6,7 +6,7 @@
   {{ ' | '}}
   <a [routerLink]="['/faq']">{{ 'faq' }}</a>
   {{ ' | '}}
-  <a [routerLink]="['/faq/ticketCreate']">{{ 'create' }}</a>
+  <a [routerLink]="['/faq/ticket-create']">{{ 'create' }}</a>
   {{ ' | '}}
   <a [routerLink]="['/test']">{{ 'test' }}</a>
   {{ ' | '}}
@@ -19,7 +19,7 @@
   <div class="routerDiv">
     <router-outlet></router-outlet>
   </div>
-  <div class="remoteButtonContainer" #remoteButtonContainer></div>
+  <div class="remoteButtonContainer" #remoteButtonContainer appGroupButtons></div>
 </div>
 
 <!-- <button (click)="loadAndRegisterComponent()">Load and Register Component</button> -->

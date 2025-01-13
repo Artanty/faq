@@ -7,7 +7,8 @@ import { BehaviorSubject } from "rxjs"
 import { BusEvent, EVENT_BUS, HOST_NAME } from "typlib"
 import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component";
-import { TestComponent } from './components/test/test.component'
+import { TestComponent } from './components/test/test.component';
+import { GroupButtonsDirective } from './directives/group-buttons.directive'
 
 export const initBusEvent: BusEvent = {
   event: "INIT",
@@ -19,7 +20,7 @@ export const initBusEvent: BusEvent = {
 const eventBus$ = new BehaviorSubject(initBusEvent)
 
 @NgModule({
-  declarations: [AppComponent, TestComponent],
+  declarations: [AppComponent, TestComponent, GroupButtonsDirective],
   imports: [
     BrowserModule,
     AppRoutingModule,

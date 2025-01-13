@@ -83,11 +83,11 @@ export class OpenerService {
         .pipe(
             switchMap((res: GetSchedulesByUserIdResponse): Observable<Ticket[]> => {
                 const filtered = this._filterSchedules(res, new Date())
-                console.log(filtered)
+                // console.log(filtered)
                 return this._makeRequests(filtered)
             })
         ).subscribe(res => {
-            console.log(res)
+            // console.log(res)
         })
         
   }

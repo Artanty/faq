@@ -3,7 +3,7 @@
   max-width: 400px;
   height: 100%;
   padding: 12px;
-  background-color: rgb(25, 29, 58);
+  background-color: rgb(14, 14, 14);
   border-radius: 10px;
   font-family: "Roboto", sans-serif;
   max-height: 520px;
@@ -89,7 +89,7 @@
     flex-direction: column;
     height: 70px;
     justify-content: space-between;
-    & *{
+    & .weekdays {
       cursor: default;
     }
   }

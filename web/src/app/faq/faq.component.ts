@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Inject, InjectionToken, Injector, isDevMode, OnInit } from "@angular/core";
-import { registerRemoteButtonComponent } from './components/_remotes/product-button.remote';
 import { BehaviorSubject, Observable } from "rxjs";
 import { BusEvent, EVENT_BUS } from "typlib";
 import { Router } from "@angular/router";
@@ -8,7 +7,10 @@ import { buildUrl } from "./services/route-builder";
 import { CoreService } from "./services/core.service";
 import { OpenerService } from "./services/opener.service";
 import { createCustomElement } from "@angular/elements";
-import { ProductButtonRemote3Component } from "./components/_remotes/product-button/product-button.component";
+import { ButtonComponent } from "./components/button/button.component";
+
+import { ProductButtonTextComponent } from "./components/_remotes/product-button-add/product-button-text.component";
+import { ProductButtonIconComponent } from "./components/_remotes/product-button-add/product-button-icon.component";
 
 export const EVENT_BUS_LISTENER = new InjectionToken<Observable<BusEvent>>('');
 export const EVENT_BUS_PUSHER = new InjectionToken<
@@ -86,29 +88,113 @@ export class FaqComponent implements OnInit{
     }
 
     shareComponentsWithHost() {
-      registerRemoteButtonComponent();
       this.registerRemoteButtonElement()
-      const busEvent: BusEvent = {
+      const registerComponentsBase = {
         from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
         to: `${process.env['PROJECT_ID']}@web-host`,
         event: 'REGISTER_COMPONENTS',
+      }
+      // SCHEDULE LIST
+      const busEvent: BusEvent = {
+        ...registerComponentsBase,
         payload: { 
           componentType: 'PRODUCT_BUTTON',
-          customElementName: 'remote-product-button-faq2',
-          url: buildUrl('schedule-list', this._coreService.getRouterPath())
+          customElementName: 'faq-btn-text',
+          customElementInputs: {
+           'data-group': 'schedule',
+           'data-order_in_group': '1',
+           'data-main_order': '1',
+           url: 'schedule-list',
+           active: 'purple'
+          },
+          customElementTransclusion: 'Расписания',
         },
       };
       this.eventBusPusher(busEvent);
+      // SCHEDULE CREATE
+      const busEvent2: BusEvent = {
+        ...registerComponentsBase,
+        payload: { 
+          componentType: 'PRODUCT_BUTTON',
+          customElementName: 'faq-btn-icon', 
+          customElementInputs: {
+            icon: 'typcn-plus',
+            'data-order_in_group': '2',
+            'data-group': 'schedule',
+            'data-main_order': '1',
+            url: 'schedule-create',
+            active: 'purple'
+          },
+          customElementTransclusion: ''
+        },
+      };
+      this.eventBusPusher(busEvent2);
+      // TICKET LIST
+      const busEvent3: BusEvent = {
+        ...registerComponentsBase,
+        payload: { 
+          componentType: 'PRODUCT_BUTTON',
+          customElementName: 'faq-btn-text',
+          customElementInputs: {
+           'data-group': 'ticket',
+           'data-order_in_group': '1',
+           'data-main_order': '2',
+           url: 'ticket-list',
+           active: 'purple'
+          },
+          customElementTransclusion: 'Билеты'
+        },
+      };
+      this.eventBusPusher(busEvent3);
+      // TICKET CREATE
+      const busEvent4: BusEvent = {
+        ...registerComponentsBase,
+        payload: {
+          componentType: 'PRODUCT_BUTTON',
+          customElementName: 'faq-btn-icon',
+          customElementInputs: {
+            icon: 'typcn-plus',
+            'data-order_in_group': '2',
+            'data-group': 'ticket',
+            'data-main_order': '2',
+            url: 'ticket-create',
+            active: 'purple'
+          },
+          customElementTransclusion: '',
+          url: buildUrl('ticket-create', this._coreService.getRouterPath())
+        },
+      };
+      this.eventBusPusher(busEvent4);
+      // TICKET SHOW
+      const busEvent5: BusEvent = {
+        ...registerComponentsBase,
+        payload: {
+          componentType: 'PRODUCT_BUTTON',
+          customElementName: 'faq-btn-icon',
+          customElementInputs: {
+            icon: 'typcn-media-play',
+            'data-order_in_group': '0',
+            'data-group': 'ticket',
+            'data-main_order': '2',
+            url: 'ticket',
+            active: 'purple'
+          },
+          customElementTransclusion: '',
+        },
+      };
+      this.eventBusPusher(busEvent5);
     }
     
     public registerRemoteButtonElement() {
-      // Convert the Angular component to a custom element
-      const remoteButtonElement = createCustomElement(ProductButtonRemote3Component, {
+      const remoteButtonElement1 = createCustomElement(ProductButtonTextComponent, {
         injector: this.injector,
       });
-  
-      // Register the custom element with the browser
-      customElements.define('remote-product-button-faq2', remoteButtonElement);
+      customElements.define('faq-btn-text', remoteButtonElement1);
+      //plus +
+      const remoteButtonElement2 = createCustomElement(ProductButtonIconComponent, {
+        injector: this.injector,
+      });
+      customElements.define('faq-btn-icon', remoteButtonElement2);
     }
 }
 

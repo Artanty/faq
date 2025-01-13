@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ticket } from '../models/ticket.model';
 import { Answer } from '../models/answer.model';
-import { CreateScheduleRequest, CreateTicketRequest, DeleteWithAnswersRequest, GetAnswersByTicketIdRequest, GetOldestTicketRequest, GetSchedulesByUserIdRequest, GetTicketByIdRequest, GetUserTicketsRequest } from './api.service.types';
+import { CreateScheduleRequest, CreateTicketRequest, DeleteScheduleRequest, DeleteWithAnswersRequest, GetAnswersByTicketIdRequest, GetOldestTicketRequest, GetSchedulesByUserIdRequest, GetSchedulesByUserIdResponseItem, GetTicketByIdRequest, GetUserTicketsRequest } from './api.service.types';
 import { Dict } from '../models/dict.model';
 
 @Injectable({
@@ -52,12 +52,16 @@ export class ApiService {
     return this.http.post<any>( `${this.baseUrl}/tickets/deleteWithAnswers`, data)
   }
 
-  getSchedulesByUserId (data: GetSchedulesByUserIdRequest): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/schedule/findByUserId`, data)
+  getSchedulesByUserId (data: GetSchedulesByUserIdRequest): Observable<GetSchedulesByUserIdResponseItem[]> {
+    return this.http.post<GetSchedulesByUserIdResponseItem[]>(`${this.baseUrl}/schedule/findByUserId`, data)
   }
 
   createSchedule (data: CreateScheduleRequest): Observable<number> {
     return this.http.post<any>(`${this.baseUrl}/schedule/create`, data)
+  }
+
+  deleteSchedule (data: DeleteScheduleRequest): Observable<unknown> {
+    return this.http.post<any>(`${this.baseUrl}/schedule/delete`, data)
   }
   
 }

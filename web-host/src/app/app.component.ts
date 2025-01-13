@@ -21,6 +21,7 @@ import { BehaviorSubject, filter, Observable, Subject } from "rxjs";
 import { StatService } from "./services/stat-service";
 import { RegisterComponentsBusEvent, RegisterComponentsBusEventPayload } from './app.component.types';
 import { FunctionQueueService } from './services/function-queue.service';
+import { GroupButtonsDirective } from './directives/group-buttons.directive';
 
 export interface BusEvent<T = Record<string, any>> {
   from: string;
@@ -110,6 +111,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('remoteButtonContainer', { static: false }) remoteButtonContainer!: ElementRef;
 
+  @ViewChild(GroupButtonsDirective) groupButtonsDirective!: GroupButtonsDirective;
+
   ngAfterViewInit$ = new BehaviorSubject<boolean>(false);
   constructor(
     private router: Router,
@@ -151,7 +154,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
           this,
           {
             customElementName: (res as RegisterComponentsBusEvent).payload.customElementName,
-            url: (res as RegisterComponentsBusEvent).payload.url
+            url: (res as RegisterComponentsBusEvent).payload.url,
+            customElementInputs: (res as RegisterComponentsBusEvent).payload.customElementInputs,
+            customElementTransclusion: (res as RegisterComponentsBusEvent).payload.customElementTransclusion
           },
           this.ngAfterViewInit$
         );
@@ -218,19 +223,50 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.eventBusPusher(routePathBusEvent);
   }
 
-  private appendRemoteButton({customElementName, url}: {customElementName: string, url: string}) {
+  private appendRemoteButton({customElementName, url, customElementInputs, customElementTransclusion}: {
+    customElementName: string, 
+    url: string,
+    customElementInputs: any,
+    customElementTransclusion: string
+  }) {
     console.log(customElementName)
+    console.log(url)
     try {
       webComponentService.getComponent(customElementName)
     } catch (e) { console.warn(e)}
     const remoteButton = this.renderer.createElement(customElementName);
-    this.renderer.setAttribute(remoteButton, 'id', 'remoteButton');
+    // this.renderer.setAttribute(remoteButton, 'id', 'remoteButton');
     const container = this.remoteButtonContainer.nativeElement;
     this.renderer.appendChild(container, remoteButton);
-    this.renderer.listen(remoteButton, 'remoteButtonClick', (event: CustomEvent<string>) => {
-      console.log(event.detail); // Output: "Button clicked!"
-      this.router.navigateByUrl(url)
+
+    if (customElementInputs && Object.keys(customElementInputs).length) {
+      Object.entries(customElementInputs).forEach(([key, value]) => {
+        console.log(key, value)
+        this.renderer.setAttribute(remoteButton, key, String(value));
+      })
+    }
+    
+    this.renderer.setAttribute(remoteButton, 'id', String(customElementInputs.urlActiveClass));
+    // this.renderer.setAttribute(remoteButton, 'routerLink1', String('dwadw'));
+    // if (customElementName === 'faq-add-btn' && url === 'schedule-create') {
+    //   this.renderer.setAttribute(remoteButton, 'routerLink', url);
+    // }
+
+    if (customElementTransclusion && customElementTransclusion.length) {
+      const buttonTag = remoteButton.querySelector('button');
+      const projectedContent = this.renderer.createText(customElementTransclusion);
+      this.renderer.appendChild(buttonTag, projectedContent);
+    }
+    
+    this.groupButtonsDirective.triggerGrouping()
+
+    this.renderer.listen(remoteButton, 'buttonClick', (_: CustomEvent) => {
+      // this.router.navigateByUrl(url).then(() => {
+      //   this.renderer.setAttribute(remoteButton, 'color', 'purple')
+      //   // this.renderer.setAttribute(remoteButton, 'url', url);
+      // })
     });
+    
   }
 
   check() {
@@ -238,3 +274,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.appendRemoteButton('remote-button')
   }
 }
+
+// width: 20px;
+// height: 20px;
+// display: block;
+// color: red;
+// z-index: 99999999999;
+// position: relative;

@@ -1,6 +1,7 @@
 <button
   [ngStyle]="{
     width: w ? w : null,
+    height: h ? h : null,
     padding: p ? p : null,
     fontSize: fz,
     fontWeight: fw
@@ -9,6 +10,7 @@
   [disabled]="disabled"
   [title]="title"
   [class]="color"
+  (click)="onButtonClick($event)"
 >
   <ng-content></ng-content>
 </button>

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-button',
@@ -7,6 +7,7 @@ import { Component, Input } from '@angular/core';
 })
 export class ButtonComponent {
   @Input() w: string | undefined;
+  @Input() h: string | undefined;
   @Input() p: string | undefined;
   @Input() type: string = 'button';
   @Input() disabled: boolean = false;
@@ -15,4 +16,9 @@ export class ButtonComponent {
   @Input() fz: string = '16px'
   @Input() fw: string = '600'
   
+  @Output() buttonClick = new EventEmitter<string>();
+
+  public onButtonClick(data: any) {
+    this.buttonClick.emit('')
+  }
 }

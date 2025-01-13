@@ -49,8 +49,6 @@ export class ScheduleCreateComponent implements OnInit {
     @Inject(EVENT_BUS_PUSHER)
     private eventBusPusher: (busEvent: BusEvent) => void
   ) {}
-  // CreateScheduleRequest
-  // createSchedule
   ngOnInit(): void {
     this.state$.next({ name: StateName.LOADING })
     this._loadDictionariesAndProfile()
@@ -87,7 +85,6 @@ export class ScheduleCreateComponent implements OnInit {
 
   public setFrequency (data: unknown) {
     this.form.frequency = Number(data)
-    console.log(this.form.frequency)
     this.cdr.detectChanges()
   }
 
@@ -109,29 +106,28 @@ export class ScheduleCreateComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    // this.state$.next({ name: StateName.LOADING })
+    this.state$.next({ name: StateName.LOADING })
 
     const rawResult = JSON.parse(JSON.stringify(this.form))
     
     this.validateTopic(rawResult)
     
     rawResult.userId = this._userService.getUser()
-    console.log(this.form)
-    console.log(rawResult)
-    // this._apiService 
-    //   .createSchedule(rawResult)
-    //   .pipe(
-    //     catchError((e: any) => {
-    //       this.state$.next({ name: StateName.ERROR, payload: e.error.message })
-    //       throw new Error(e)
-    //     })
-    //   )
-    //   .subscribe((res) => {
-    //     this.state$.next({ name: StateName.SUBMITTED })
-    //     setTimeout(() => {
-    //       this.goToScheduleList()
-    //     }, 1000)
-    //   });
+   
+    this._apiService 
+      .createSchedule(rawResult)
+      .pipe(
+        catchError((e: any) => {
+          this.state$.next({ name: StateName.ERROR, payload: e.error.message })
+          throw new Error(e)
+        })
+      )
+      .subscribe((res) => {
+        this.state$.next({ name: StateName.SUBMITTED })
+        setTimeout(() => {
+          this.goToScheduleList()
+        }, 1000)
+      });
   }
 
   public backToForm (): void {

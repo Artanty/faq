@@ -4,7 +4,7 @@ import { BehaviorSubject, forkJoin, map, catchError, Observable } from 'rxjs';
 import { Dict } from '../../models/dict.model';
 import { Ticket } from '../../models/ticket.model';
 import { ApiService } from '../../services/api.service';
-import { DeleteWithAnswersRequest } from '../../services/api.service.types';
+import { DeleteWithAnswersRequest, GetSchedulesByUserIdResponseItem } from '../../services/api.service.types';
 import { CoreService } from '../../services/core.service';
 import { buildUrl, changeLastUrlSegment } from '../../services/route-builder';
 import { UserService } from '../../services/user.service';
@@ -49,7 +49,10 @@ export class ScheduleListComponent {
   }
 
   public deleteSchedule (scheduleId: number) {
-
+    this._apiService.deleteSchedule({ id: scheduleId }).subscribe(() => {
+      this.data = this.data.filter(el => el.id !== scheduleId)
+      this.cdr.detectChanges()
+    })
   }
 
   private _getItems () {
@@ -59,7 +62,7 @@ export class ScheduleListComponent {
       this._getItemsApi()
     ]).pipe(
       map(([dict, data]) => {
-        console.log(data)
+        
         this.dict = dict
         this.data = data.map((el: any) => {
           if (el.folderId) {
@@ -100,7 +103,7 @@ export class ScheduleListComponent {
     return this._apiService.getDictionaries()
   }
   
-  private _getItemsApi() {
+  private _getItemsApi(): Observable<GetSchedulesByUserIdResponseItem[]> {
     const req = {
       userId: this._userService.getUser()
     }

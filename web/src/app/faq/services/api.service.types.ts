@@ -62,3 +62,7 @@ export interface GetSchedulesByUserIdResponseItem {
     "dateFrom"?: string | null
     "dateTo"?: string | null
   }
+
+  export interface DeleteScheduleRequest {
+    id: number
+  }

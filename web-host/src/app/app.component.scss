@@ -23,8 +23,19 @@ body{
 }
 .remoteButtonContainer{
   margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    max-height: fit-content;
+    background: rgb(6 0 212 / 19%);
+    padding: 8px;
+    border-radius: 9px;
 }
 
 .routerDiv{
   width: 400px;
+}
+.group{
+  display: flex;
+  column-gap: 6px;
 }

@@ -16,11 +16,11 @@ import { FlipComponent } from './components/flip/flip.component';
 import { ScheduleCreateComponent } from './components/schedule-create/schedule-create.component';
 import { DatePickerComponent } from './components/date-picker/date-picker.component';
 import { ScheduleListComponent } from './components/schedule-list/schedule-list.component';
-import { ProductButtonRemote2Component } from "./components/_remotes/product-button.remote2";
-import { createCustomElement } from "@angular/elements";
-import { ProductButtonRemote3Component } from "./components/_remotes/product-button/product-button.component";
 import { AssetUrlUpdateDirective } from "./directives/asset-url-update.directive";
 import { CoreService } from "./services/core.service";
+
+import { ProductButtonTextComponent } from "./components/_remotes/product-button-add/product-button-text.component";
+import { ProductButtonIconComponent } from "./components/_remotes/product-button-add/product-button-icon.component";
 
 
 
@@ -40,7 +40,7 @@ export const CHILD_ROUTES = [
                 path: 'ticket/:id', component: TicketDetailComponent
             }, 
             {
-                path: 'ticketCreate', component: TicketCreateComponent
+                path: 'ticket-create', component: TicketCreateComponent
             },
             { 
                 path: 'ticket-list', component: TicketListComponent
@@ -73,9 +73,9 @@ export const CHILD_ROUTES = [
         ScheduleCreateComponent,
         DatePickerComponent,
         ScheduleListComponent,
-        ProductButtonRemote2Component,
-        ProductButtonRemote3Component,
-        AssetUrlUpdateDirective
+        AssetUrlUpdateDirective,
+        ProductButtonIconComponent,
+        ProductButtonTextComponent
     ],
     imports: [
         CommonModule,
