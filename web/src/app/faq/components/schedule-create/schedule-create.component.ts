@@ -113,6 +113,10 @@ export class ScheduleCreateComponent implements OnInit {
     this.validateTopic(rawResult)
     
     rawResult.userId = this._userService.getUser()
+    rawResult.active = true
+    if (this.serviceFolderId === +rawResult.folderId) {
+      delete rawResult.folderId
+    }
    
     this._apiService 
       .createSchedule(rawResult)

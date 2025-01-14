@@ -62,14 +62,12 @@ export class FaqComponent implements OnInit{
     ngOnInit(): void {
       
       this.fontInitializer.initializeFonts();
-     
-      // console.log('isDevMode(): ' + isDevMode())
-      
+         
       this.eventBusListener$.subscribe((res: BusEvent)=>{
-        console.log('faq.comp: ' + res.event)
-        console.log(res)
+        // console.log('faq.comp: ' + res.event)
+        // console.log(res)
         if (res.event === 'SHOW_OLDEST_TICKET') {
-          this.router.navigateByUrl(buildUrl('ticket', (res as any).payload?.routerPath))
+          this._openerService.maybeOpenModal()
         }
         if (res.event === 'ROUTER_PATH') {
           this._coreService.setRouterPath((res.payload as any).routerPath)
@@ -79,10 +77,10 @@ export class FaqComponent implements OnInit{
 
       if (isDevMode()) { 
         // console.log(buildUrl('schedule-create', this._coreService.getRouterPath()))
-        this.router.navigateByUrl(buildUrl('schedule-list', this._coreService.getRouterPath()))
-        .catch(() => {
-          console.log('BAD')
-        })
+        // this.router.navigateByUrl(buildUrl('schedule-list', this._coreService.getRouterPath()))
+        // .catch(() => {
+        //   console.log('BAD')
+        // })
         this._openerService.maybeOpenModal()
       }
     }

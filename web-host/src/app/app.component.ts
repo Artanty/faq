@@ -132,7 +132,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.chromeMessagingService.messages.subscribe((message: ChromeMessage) => {
-      console.log('HOST received WORKER event: ' + message.event);
+      // console.log('HOST received WORKER event: ' + message.event);
       
       if (message.event === 'SHOW_OLDEST_TICKET' && this.isAllowedAction(message)) {
         this.showOldestTicket()
@@ -143,7 +143,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
     this.eventBusListener$.subscribe((res: BusEvent) => {
-      console.log('HOST received BUS event: ' + res.event)
+      // console.log('HOST received BUS event: ' + res.event)
       if (res.event === "CLOSE_EXT") {
         window.close();
       }
@@ -207,7 +207,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.router.url === '/faq') {
         return true
       }
-      console.log('Bypass route change')
+      // console.log('Bypass route change')
       return false
     }
     return true
@@ -229,28 +229,15 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     customElementInputs: any,
     customElementTransclusion: string
   }) {
-    console.log(customElementName)
-    console.log(url)
-    try {
-      webComponentService.getComponent(customElementName)
-    } catch (e) { console.warn(e)}
     const remoteButton = this.renderer.createElement(customElementName);
-    // this.renderer.setAttribute(remoteButton, 'id', 'remoteButton');
     const container = this.remoteButtonContainer.nativeElement;
     this.renderer.appendChild(container, remoteButton);
 
     if (customElementInputs && Object.keys(customElementInputs).length) {
       Object.entries(customElementInputs).forEach(([key, value]) => {
-        console.log(key, value)
         this.renderer.setAttribute(remoteButton, key, String(value));
       })
     }
-    
-    this.renderer.setAttribute(remoteButton, 'id', String(customElementInputs.urlActiveClass));
-    // this.renderer.setAttribute(remoteButton, 'routerLink1', String('dwadw'));
-    // if (customElementName === 'faq-add-btn' && url === 'schedule-create') {
-    //   this.renderer.setAttribute(remoteButton, 'routerLink', url);
-    // }
 
     if (customElementTransclusion && customElementTransclusion.length) {
       const buttonTag = remoteButton.querySelector('button');
@@ -274,10 +261,3 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.appendRemoteButton('remote-button')
   }
 }
-
-// width: 20px;
-// height: 20px;
-// display: block;
-// color: red;
-// z-index: 99999999999;
-// position: relative;

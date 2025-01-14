@@ -263,3 +263,16 @@ export function formatDate(
     
     return variants[description] || variants['all']
   }
+
+
+export function removeDuplicatesById(arr: any[]) {
+    const uniqueIds = new Set();
+    return arr.filter((item) => {
+        if (!uniqueIds.has(item.id)) {
+            uniqueIds.add(item.id);
+            return true;
+        }
+        
+        return false;
+    });
+}

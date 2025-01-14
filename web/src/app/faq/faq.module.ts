@@ -21,6 +21,8 @@ import { CoreService } from "./services/core.service";
 
 import { ProductButtonTextComponent } from "./components/_remotes/product-button-add/product-button-text.component";
 import { ProductButtonIconComponent } from "./components/_remotes/product-button-add/product-button-icon.component";
+import { TicketQueueService } from "./services/ticketQueue.service";
+import { OpenerService } from "./services/opener.service";
 
 
 
@@ -85,8 +87,9 @@ export const CHILD_ROUTES = [
         HttpClientModule,
     ],
     providers: [
+        OpenerService,
         CoreService,
-       
+        TicketQueueService,
     ],
     exports: [
         FaqComponent

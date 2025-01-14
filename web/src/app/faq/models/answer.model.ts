@@ -6,3 +6,11 @@ export interface Answer {
     rate: number;
     userId: number
   }
+  
+
+export interface AnswerSaveResponse {
+  id: number;
+  ticketId: number;
+  body: string;
+  rate: number;
+}

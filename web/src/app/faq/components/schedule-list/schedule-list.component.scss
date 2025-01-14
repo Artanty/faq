@@ -19,7 +19,7 @@
   & > div{
     display: flex;
     column-gap: 8px;
-  align-items: baseline;
+    align-items: baseline;
   }
   & h1 {
     font-family: "Roboto", sans-serif;
@@ -104,6 +104,7 @@
     min-width: 48%;
     display: flex;
     align-items: baseline;
+    column-gap: 3px;
     & i {
       font-size: 17px;
     }

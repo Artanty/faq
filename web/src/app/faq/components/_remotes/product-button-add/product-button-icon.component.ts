@@ -24,13 +24,10 @@ export class ProductButtonIconComponent {
   @Input() url: string = ''  
   @Input() active: string  = 'red'
   @Input() routerLinkActiveOptions: { exact: boolean } = { exact: false };
-  //
 
   @Output() buttonClick = new EventEmitter<string>();
 
   public onButtonClick() {
     this.buttonClick.emit('')
-    console.log(this.active)
-    console.log(this.url)
   }
 }

@@ -2,14 +2,15 @@ import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { Ticket } from '../../models/ticket.model';
-import { Answer } from '../../models/answer.model';
-import { BehaviorSubject, catchError, concatMap, map, Observable, tap } from 'rxjs';
+import { Answer, AnswerSaveResponse } from '../../models/answer.model';
+import { BehaviorSubject, catchError, concatMap, map, Observable, take, tap } from 'rxjs';
 import { DeleteWithAnswersRequest, GetOldestTicketRequest } from '../../services/api.service.types';
 import { UserService } from '../../services/user.service';
 import { BusEvent } from 'typlib';
 import { EVENT_BUS_PUSHER } from '../../faq.component';
 import { buildUrl, changeLastUrlSegment } from '../../services/route-builder';
 import { CoreService } from '../../services/core.service';
+import { QueueState, TicketQueueService } from '../../services/ticketQueue.service';
 
 export enum StateName {
   LOADING = 'LOADING',
@@ -24,7 +25,10 @@ export interface TicketDetailState {
 export interface TicketDetailAnswerDTO {
   body: string
 }
-const ticketDetailAnswerDTODefault = { body: '' }
+const ticketDetailAnswerDTODefault = () => ({ 
+  body: '',
+  rightAnswer: ''
+})
 
 @Component({
   selector: 'app-ticket-detail',
@@ -37,10 +41,11 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   StateName = StateName
   state$ = new BehaviorSubject<TicketDetailState>({ name: StateName.LOADING })
   ticket: Ticket | null = null;
-  answer: TicketDetailAnswerDTO = ticketDetailAnswerDTODefault;
+  answer: TicketDetailAnswerDTO = ticketDetailAnswerDTODefault();
   currentSide: 'front' | 'back' = 'front'
   postSubmit: boolean = false
   postSubmitError: boolean = false
+  queueState$: Observable<QueueState>
 
   constructor(
     private route: ActivatedRoute, 
@@ -50,8 +55,11 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     @Inject(EVENT_BUS_PUSHER)
     private eventBusPusher: (busEvent: BusEvent) => void,
     private router: Router,
-    private _coreService: CoreService
-  ) {}
+    private _coreService: CoreService,
+    private _ticketQueueService: TicketQueueService
+  ) {
+    this.queueState$ = this._ticketQueueService.listenQueueState()
+  }
 
   ngOnInit(): void {
     if (this._isTicketIdInUrl) {
@@ -77,9 +85,20 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
             throw new Error(e)
           })
         )
-        .subscribe((data) => {
-          this.state$.next({ name: StateName.SUBMITTED })
-          this.countdownToClose()
+        .subscribe((res: AnswerSaveResponse) => {
+          this.ticket = null
+          this.answer = ticketDetailAnswerDTODefault();
+          this._ticketQueueService.removeTicketFromQueue(res.ticketId)
+          const ticketsLeft = this._ticketQueueService.getQueueState().all
+
+          if (!ticketsLeft) {
+            this.state$.next({ name: StateName.SUBMITTED })
+            this.countdownToClose()
+          } else {
+            this._ticketQueueService.nextTicket()
+            this._getOldestTicket().subscribe()
+            this.state$.next({ name: StateName.READY })
+          }
         });
     }
   }
@@ -97,6 +116,11 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   public backToForm (): void {
     this._resetCountdown()
     this.state$.next({ name: StateName.READY })
+  }
+
+  public nextTicket() {
+    this._ticketQueueService.skipTicket()
+    this._getOldestTicket().subscribe()
   }
 
   public showNextTicket() {
@@ -135,20 +159,14 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
   private _getOldestTicket (): Observable<Ticket> {
     this.state$.next({ name: StateName.LOADING })
-    this.answer = ticketDetailAnswerDTODefault;
-    const req: GetOldestTicketRequest = {
-      userId: this._userService.getUser(),
-      // folderId: 1,
-      // topicId: 1,
-      quantity: 1,
-    }
-    if (req.quantity !== 1) throw new Error('wrong req params for this component')
-    return this.apiService.getOldestTicket(req)
+    this.ticket = null
+    this.answer = ticketDetailAnswerDTODefault();
+    this.cdr.detectChanges()
+    return this._ticketQueueService.listenQueue()
       .pipe(
-        map((data) => {
-          return data[0];
-        }),
+        take(1),
         tap((data) => {
+          console.log(data)
           this.ticket = data;
           this.state$.next({ name: StateName.READY })
           this.cdr.detectChanges()
