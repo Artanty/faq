@@ -114,6 +114,8 @@ export class ScheduleCreateComponent implements OnInit {
     
     rawResult.userId = this._userService.getUser()
     rawResult.active = true
+    console.log(this.serviceFolderId)
+    console.log(+rawResult.folderId)
     if (this.serviceFolderId === +rawResult.folderId) {
       delete rawResult.folderId
     }

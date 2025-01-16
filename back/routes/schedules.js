@@ -40,8 +40,8 @@ router.post('/findById', async (req, res) => {
 
 router.post('/findByUserId', async (req, res) => {
   try {
-    const scheduleId = await Schedule.findByUserId(req.body.userId);
-    res.json(scheduleId);
+    const schedules = await Schedule.findByUserId(req.body.userId);
+    res.json(schedules);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

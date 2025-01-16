@@ -67,6 +67,7 @@ export class FaqComponent implements OnInit{
         // console.log('faq.comp: ' + res.event)
         // console.log(res)
         if (res.event === 'SHOW_OLDEST_TICKET') {
+          console.log('STEP 1 - maybeOpenModal')
           this._openerService.maybeOpenModal()
         }
         if (res.event === 'ROUTER_PATH') {

@@ -10,9 +10,10 @@ const NAMESPACE = 'NAMESPACE_PLACEHOLDER'
 const SLAVE_REPO = 'SLAVE_REPO_PLACEHOLDER'
 const COMMIT = 'COMMIT_PLACEHOLDER'
 let count = 0
+
 chrome.alarms.create('openPopup', { periodInMinutes: 1 });
 
-chrome.alarms.create('sendStat', { periodInMinutes: 1 });
+chrome.alarms.create('sendStat', { periodInMinutes: 30 });
 
 chrome.alarms.onAlarm.addListener( async (alarm) => {
   if (alarm.name === 'openPopup') {
@@ -38,13 +39,32 @@ chrome.alarms.onAlarm.addListener( async (alarm) => {
   }
 });
 
+async function askToOpen () {
+  // fetch(`${STAT_BACK_URL}/add-event`, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify(statPayload),
+  // })
+  //   .then((response) => {
+  //     if (!response.ok) {
+  //       sendMessageToHost(onErrorMessagePayload);
+  //       throw new Error('Network response was not ok');
+  //     }
+  //     return response.json();
+  //   })
+  //   .then((data) => {
+  //     console.log('HTTP request successful:', data);
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error sending HTTP request:', error);
+  //     sendMessageToHost(onErrorMessagePayload);
+  //   });
+}
+
 async function isPopupOpen() {
-  // var views = chrome.extension?.getViews({ type: "popup" });
-  // console.log('views')
-  // console.log(views)
   const windows = await chrome.windows.getAll();
-  console.log('windows')
-  console.log(windows)
   const popups = windows.filter((window) => window.type === 'popup');
   return popups.length > 0; // Returns true if a popup is open, otherwise false
 }
@@ -75,8 +95,6 @@ function openPopup() {
 }
 
 function sendStatEvent(props) {
-  console.log('props')
-  console.log(props)
   const statPayload = {
     projectId: `${PROJECT_ID}`,
     namespace: 'web-host',
@@ -90,8 +108,7 @@ function sendStatEvent(props) {
     event: 'RETRY_SEND_STAT',
     payload: statPayload
   }
-  console.log('statPayload')
-  console.log(statPayload)
+
   fetch(`${STAT_BACK_URL}/add-event`, {
     method: 'POST',
     headers: {
@@ -129,9 +146,8 @@ function sendMessageToHost(data) {
       console.error('Error sending message:');
       console.error(chrome.runtime.lastError)
     } else {
-      console.log('WORKER received HOST event: ');
+      console.log('WORKER received response of sent event: ');
       console.log(response)
-      // todo добавить настройку частоты, слушать ее здесь
     }
   });
 }
