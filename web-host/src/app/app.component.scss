@@ -1,5 +1,6 @@
+@import 'microns/fonts/microns.css';
+
 .host-container{
-  // min-width: 250px;
   overflow: hidden;
   width: 700px;
   height: 550px;
@@ -8,13 +9,30 @@
   background: linear-gradient(to bottom right, #7071df, #32c5da); /* Standard syntax */
   padding: 15px;
   display: flex;
-  // column-gap: 15px;
+  justify-content: space-between;
+  position: relative;
   transition: 0.3s all;
-  &.collapsed{
-    width: 0;
-    height: 0;
-    margin: 0;
-    padding: 0;
+  z-index: 1;
+  column-gap: 16px;
+}
+.mainButtons{
+  width: 110px;
+  transition: 0.3s width;
+  &.wide{
+    width: 260px;
+  }
+}
+.homeBtn{
+  display: block;
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  font-size: 100px;
+  color: rgba(255, 255, 255, 0.431);
+  cursor: pointer;
+  transition: 0.4s color;
+  &:hover{
+    color: rgba(255, 255, 255, 1);
   }
 }
 
@@ -34,7 +52,6 @@ body{
   left: 0;
 }
 .remoteButtonContainer{
-  margin-left: 15px;
     display: flex;
     flex-direction: column;
     row-gap: 8px;

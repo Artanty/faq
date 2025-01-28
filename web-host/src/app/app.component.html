@@ -1,4 +1,4 @@
-<div class="scaffold">
+<div class="scaffold hidde">
   <a (click)="showOldestTicket()">oldest bus</a> | 
   <a [routerLink]="['/faq/ticket', 1]">{{ 'id 1' }}</a>
   {{ ' | '}}
@@ -10,18 +10,21 @@
   {{ ' | '}}
   <a [routerLink]="['/test']">{{ 'test' }}</a>
   {{ ' | '}}
-  <a (click)="check()">{{ 'check' }}</a>
-  
+  <a (click)="check()">{{ 'check bus store' }}</a>
 </div>
-
 <div class="host-container">
-  <!-- <div class="mfeWrapper" #placeHolder></div> -->
   <div class="routerDiv">
     <router-outlet></router-outlet>
   </div>
-  <div class="remoteButtonContainer" #remoteButtonContainer appGroupButtons></div>
+  
+  <div *ngIf="!isHomeRoute()" class="remoteButtonContainer" #remoteButtonContainer appGroupButtons>
+  </div>
+  
+  <div class="mainButtons" [class.wide]="isHomeRoute()">
+    <ng-container #remoteButtonContainer2></ng-container>
+    <div class="cont">
+      <i class="homeBtn mu mu-home" (click)="goHome()"></i>
+    </div>  
+  </div>
 </div>
-
-<!-- <button (click)="loadAndRegisterComponent()">Load and Register Component</button> -->
-    
 

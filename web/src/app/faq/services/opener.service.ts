@@ -21,7 +21,7 @@ export class OpenerService {
 
     /**
      * Хост отправляет ивент 'SHOW_OLDEST_TICKET'
-     * Запрашиваем все расписаня
+     * Запрашиваем все расписания
      */
     public maybeOpenModal() {
         const req: GetSchedulesByUserIdRequest = {

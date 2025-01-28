@@ -1,0 +1,96 @@
+button {
+  width: 100%;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  font-family: "Roboto", sans-serif;
+  outline: 2px solid transparent;
+  transition: 0.4s box-shadow;
+  & > * {
+    cursor: pointer;
+  }
+}
+// :host.green button {
+//   background: linear-gradient(to right, #00ffa3, #21bdb1);
+//   &:hover{
+//     box-shadow: 0px 0px 10px 5px rgb(0 255 177);
+//   }
+// }
+
+:host.green button, button.green {
+  background: linear-gradient(to right, #00ffa3, #21bdb1);
+  color: #fff;
+  &:hover{
+    box-shadow: 0px 0px 10px 5px rgb(0 255 177);
+  }
+}
+:host.red button, button.red {
+  background: linear-gradient(to right, #ff008c, #bd218e);
+  color: #fff;
+  &:hover{
+    box-shadow: 0px 0px 10px 5px rgb(255, 0, 140);
+  }
+}
+:host.pink button, button.pink {
+  background: linear-gradient(to right, #ff008c, #ff0081);
+  color: #fff;
+  &:hover{
+    box-shadow: 0px 0px 10px 5px #ff0081;
+  }
+  
+}
+:host.ginger button, button.ginger {
+  background: linear-gradient(to right, #ff008c, #ab4725);
+  color: #fff;
+  &:hover{
+    box-shadow: 0px 0px 10px 5px rgb(255, 51, 0);
+  }
+}
+:host.purple button, button.purple {
+  background: linear-gradient(to right, #5800e5, #2f1b8e);
+  color: #fff;
+  &:hover{
+    box-shadow: 0px 0px 10px 5px rgb(80, 12, 94);
+  }
+}
+:host.blue button, button.blue {
+  background: linear-gradient(to right, #294fd0, #153fe8);
+  color: #fff;
+  &:hover{
+    box-shadow: 0px 0px 10px 5px #153fe8;
+  }
+}
+:host.darkgrey button, button.darkgrey {
+  background: linear-gradient(to right, #464755, #2c2d34);
+  color: #fff;
+  &:hover{
+    box-shadow: 0px 0px 10px 5px #464755;
+  }
+}
+:host.calmred button, button.calmred {
+  background: linear-gradient(to right, #4e1c1c, #691136);
+  color: #fff;
+  &:hover{
+    box-shadow: 0px 0px 10px 5px #4e1c1c;
+  }
+}
+
+
+:host.white button, button.white {
+  background: linear-gradient(to right, #fff, #dddddd);
+  &:hover{
+    box-shadow: 0px 0px 10px 5px #fff;
+  }
+  color: #000;
+}
+
+
+button:disabled{
+  opacity: 0.7;
+  // cursor: not-allowed;
+  &:hover{
+    box-shadow: none;
+  }
+}

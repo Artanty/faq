@@ -47,6 +47,7 @@ module.exports = {
       exposes: {
         './Component': './src/app/faq/faq.component.ts',
         './Module': './src/app/faq/faq.module.ts',
+        './RemoteButtonModule': './src/app/faq/components/_remotes/remote-button.module.ts',
       },
       shared: share({
         "@angular/core": { singleton: true, strictVersion: true, requiredVersion: 'auto' },

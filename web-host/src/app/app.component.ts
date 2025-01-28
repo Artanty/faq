@@ -2,7 +2,9 @@ import { webComponentService } from 'typlib';
 import { loadRemoteModule, LoadRemoteModuleScriptOptions } from "@angular-architects/module-federation"
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
+  ComponentFactoryResolver,
   ElementRef,
   Inject,
   InjectionToken,
@@ -14,14 +16,19 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core"
-import { Router, Routes } from "@angular/router"
+import { ActivatedRoute, NavigationEnd, Router, Routes } from "@angular/router"
 import { ChromeMessagingService } from "./services/chrome-messaging.service"
 import {  EVENT_BUS } from 'typlib';
-import { BehaviorSubject, filter, Observable, Subject } from "rxjs";
+import { BehaviorSubject, filter, Observable, Subject, Subscription, take, takeUntil, takeWhile } from "rxjs";
 import { StatService } from "./services/stat-service";
 import { RegisterComponentsBusEvent, RegisterComponentsBusEventPayload } from './app.component.types';
 import { FunctionQueueService } from './services/function-queue.service';
 import { GroupButtonsDirective } from './directives/group-buttons.directive';
+import { isProductRoute } from './utilites/isRoutePresent';
+import { Location } from '@angular/common'; // Import Location
+import { BusEventStoreService } from './services/bus-event-store.service';
+import { CoreService } from './services/core.service';
+
 
 export interface BusEvent<T = Record<string, any>> {
   from: string;
@@ -48,7 +55,7 @@ export interface ChromeMessage { // todo change to busEvent, add payload generic
   from: string
   to: string
   event: string
-  payload: ChromeMessagePayload
+  payload: Record<string, any>
 }
 
 export const EVENT_BUS_LISTENER = new InjectionToken<Observable<BusEvent>>('');
@@ -114,6 +121,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(GroupButtonsDirective) groupButtonsDirective!: GroupButtonsDirective;
 
   ngAfterViewInit$ = new BehaviorSubject<boolean>(false);
+
+  private destroy$ = new Subject<void>(); // For unsubscribing
+
   constructor(
     private router: Router,
     private chromeMessagingService: ChromeMessagingService,
@@ -123,19 +133,23 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private eventBusPusher: (busEvent: BusEvent) => void,
     private injector: Injector,
     private _statService: StatService,
-    private renderer: Renderer2, private el: ElementRef,
-    private functionQueueService: FunctionQueueService
+    private renderer: Renderer2, 
+    private functionQueueService: FunctionQueueService,
+    private _busEventStoreService: BusEventStoreService,
+    private cdr: ChangeDetectorRef
   ) {
     this.loadComponent('faq')
   }
   currentRoute: string = '';
-
+  //new
+  @ViewChild('remoteButtonContainer2', { read: ViewContainerRef }) remoteButtonContainer2!: ViewContainerRef;
   ngOnInit(): void {
+    
     this.chromeMessagingService.messages.subscribe((message: ChromeMessage) => {
       // console.log('HOST received WORKER event: ' + message.event);
       
-      if (message.event === 'SHOW_OLDEST_TICKET' && this.isAllowedAction(message)) {
-        this.showOldestTicket()
+      if (message.event === 'SHOW_OLDEST_TICKET') {
+        this.showOldestTicket(message.payload['tickets'])
       }
       if (message.event === 'RETRY_SEND_STAT') {
         // console.log('RETRY_SEND_STAT')
@@ -143,25 +157,78 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
     this.eventBusListener$.subscribe((res: BusEvent) => {
-      // console.log('HOST received BUS event: ' + res.event)
+      console.log('HOST received BUS event: ' + res.event)
       if (res.event === "CLOSE_EXT") {
         window.close();
       }
+      /**
+       * Зарегистрированные компоненты не нужно рендерить
+       * если роут не продуктовый, сохраняем их в стор
+       */
       if (res.event === 'REGISTER_COMPONENTS') {
-        // (res as RegisterComponentsBusEvent).payload.customElementName
-        this.functionQueueService.addToQueue(
-          this.appendRemoteButton,
-          this,
-          {
-            customElementName: (res as RegisterComponentsBusEvent).payload.customElementName,
-            url: (res as RegisterComponentsBusEvent).payload.url,
-            customElementInputs: (res as RegisterComponentsBusEvent).payload.customElementInputs,
-            customElementTransclusion: (res as RegisterComponentsBusEvent).payload.customElementTransclusion
-          },
-          this.ngAfterViewInit$
-        );
+        this._busEventStoreService.addEvent(res)
+        
+        
+      }
+      /**
+       * Когда продуктовый рутовый компонент инициализируется,
+       * он отправляет ивент, чтобы отрендерить свои навигационные кнопки.
+       * Идем в стор ивентов и достаем их.
+       */
+      if (res.event === 'RENDER_COMPONENTS') {
+        this.cdr.detectChanges()
+        const productButtonsEvents = this._busEventStoreService.getEventsByProps(
+          'REGISTER_COMPONENTS',
+          res.from,
+          res.payload['payloadFilter']
+        )
+        console.log(productButtonsEvents)
+        if (productButtonsEvents && productButtonsEvents.length) {
+          productButtonsEvents.forEach(el => {
+            this.renderProductNavButton(el)
+          })
+        }
       }
     })
+  }
+
+  private renderProductNavButton(res: BusEvent) {
+    this.functionQueueService.addToQueue(
+      this.appendRemoteButton,
+      this,
+      {
+        customElementName: (res as RegisterComponentsBusEvent).payload.customElementName,
+        url: (res as RegisterComponentsBusEvent).payload.url,
+        customElementInputs: (res as RegisterComponentsBusEvent).payload.customElementInputs,
+        customElementTransclusion: (res as RegisterComponentsBusEvent).payload.customElementTransclusion
+      },
+      this.ngAfterViewInit$
+    );
+  }
+
+  async loadRemoteMainButtons (): Promise<void> {
+    try {
+      const remoteModule = await loadRemoteModule({
+        remoteName: "faq",
+        remoteEntry: `${process.env["FAQ_WEB_REMOTE_ENTRY_URL"]}`,
+        exposedModule: './RemoteButtonModule',
+      });
+      
+      const remoteButtonModule = remoteModule.RemoteButtonModule;
+      
+      const componentRef = this.remoteButtonContainer2.createComponent(
+        remoteButtonModule.components[0]
+      );
+      (componentRef as any).instance.buttonClick.subscribe(() => {
+        this.router.navigateByUrl('/faq')
+      });
+
+      const fontInitializerService = this.injector.get<any>(remoteButtonModule.services[0]);
+      fontInitializerService.initializeFonts();
+
+    } catch (error) {
+      console.error('Error loading remote module:', error);
+    }
   }
 
   ngAfterViewInit() {
@@ -169,17 +236,31 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    //
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  showOldestTicket () {
-    const busEvent: BusEvent = {
-      from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
-      to: `${process.env['PROJECT_ID']}@web`,
-      event: 'SHOW_OLDEST_TICKET',
-      payload: { routerPath: remotes['faq'].routerPath },
-    };
-    this.eventBusPusher(busEvent);
+  public goHome(): void {
+    this.router.navigateByUrl('/home')
+  }
+
+  public isHomeRoute(): boolean {
+    return this.router.url === '/home';
+  }
+
+  showOldestTicket (tickets: any[] = []) {
+    this.router.navigateByUrl(remotes['faq'].routerPath).then(() => {
+      const busEvent: BusEvent = {
+        from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+        to: `${process.env['PROJECT_ID']}@web`,
+        event: 'SHOW_OLDEST_TICKET',
+        payload: { 
+          routerPath: remotes['faq'].routerPath,
+          tickets: tickets
+        },
+      };
+      this.eventBusPusher(busEvent);
+    })
   }
 
   async loadComponent(projectId: string): Promise<void> {
@@ -189,30 +270,42 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         path: remotes[projectId as keyof typeof remotes].routerPath,
         loadChildren: () => {
           return loadRemoteModule(remotes[projectId as keyof typeof remotes].remoteModuleScript).then((m) => {
-            return m[remotes[projectId as keyof typeof remotes].moduleName]
+            const remoteModule = m[remotes[projectId as keyof typeof remotes].moduleName]
+            
+            return remoteModule
           })
         },
       },
     ];
     
     this.router.resetConfig([...this.router.config, ...childRoutes]);
-
-    this.router.navigate([remotes[projectId as keyof typeof remotes].routerPath]);
     this.sendRoutePathToRemoteMfe(projectId)
     
+    const isFaqProductRoute = isProductRoute(remotes, projectId)
+    
+    /**
+     * При нахождении на роуте remote mfe,
+     * нужно дождаться перехода по его роуту
+     * и только потом подгружать другой модуль(script) этого же remoteName
+     * todo: добавить понимание, нужна ли загрузка шаредного модуля
+     */
+    this.router.events
+    .pipe(
+      filter((event) => {
+        if (!isFaqProductRoute) {
+          return true;
+        }
+        return event instanceof NavigationEnd;
+      }),
+      take(1),
+      takeUntil(this.destroy$)
+    )
+    .subscribe(() => {
+      this.loadRemoteMainButtons()
+    });
   }
 
-  private isAllowedAction(chromeEvent: ChromeMessage): boolean {
-    if (chromeEvent.event === 'SHOW_OLDEST_TICKET') {
-      if (this.router.url === '/faq') {
-        return true
-      }
-      // console.log('Bypass route change')
-      return false
-    }
-    return true
-  }
-
+ 
   private sendRoutePathToRemoteMfe(projectId: string) {
     const routePathBusEvent: BusEvent = {
       event: "ROUTER_PATH",
@@ -253,11 +346,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       //   // this.renderer.setAttribute(remoteButton, 'url', url);
       // })
     });
-    
   }
 
   check() {
     // // webComponentService.getComponent('remote-button') // check for existence
     // this.appendRemoteButton('remote-button')
+    console.log(this._busEventStoreService.getAllEvents())
   }
 }

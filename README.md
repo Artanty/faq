@@ -143,3 +143,35 @@ VALUES (
   5, -- Rate the answer
   1  -- Assuming user ID is 1
 );
+
+
+=== worker ===
+[backgound.js]
+tickets/isTicketsToAnswer
+every minute
+-> busEvent:
+{
+  from: 'ext-service-worker',
+  to: 'faq',
+  event: 'SHOW_OLDEST_TICKET',
+  payload: {
+    tickets: tickets
+  }
+}
+[web-host] | app.component
+on  busEvent 'SHOW_OLDEST_TICKET':
+navigateByUrl(remotes['faq'])
+-> busEvent:
+{
+  from: 'faq@web-host',
+  to: 'faq@web',
+  event: 'SHOW_OLDEST_TICKET',
+  payload: { 
+    routerPath: remotes['faq'].routerPath, 
+    tickets: tickets
+  },
+}
+[web] | faq.component
+on event === 'SHOW_OLDEST_TICKET'
+pushToQueue
+navigateByUrl 'ticket'

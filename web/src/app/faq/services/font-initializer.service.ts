@@ -1,4 +1,8 @@
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { Injectable, InjectionToken, Renderer2, RendererFactory2 } from '@angular/core';
+
+export const FONT_INITIALIZER_SERVICE = new InjectionToken<FontInitializerService>(
+  'FontInitializerService'
+);
 
 @Injectable({
   providedIn: 'root',
@@ -6,6 +10,7 @@ import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 export class FontInitializerService {
   private renderer: Renderer2;
   private webpack_public_path = __webpack_public_path__;
+  private initialized = false;
 
   constructor(
     private rendererFactory: RendererFactory2
@@ -14,7 +19,9 @@ export class FontInitializerService {
     }
 
   initializeFonts(): void {
-    
+    if (this.initialized) {
+      return;
+    }
     const baseUrl = this.webpack_public_path + 'assets/typicons/'
     const fontFaceRule = `
       @font-face {
@@ -30,5 +37,6 @@ export class FontInitializerService {
     const styleElement = this.renderer.createElement('style');
     this.renderer.appendChild(styleElement, this.renderer.createText(fontFaceRule));
     this.renderer.appendChild(document.head, styleElement);
+    this.initialized = true; 
   }
 }

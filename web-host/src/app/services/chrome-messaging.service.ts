@@ -1,6 +1,8 @@
 // src/app/services/chrome-messaging.service.ts
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { CoreService } from './core.service';
+import { BusEvent } from 'typlib';
 interface MyMessage {
   action: string;
   data: { key: string };
@@ -12,9 +14,10 @@ interface MyMessage {
 export class ChromeMessagingService {
   private _messageSubject = new Subject<any>();
 
-  constructor() {
+  constructor(
+    private _coreService: CoreService
+  ) {
     this._listenForMessages();
-    
   }
 
   // Expose the message as an observable
@@ -37,6 +40,19 @@ export class ChromeMessagingService {
       });
     } else {
       console.warn('chrome.runtime.onMessage is not available.');
+      if ( this._coreService.isDev()) {
+        const busEvent: BusEvent = {
+          from: 'ext-service-worker',
+          to: 'faq',
+          event: 'SHOW_OLDEST_TICKET',
+          payload: {
+            tickets: []
+          }
+        }
+        setInterval(() => {
+          this._messageSubject.next(busEvent);
+        }, 1000 * 60)
+      }
     }
   }
 }

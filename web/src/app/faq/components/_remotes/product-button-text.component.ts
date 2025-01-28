@@ -21,7 +21,7 @@ export class ProductButtonTextComponent {
   @Input() h: string | undefined;
   @Input() color: string = 'green'
   @Input() url: string = ''  
-  @Input() active: string  = 'red'
+  @Input() active: string  = ''
   @Input() routerLinkActiveOptions: { exact: boolean } = { exact: false };
 
   @Output() buttonClick = new EventEmitter<string>();

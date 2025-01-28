@@ -8,7 +8,9 @@ import { BusEvent, EVENT_BUS, HOST_NAME } from "typlib"
 import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component";
 import { TestComponent } from './components/test/test.component';
-import { GroupButtonsDirective } from './directives/group-buttons.directive'
+import { GroupButtonsDirective } from './directives/group-buttons.directive';
+import { HomeComponent } from './components/home/home.component'
+import { CoreService } from "./services/core.service"
 
 export const initBusEvent: BusEvent = {
   event: "INIT",
@@ -20,7 +22,12 @@ export const initBusEvent: BusEvent = {
 const eventBus$ = new BehaviorSubject(initBusEvent)
 
 @NgModule({
-  declarations: [AppComponent, TestComponent, GroupButtonsDirective],
+  declarations: [
+    AppComponent, 
+    TestComponent,
+    GroupButtonsDirective, 
+    HomeComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -30,6 +37,7 @@ const eventBus$ = new BehaviorSubject(initBusEvent)
   ],
   providers: [
     { provide: EVENT_BUS, useValue: eventBus$ },
+    CoreService,
   ],
   bootstrap: [AppComponent], 
 })

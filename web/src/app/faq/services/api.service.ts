@@ -12,7 +12,6 @@ import { Dict } from '../models/dict.model';
 export class ApiService {
   // private baseUrl = 'http://localhost:3266';
   private baseUrl = process.env['FAQ_BACK_URL']
-  
 
   constructor(private http: HttpClient) {}
 

@@ -1,9 +1,4 @@
-// chrome.runtime.onConnect.addListener((port) => {
-//   console.assert(port.name === "my-channel");
-//   port.onMessage.addListener((msg) => {
-//     console.log("Received message from app:", msg);
-//   });
-// });
+const FAQ_BACK_URL = 'FAQ_BACK_URL_PLACEHOLDER';
 const STAT_BACK_URL = 'STAT_BACK_URL_PLACEHOLDER';
 const PROJECT_ID = 'PROJECT_ID_PLACEHOLDER' + '@github'
 const NAMESPACE = 'NAMESPACE_PLACEHOLDER'
@@ -17,15 +12,12 @@ chrome.alarms.create('sendStat', { periodInMinutes: 30 });
 
 chrome.alarms.onAlarm.addListener( async (alarm) => {
   if (alarm.name === 'openPopup') {
-    // Check if the popup is already open
     const popupIsOpen = await isPopupOpen();
     if (popupIsOpen) {
       console.log('Popup is already open. Skipping openPopup.');
-      return; // Exit if the popup is already open
+      return;
     }
-
-    // Open the popup if it's not already open
-    openPopup();
+    askToOpen()
   }
   if (alarm.name === 'sendStat') {
     sendStatEvent({ 
@@ -40,40 +32,43 @@ chrome.alarms.onAlarm.addListener( async (alarm) => {
 });
 
 async function askToOpen () {
-  // fetch(`${STAT_BACK_URL}/add-event`, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   },
-  //   body: JSON.stringify(statPayload),
-  // })
-  //   .then((response) => {
-  //     if (!response.ok) {
-  //       sendMessageToHost(onErrorMessagePayload);
-  //       throw new Error('Network response was not ok');
-  //     }
-  //     return response.json();
-  //   })
-  //   .then((data) => {
-  //     console.log('HTTP request successful:', data);
-  //   })
-  //   .catch((error) => {
-  //     console.error('Error sending HTTP request:', error);
-  //     sendMessageToHost(onErrorMessagePayload);
-  //   });
+  fetch(`${FAQ_BACK_URL}/tickets/isTicketsToAnswer`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ userId: 1 }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response "isTicketsToAnswer" was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.length) {
+        console.log('HTTP request "isTicketsToAnswer" successful:', data);
+        console.log('OPENING POPUP...')
+        openPopup(data);
+      } else {
+        console.log('HTTP request "isTicketsToAnswer" successful with emtpy tickets');
+        console.log('NOT OPENING POPUP.')
+      }
+    })
+    .catch((error) => {
+      console.error('Error sending HTTP request "isTicketsToAnswer":', error);
+    });
 }
 
 async function isPopupOpen() {
   const windows = await chrome.windows.getAll();
   const popups = windows.filter((window) => window.type === 'popup');
-  return popups.length > 0; // Returns true if a popup is open, otherwise false
+  return popups.length > 0;
 }
 
-function openPopup() {
-  // Check if there is an active browser window
+function openPopup(tickets = []) {
   chrome.windows.getAll({}, (windows) => {
     if (windows.length > 0) {
-      // Try to open the popup
       chrome.action.openPopup((error) => {
         if (error) {
           console.error('Failed to open popup:', error);
@@ -83,7 +78,9 @@ function openPopup() {
             from: 'ext-service-worker',
             to: 'faq',
             event: 'SHOW_OLDEST_TICKET',
-            payload: null
+            payload: {
+              tickets: tickets
+            }
           }
           sendMessageToHost(data);
         }
@@ -144,7 +141,7 @@ function sendMessageToHost(data) {
   chrome.runtime.sendMessage(data, (response) => {
     if (chrome.runtime.lastError) {
       console.error('Error sending message:');
-      console.error(chrome.runtime.lastError)
+      console.error(chrome.runtime.lastError.message)
     } else {
       console.log('WORKER received response of sent event: ');
       console.log(response)
