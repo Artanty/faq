@@ -70,7 +70,7 @@ export class TicketQueueService {
     // }
 
     public listenQueue (): Observable<Ticket> {
-        if (this._currentTicket.getValue() === null) throw new Error('no ticket items in queue')
+        // if (this._currentTicket.getValue() === null) throw new Error('no ticket items in queue')
         return this._currentTicket.asObservable() as Observable<Ticket>
     }
 

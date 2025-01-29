@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, Inject, InjectionToken, Injector, isDevMode, OnDestroy, OnInit } from "@angular/core";
-import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, filter, Observable, Subject, takeUntil } from "rxjs";
 import { BusEvent, EVENT_BUS } from "typlib";
 import { Router } from "@angular/router";
 import { FontInitializerService } from "./services/font-initializer.service";
@@ -29,7 +29,7 @@ export const EVENT_BUS_PUSHER = new InjectionToken<
         useFactory: (eventBus$: BehaviorSubject<BusEvent>) => {
           return eventBus$
             .asObservable()
-            // .pipe(filter((res) => res.to === process.env['APP']));
+            .pipe(filter((res) => res.to === `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`));
         },
         deps: [EVENT_BUS],
       },
@@ -60,7 +60,22 @@ export class FaqComponent implements OnInit, OnDestroy{
       private injector: Injector,
       private _ticketQueueService: TicketQueueService,
       @Inject('WEB_VERSION') private readonly webVersion: string
-  ) {}
+  ) {
+    this.eventBusListener$.pipe(
+      takeUntil(this.destroyed)
+    ).subscribe((res: BusEvent)=>{
+      console.log('faq.comp saw event: ' + res.event)
+      console.log(res)
+      if (res.event === 'SHOW_OLDEST_TICKET') { 
+        if (res.payload.tickets && Array.isArray(res.payload.tickets) && res.payload.tickets.length) {
+          this._ticketQueueService.pushToQueue(res.payload.tickets)
+          this.router.navigateByUrl(buildUrl('ticket', this._coreService.getRouterPath()))
+        } else {
+          this._openerService.maybeOpenModal()
+        }
+      }
+    })
+  }
   
   ngOnInit(): void {
     /**
@@ -83,20 +98,7 @@ export class FaqComponent implements OnInit, OnDestroy{
     console.log('faq.comp ini VERSION: ' + this.webVersion)
     this.fontInitializer.initializeFonts();
         
-    this.eventBusListener$.pipe(
-      takeUntil(this.destroyed)
-    ).subscribe((res: BusEvent)=>{
-      console.log('faq.comp: ' + res.event)
-      console.log(res)
-      if (res.event === 'SHOW_OLDEST_TICKET') { 
-        if (res.payload.tickets && Array.isArray(res.payload.tickets) && res.payload.tickets.length) {
-          this._ticketQueueService.pushToQueue(res.payload.tickets)
-          this.router.navigateByUrl(buildUrl('ticket', this._coreService.getRouterPath()))
-        } else {
-          this._openerService.maybeOpenModal()
-        }
-      }
-    })
+    
   }
 
   ngOnDestroy (): void {

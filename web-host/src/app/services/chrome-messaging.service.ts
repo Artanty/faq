@@ -8,6 +8,15 @@ interface MyMessage {
   data: { key: string };
 }
 
+const busEvent: BusEvent = {
+  from: 'ext-service-worker',
+  to: 'faq',
+  event: 'SHOW_OLDEST_TICKET',
+  payload: {
+    tickets: []
+  }
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -41,18 +50,14 @@ export class ChromeMessagingService {
     } else {
       console.warn('chrome.runtime.onMessage is not available.');
       if ( this._coreService.isDev()) {
-        const busEvent: BusEvent = {
-          from: 'ext-service-worker',
-          to: 'faq',
-          event: 'SHOW_OLDEST_TICKET',
-          payload: {
-            tickets: []
-          }
-        }
         setInterval(() => {
           this._messageSubject.next(busEvent);
         }, 1000 * 60)
       }
     }
+  }
+
+  public triggerShowTicketTry () {
+    this._messageSubject.next(busEvent);
   }
 }

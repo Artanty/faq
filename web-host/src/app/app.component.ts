@@ -19,7 +19,7 @@ import {
 import { ActivatedRoute, NavigationEnd, Router, Routes } from "@angular/router"
 import { ChromeMessagingService } from "./services/chrome-messaging.service"
 import {  EVENT_BUS } from 'typlib';
-import { BehaviorSubject, filter, Observable, Subject, Subscription, take, takeUntil, takeWhile } from "rxjs";
+import { BehaviorSubject, concatMap, filter, from, Observable, Subject, Subscription, take, takeUntil, takeWhile, tap } from "rxjs";
 import { StatService } from "./services/stat-service";
 import { RegisterComponentsBusEvent, RegisterComponentsBusEventPayload } from './app.component.types';
 import { FunctionQueueService } from './services/function-queue.service';
@@ -97,7 +97,7 @@ const remotes: Remotes = {
       useFactory: (eventBus$: BehaviorSubject<BusEvent>) => {
         return eventBus$
           .asObservable()
-          // .pipe(filter((res) => res.to === process.env['APP']));
+          .pipe(filter((res) => res.to === `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`));
       },
       deps: [EVENT_BUS],
     },
@@ -123,7 +123,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit$ = new BehaviorSubject<boolean>(false);
 
   private destroy$ = new Subject<void>(); // For unsubscribing
-
+  
   constructor(
     private router: Router,
     private chromeMessagingService: ChromeMessagingService,
@@ -167,8 +167,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
        */
       if (res.event === 'REGISTER_COMPONENTS') {
         this._busEventStoreService.addEvent(res)
-        
-        
       }
       /**
        * Когда продуктовый рутовый компонент инициализируется,
@@ -248,17 +246,24 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.router.url === '/home';
   }
 
+  /**
+   * Чтобы програмно перейти на дочерний роут продукта, нужно
+   * перейти на рутовый роут продукта, чтобы он начал слушать события
+   * и после этого запушить событие с нужным действием.
+  */
   showOldestTicket (tickets: any[] = []) {
-    this.router.navigateByUrl(remotes['faq'].routerPath).then(() => {
+    const projectId = 'faq'
+    const url = remotes[projectId].routerPath
+    
+    this.router.navigateByUrl(url).then(() => {
       const busEvent: BusEvent = {
         from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
         to: `${process.env['PROJECT_ID']}@web`,
         event: 'SHOW_OLDEST_TICKET',
         payload: { 
-          routerPath: remotes['faq'].routerPath,
           tickets: tickets
         },
-      };
+      }
       this.eventBusPusher(busEvent);
     })
   }
@@ -352,5 +357,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     // // webComponentService.getComponent('remote-button') // check for existence
     // this.appendRemoteButton('remote-button')
     console.log(this._busEventStoreService.getAllEvents())
+  }
+  tick() {
+    this.chromeMessagingService.triggerShowTicketTry()
   }
 }

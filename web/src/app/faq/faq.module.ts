@@ -23,7 +23,7 @@ import { ProductButtonTextComponent } from "./components/_remotes/product-button
 import { ProductButtonIconComponent } from "./components/_remotes/product-button-icon.component";
 import { TicketQueueService } from "./services/ticketQueue.service";
 import { OpenerService } from "./services/opener.service";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, filter, Observable, Subject } from "rxjs";
 import { BusEvent, EVENT_BUS, EVENT_BUS_PUSHER } from "typlib";
 import { buildUrl } from "./services/route-builder";
 import { createCustomElement } from "@angular/elements";
@@ -102,7 +102,9 @@ export const CHILD_ROUTES = [
         useFactory: (eventBus$: BehaviorSubject<BusEvent>) => {
           return eventBus$
             .asObservable()
-            // .pipe(filter((res) => res.to === process.env['APP']));
+            .pipe(filter((res: BusEvent) => {
+              return res.to === `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`
+            }));
         },
         deps: [EVENT_BUS], 
       },
@@ -132,6 +134,7 @@ export class FaqModule {
     @Inject('WEB_VERSION') private readonly webVersion: string
   ) {
     this.eventBusListener$.subscribe((res: BusEvent)=>{
+      console.log('faq module saw event: ' + res.event)
       if (res.event === 'ROUTER_PATH') {
         this._coreService.setRouterPath((res.payload as any).routerPath)
         this.shareComponentsWithHost()
