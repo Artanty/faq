@@ -1,5 +1,4 @@
 <div class="scaffold hidde">
-  <a (click)="showOldestTicket()">oldest bus</a> | 
   <a [routerLink]="['/faq/ticket', 1]">{{ 'id 1' }}</a>
   {{ ' | '}}
   <a [routerLink]="['/faq/ticket']">{{ 'oldest' }}</a>
@@ -19,11 +18,20 @@
     <router-outlet></router-outlet>
   </div>
   
-  <div *ngIf="!isHomeRoute()" class="remoteButtonContainer" #remoteButtonContainer appGroupButtons>
+  <div *ngIf="!isHomeRoute()" class="productNavContainer" #productNavContainer appGroupButtons>
   </div>
   
   <div class="mainButtons" [class.wide]="isHomeRoute()">
-    <ng-container #remoteButtonContainer2></ng-container>
+    @if (productMainButtons.length) {
+      @for (item of productMainButtons; track item) {
+        <app-product-card
+          [name]="item.buttonName"
+          [title]="item.buttonTitle"
+          [imgSrcBaseUrl]="item.imgSrcBaseUrl"
+          [routerPath]="item.routerPath"
+        ></app-product-card>
+      }
+    }
     <div class="cont">
       <i class="homeBtn mu mu-home" (click)="goHome()"></i>
     </div>  

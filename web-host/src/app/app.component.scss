@@ -1,6 +1,6 @@
 @import 'microns/fonts/microns.css';
 
-.host-container{
+.host-container {
   overflow: hidden;
   width: 700px;
   height: 550px;
@@ -15,14 +15,24 @@
   z-index: 1;
   column-gap: 16px;
 }
-.mainButtons{
-  width: 110px;
+
+.mainButtons {
+  width: 90px;
   transition: 0.3s width;
-  &.wide{
+  &.wide {
     width: 260px;
   }
+  & > * {
+    display: block;
+    max-height: 160px;
+    height: 160px;
+  }
+  & > *:not(:first-child) {
+    margin-top: 8px;
+  }
 }
-.homeBtn{
+
+.homeBtn {
   display: block;
   position: absolute;
   bottom: 0;
@@ -31,40 +41,44 @@
   color: rgba(255, 255, 255, 0.431);
   cursor: pointer;
   transition: 0.4s color;
-  &:hover{
+  &:hover {
     color: rgba(255, 255, 255, 1);
   }
 }
 
-.hidden{
+.hidden {
   display: none;
 }
 
-h3{
+h3 {
   color:#fff;
 }
-body{
+
+body {
   position: relative;
 }
+
 .scaffold {
   position: absolute;
   bottom: 0;
   left: 0;
 }
-.remoteButtonContainer{
-    display: flex;
-    flex-direction: column;
-    row-gap: 8px;
-    max-height: fit-content;
-    background: rgb(6 0 212 / 19%);
-    padding: 8px;
-    border-radius: 9px;
+
+.productNavContainer {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+  max-height: fit-content;
+  background: rgb(6 0 212 / 19%);
+  padding: 8px;
+  border-radius: 9px;
 }
 
-.routerDiv{
+.routerDiv {
   width: 400px;
 }
-.group{
+
+.group {
   display: flex;
   column-gap: 6px;
 }

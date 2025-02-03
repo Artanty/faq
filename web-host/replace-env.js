@@ -8,17 +8,17 @@ const envFilePath = path.join(__dirname, '.env');
 const configurations = {
   serve: [
     {
-      description: 'Uncomment line with FAQ_WEB_REMOTE_ENTRY_URL and localhost',
+      description: 'Uncomment line with FAQ_WEB_URL and localhost',
       test: (line) =>
-        line.includes('FAQ_WEB_REMOTE_ENTRY_URL') &&
+        line.includes('FAQ_WEB_URL') &&
         line.includes('localhost') &&
         line.startsWith('#'), // Check if the line is commented
       action: (line) => line.replace(/^#\s*/, ''), // Uncomment the line
     },
     {
-      description: 'Comment line with FAQ_WEB_REMOTE_ENTRY_URL and assets',
+      description: 'Comment line with FAQ_WEB_URL and assets',
       test: (line) =>
-        line.includes('FAQ_WEB_REMOTE_ENTRY_URL') &&
+        line.includes('FAQ_WEB_URL') &&
         line.includes('assets') &&
         !line.startsWith('#'), // Check if the line is not commented
       action: (line) => `# ${line}`, // Comment the line
@@ -26,17 +26,17 @@ const configurations = {
   ],
   build: [
     {
-      description: 'Comment line with FAQ_WEB_REMOTE_ENTRY_URL and localhost',
+      description: 'Comment line with FAQ_WEB_URL and localhost',
       test: (line) =>
-        line.includes('FAQ_WEB_REMOTE_ENTRY_URL') &&
+        line.includes('FAQ_WEB_URL') &&
         line.includes('localhost') &&
         !line.startsWith('#'), // Check if the line is not commented
       action: (line) => `# ${line}`, // Comment the line
     },
     {
-      description: 'Uncomment line with FAQ_WEB_REMOTE_ENTRY_URL and assets',
+      description: 'Uncomment line with FAQ_WEB_URL and assets',
       test: (line) =>
-        line.includes('FAQ_WEB_REMOTE_ENTRY_URL') &&
+        line.includes('FAQ_WEB_URL') &&
         line.includes('assets') &&
         line.startsWith('#'), // Check if the line is commented
       action: (line) => line.replace(/^#\s*/, ''), // Uncomment the line

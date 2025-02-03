@@ -1,11 +1,13 @@
-import { BusEvent } from "./app.component"
+import { BusEvent } from "typlib"
 
-export interface RegisterComponentsBusEventPayload {
-    target: string,
+
+export interface RegisterComponentsBusEventPayloadItem {
     customElementName: string
     customElementInputs: any,
     customElementTransclusion: string
-    url: string
 }
 
-export type RegisterComponentsBusEvent = BusEvent<RegisterComponentsBusEventPayload>
+export type RegisterComponentsBusEvent = BusEvent<{
+    componentType: string,
+    items: RegisterComponentsBusEventPayloadItem[]
+}>

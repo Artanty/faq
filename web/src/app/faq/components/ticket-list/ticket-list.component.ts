@@ -29,9 +29,6 @@ export class TicketListComponent implements OnInit {
     private _apiService: ApiService,
     private cdr: ChangeDetectorRef,
     private _userService: UserService,
-    private route: ActivatedRoute, 
-    // @Inject(EVENT_BUS_PUSHER)
-    // private eventBusPusher: (busEvent: BusEvent) => void,
     private router: Router,
     private location: Location,
     private _coreService: CoreService
@@ -81,7 +78,6 @@ export class TicketListComponent implements OnInit {
   }
 
   public goToTicket(ticketId: number) {
-    console.log(buildUrl(`ticket/${ticketId}`, this._coreService.getRouterPath()))
     this.router.navigateByUrl(buildUrl(`ticket/${ticketId}`, this._coreService.getRouterPath()))
   }
 

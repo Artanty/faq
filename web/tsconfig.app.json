@@ -10,6 +10,7 @@
     "src/main.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "src/app/faq/components/_remotes/remote-button.module.ts"
   ]
 }

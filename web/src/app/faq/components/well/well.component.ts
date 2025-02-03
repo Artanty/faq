@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-welcome',
+  selector: 'app-well',
   template: `
     <p>
-      welcome!
+      well works!
     </p>
   `,
   styles: ``
 })
-export class WelcomeComponent {
+export class WellComponent {
 
 }

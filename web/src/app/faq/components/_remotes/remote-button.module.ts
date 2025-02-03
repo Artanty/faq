@@ -5,10 +5,21 @@ import { FontInitializerService } from '../../services/font-initializer.service'
 import { ProductCardComponent } from './product-card/product-card.component';
 
 @NgModule({
-  imports: [CommonModule, ProductButtonTopComponent],
-  exports: [ProductButtonTopComponent],
+  imports: [
+    CommonModule, 
+    // ProductButtonTopComponent
+  ],
+  exports: [
+    // ProductButtonTopComponent
+  ],
 })
 export class RemoteButtonModule {
-  static components = [ProductCardComponent, ProductButtonTopComponent];
+  static components = [
+    ProductCardComponent, 
+    // ProductButtonTopComponent
+  ];
   static services = [FontInitializerService]
+  public getService() {
+    console.log('getService()')
+  }
 }

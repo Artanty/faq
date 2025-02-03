@@ -10,7 +10,9 @@ import { AppComponent } from "./app.component";
 import { TestComponent } from './components/test/test.component';
 import { GroupButtonsDirective } from './directives/group-buttons.directive';
 import { HomeComponent } from './components/home/home.component'
-import { CoreService } from "./services/core.service"
+import { CoreService } from "./services/core.service";
+import { ProductCardComponent } from './components/product-card/product-card.component'
+import { BusEventStoreService } from "./services/bus-event-store.service"
 
 export const initBusEvent: BusEvent = {
   event: "INIT",
@@ -26,7 +28,7 @@ const eventBus$ = new BehaviorSubject(initBusEvent)
     AppComponent, 
     TestComponent,
     GroupButtonsDirective, 
-    HomeComponent
+    HomeComponent, ProductCardComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +40,17 @@ const eventBus$ = new BehaviorSubject(initBusEvent)
   providers: [
     { provide: EVENT_BUS, useValue: eventBus$ },
     CoreService,
+    // BusEventStoreService
   ],
   bootstrap: [AppComponent], 
 })
-export class AppModule {}
+export class AppModule {
+  constructor(
+    // @Inject('EVENT_BUS') private eb: BehaviorSubject<BusEvent>
+  ) {
+    // this.eventBus$.
+    eventBus$.asObservable().subscribe(res => {
+      console.log('MAIN HOST EVENT: ' + res.event)
+    })
+  }
+}

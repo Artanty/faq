@@ -31,6 +31,9 @@ module.exports = {
       name: "webHost",
       remotes: {
         // "doro": "doro@assets/mfe/doro/remoteEntry.js",
+        // faq: 'faq@http://localhost:4221/remoteEntry.js',
+        // au: 'au@http://localhost:4204/remoteEntry.js',
+        
       },
       shared: share({
         "@angular/core": { singleton: true, strictVersion: true, requiredVersion: 'auto' },

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, Inject, InjectionToken, Injector, isDevMode, OnDestroy, OnInit } from "@angular/core";
-import { BehaviorSubject, filter, Observable, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, combineLatest, filter, forkJoin, Observable, of, Subject, take, takeUntil, tap } from "rxjs";
 import { BusEvent, EVENT_BUS } from "typlib";
 import { Router } from "@angular/router";
 import { FontInitializerService } from "./services/font-initializer.service";
@@ -12,6 +12,7 @@ import { ButtonComponent } from "./components/button/button.component";
 import { ProductButtonTextComponent } from "./components/_remotes/product-button-text.component";
 import { ProductButtonIconComponent } from "./components/_remotes/product-button-icon.component";
 import { TicketQueueService } from "./services/ticketQueue.service";
+import { RegisterComponentsService } from "./services/register-components.service";
 
 export const EVENT_BUS_LISTENER = new InjectionToken<Observable<BusEvent>>('');
 export const EVENT_BUS_PUSHER = new InjectionToken<
@@ -52,12 +53,11 @@ export class FaqComponent implements OnInit, OnDestroy{
       @Inject(EVENT_BUS_LISTENER)
       private readonly eventBusListener$: Observable<BusEvent>,
       private _coreService: CoreService,
+      private _registerComponentsService: RegisterComponentsService,
       private fontInitializer: FontInitializerService,
-      
       private _openerService: OpenerService,
       @Inject(EVENT_BUS_PUSHER)
       private readonly eventBusPusher: (busEvent: BusEvent) => void,
-      private injector: Injector,
       private _ticketQueueService: TicketQueueService,
       @Inject('WEB_VERSION') private readonly webVersion: string
   ) {
@@ -65,7 +65,7 @@ export class FaqComponent implements OnInit, OnDestroy{
       takeUntil(this.destroyed)
     ).subscribe((res: BusEvent)=>{
       console.log('faq.comp saw event: ' + res.event)
-      console.log(res)
+      // console.log(res)
       if (res.event === 'SHOW_OLDEST_TICKET') { 
         if (res.payload.tickets && Array.isArray(res.payload.tickets) && res.payload.tickets.length) {
           this._ticketQueueService.pushToQueue(res.payload.tickets)
@@ -78,6 +78,38 @@ export class FaqComponent implements OnInit, OnDestroy{
   }
   
   ngOnInit(): void {
+    combineLatest([
+      this._routerPathSet$(),
+      this._registerComponentsService.listenComponentsRegistered$().pipe(
+        filter((res: boolean) => res === true)
+      )
+    ]).pipe(
+      takeUntil(this.destroyed)
+    ).subscribe(() => {
+      this._renderComponents()
+    })
+  }
+
+  private _routerPathSet$ (): Observable<boolean> {
+    if (this._coreService.isRouterPathSet() === true) {
+      return of(true)
+    }
+    this.eventBusPusher({
+      from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+      to: `${process.env['PROJECT_ID']}@web-host`,
+      event: 'ASK_ROUTER_PATH',
+      payload: {
+        projectId: `${process.env['PROJECT_ID']}`
+      }
+    })
+    return this._coreService.listenRouterPathSet$.pipe(
+      filter((res: boolean) => res === true),
+      take(1),
+      takeUntil(this.destroyed)
+    )
+  }
+
+  private _renderComponents (): void {
     /**
      * Навигационные кнопки уже сохранены в host'е при подгрузке модуля.
      * Если этот рутовый продуктовый компонент инициализировался,
@@ -90,15 +122,13 @@ export class FaqComponent implements OnInit, OnDestroy{
       event: 'RENDER_COMPONENTS',
       payload: {
         payloadFilter: {
-          componentType: 'PRODUCT_BUTTON',
-          webVersion: this.webVersion
+          componentType: 'PRODUCT_BUTTONS',
         }
       }
     })
-    console.log('faq.comp ini VERSION: ' + this.webVersion)
+    // console.log('faq.comp ini VERSION: ' + this.webVersion)
     this.fontInitializer.initializeFonts();
-        
-    
+        // console.log('fqa comp init')
   }
 
   ngOnDestroy (): void {

@@ -49,11 +49,11 @@ export class ChromeMessagingService {
       });
     } else {
       console.warn('chrome.runtime.onMessage is not available.');
-      if ( this._coreService.isDev()) {
-        setInterval(() => {
-          this._messageSubject.next(busEvent);
-        }, 1000 * 60)
-      }
+      // if ( this._coreService.isDev()) {
+      //   setInterval(() => {
+      //     this._messageSubject.next(busEvent);
+      //   }, 1000 * 60)
+      // }
     }
   }
 
