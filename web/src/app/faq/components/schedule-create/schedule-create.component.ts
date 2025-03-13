@@ -24,7 +24,7 @@ export class ScheduleCreateComponent implements OnInit {
   countdownId: any = null
   StateName = StateName
   state$ = new BehaviorSubject<TicketDetailState>({ name: StateName.LOADING })
-  form: PreCreateSchedule = {
+  form: PreCreateSchedule | any = {
     folderId: 0,
     topicId: 0,
     dateFrom: null,

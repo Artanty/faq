@@ -9,7 +9,7 @@ import { Dict, Folder, Topic } from '../../models/dict.model';
 import { BusEvent } from 'typlib';
 import { EVENT_BUS_PUSHER } from '../../faq.component';
 import { changeLastUrlSegment } from '../../services/route-builder';
-export type PreCreateTicket = Required<CreateTicketRequest>
+export type PreCreateTicket = Required<CreateTicketRequest> | any
 @Component({
   selector: 'app-ticket-create',
   templateUrl: './ticket-create.component.html',

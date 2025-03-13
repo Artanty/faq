@@ -18,9 +18,9 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
   months: { id: number; name: string }[] = [];
   days: { id: number; name: string }[] = [];
 
-  selectedYear: number = new Date().getFullYear();
-  selectedMonth: number = new Date().getMonth() + 1;
-  selectedDay: number = new Date().getDate();
+  selectedYear: number | string = new Date().getFullYear();
+  selectedMonth: number | string = new Date().getMonth() + 1;
+  selectedDay: number | string = new Date().getDate();
 
   // ControlValueAccessor methods
   onChange: any = () => {};
@@ -72,7 +72,7 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
   initializeDays() {
     this.days = [];
     if (this.selectedYear !== null && this.selectedMonth !== null) {
-      const daysInMonth = new Date(this.selectedYear, this.selectedMonth + 1, 0).getDate();
+      const daysInMonth = new Date(+this.selectedYear, +this.selectedMonth + 1, 0).getDate();
       for (let day = 1; day <= daysInMonth; day++) {
         this.days.push({ id: day, name: String(day) });
       }
@@ -97,8 +97,8 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
 
   // Check if the selected day is valid for the current month and year
   checkAndResetDay() {
-    const daysInMonth = new Date(this.selectedYear, this.selectedMonth + 1, 0).getDate();
-    if (this.selectedDay > daysInMonth) {
+    const daysInMonth = new Date(+this.selectedYear, +this.selectedMonth + 1, 0).getDate();
+    if (+this.selectedDay > daysInMonth) {
       console.log('day reseted');
       this.selectedDay = 1; // Reset to the first day if the selected day is invalid
     }

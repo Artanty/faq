@@ -149,8 +149,8 @@ export const CHILD_ROUTES = [
         deps: [EVENT_BUS],
       },
     ],
-    exports: [
-        FaqComponent
+    exports: [ 
+      FaqComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -169,6 +169,7 @@ export class FaqModule {
     private injector: Injector,
     @Inject('WEB_VERSION') private readonly webVersion: string
   ) {
+    console.log('Faq module constructor')
     this.eventBusListener$.subscribe((res: BusEvent) => {
       if (res.event === 'ROUTER_PATH') {
         this._coreService.setRouterPath((res.payload as any).routerPath).then(() => {

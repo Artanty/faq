@@ -69,11 +69,12 @@ export interface Remotes {
   [key: string]: RemoteBody
 }
 export interface ProductButton {
-  name: string, 
+  projectId: string
   imgSrcBaseUrl: string,
   buttonName: string
   buttonTitle: string
   routerPath: string
+  buttonState: string
 }
 
 // дублирование ([key] = remoteName) для возможного разруливания конфликта имен 
@@ -100,7 +101,7 @@ const remotes: Remotes = {
     remoteModuleScript: {
       remoteName: "au",
       remoteEntry: `${process.env["AU_WEB_URL"]}/remoteEntry.js`,
-      exposedModule: "./Module2",
+      exposedModule: "./Module",
     },
     routerPath: "au",
     moduleName: "AuthModule",
@@ -160,6 +161,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   currentRoute: string = '';
   ngOnInit(): void {
+    // setTimeout(() => {
+    //   this._updateProductMainButton('au', 'buttonState', 'collapsed')
+    //   this._updateProductMainButton('au', 'buttonName', 'Artyom Antoshkin')
+    // },2000)
     this.chromeMessagingService.messages.subscribe((message: ChromeMessage) => {
       // console.log('HOST received WORKER event: ' + message.event);
       
@@ -217,8 +222,47 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       if (res.event === 'ASK_ROUTER_PATH') {
         this._sendRoutePathToRemoteMfe(res.payload["projectId"])
       }
+      if (res.event === 'auth') {
+        // const projectId = res.from.split('@')[0]
+        const projectId = res.from
+        if (res.payload.status === 'ACCESS_GRANTED') {
+          // collapse au icon, change its name
+          this._updateProductMainButton(projectId, 'buttonState', 'collapsed')
+          this._updateProductMainButton(projectId, 'buttonName', res.payload.username)
+        }
+        console.log('go to main page');
+        // const busEvent: BusEvent = {
+        //   from: process.env['APP']!,
+        //   to: this.hostName,
+        //   event: 'auth',
+        //   payload: { status: 'ACCESS_GRANTED' },
+        // };
+      }
+      if (res.event === 'ASK_PROJECTS_IDS') {
+        this._sendProjectsIds(res)
+      }
       
     })    
+  }
+
+  private _sendProjectsIds (res: BusEvent) {
+    const remotesIds: string[] = Object.keys(remotes)
+    const busEvent: BusEvent = {
+      from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+      to: res.from,
+      event: 'PROJECTS_IDS',
+      payload: { projectsIds: remotesIds },
+    };
+    this.eventBusPusher(busEvent)
+  }
+  private _updateProductMainButton (projectId: string, prop: keyof ProductButton, state: string) {
+    const found = this.productMainButtons.find(el => el.projectId === projectId)
+    if (found) {
+      if (!found[prop]) throw new Error(`no prop ${prop} in button`)
+      found[prop] = state
+    } else {
+      console.error(`Product button of ${projectId} not found`)
+    }
   }
 
   private _sendDoneEvent(busEvent: BusEvent): void {
@@ -322,21 +366,24 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _renderProductMainButton (projectId: string) {
     this.productMainButtons.push({
-      name: projectId, 
+      projectId: projectId, 
       imgSrcBaseUrl: remotes[projectId].url,
       buttonName: remotes[projectId].buttonName,
       buttonTitle: remotes[projectId].buttonTitle,
-      routerPath: remotes[projectId].routerPath
+      routerPath: remotes[projectId].routerPath,
+      buttonState: 'initial'
     })
   }
 
   private _sendRoutePathToRemoteMfe(projectId: string) {
+    
     const routePathBusEvent: BusEvent = {
       event: "ROUTER_PATH",
       from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
       to: `${projectId}@web`,
       payload: { routerPath: remotes[projectId as keyof typeof remotes].routerPath },
     }
+    // console.log(routePathBusEvent)
     this.eventBusPusher(routePathBusEvent);
   }
 
@@ -375,5 +422,14 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   tick() {
     this.router.navigateByUrl('/faq/ticket')
+  }
+  send2au(){
+    const routePathBusEvent: BusEvent = {
+      event: "AU TEST",
+      from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+      to: `au@web`,
+      payload: {},
+    }
+    this.eventBusPusher(routePathBusEvent);
   }
 }

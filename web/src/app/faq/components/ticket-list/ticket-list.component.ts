@@ -21,9 +21,9 @@ export class TicketListComponent implements OnInit {
   StateName = StateName
   state$ = new BehaviorSubject<TicketDetailState>({ name: StateName.LOADING })
   dict: Dict = {
-      folders: [],
-      topics: [],
-    }
+    folders: [],
+    topics: [],
+  }
 
   constructor(
     private _apiService: ApiService,

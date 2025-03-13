@@ -43,18 +43,18 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: "faq",
-      filename: "remoteEntry.js",
+      filename: "remoteEntry1.js",
       exposes: {
         './Component': './src/app/faq/faq.component.ts',
-        './Module': './src/app/faq/faq.module.ts',
+        './FaqModule': './src/app/faq/faq.module.ts',
         './RemoteButtonModule': './src/app/faq/components/_remotes/remote-button.module.ts',
       },
       shared: share({
-        "@angular/core": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-        "@angular/common": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-        "@angular/common/http": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-        "@angular/router": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
-        "typlib": { singleton: true, strictVersion: true, requiredVersion: 'auto' },
+        "@angular/core": { singleton: true, strictVersion: true, requiredVersion: '17.0.5', eager: true  },
+        "@angular/common": { singleton: true, strictVersion: true, requiredVersion: '17.0.5', eager: true  },
+        // "@angular/common/http": { singleton: true, strictVersion: true, requiredVersion: 'auto', eager: true  },
+        "@angular/router": { singleton: true, strictVersion: true, requiredVersion: '17.0.5', eager: true  },
+        "typlib": { singleton: true, strictVersion: true, requiredVersion: 'auto', eager: true  },
         ...sharedMappings.getDescriptors()
       })
     }),

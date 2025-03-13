@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http"
+import { HttpClientModule, provideHttpClient, withInterceptors } from "@angular/common/http"
 import { NgModule } from "@angular/core"
 import { ReactiveFormsModule } from "@angular/forms"
 import { BrowserModule } from "@angular/platform-browser"
@@ -13,6 +13,7 @@ import { HomeComponent } from './components/home/home.component'
 import { CoreService } from "./services/core.service";
 import { ProductCardComponent } from './components/product-card/product-card.component'
 import { BusEventStoreService } from "./services/bus-event-store.service"
+import { authInterceptor } from "./interceptors/auth.interceptor"
 
 export const initBusEvent: BusEvent = {
   event: "INIT",
@@ -35,12 +36,21 @@ const eventBus$ = new BehaviorSubject(initBusEvent)
     AppRoutingModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    HttpClientModule,
+    // HttpClientModule,
   ],
   providers: [
     { provide: EVENT_BUS, useValue: eventBus$ },
     CoreService,
     // BusEventStoreService
+    { provide: HOST_NAME, useValue: 'faq@web-host' },
+    {
+      provide: 'components',
+      useValue: {},
+      multi: true,
+    },
+    provideHttpClient(
+      withInterceptors([authInterceptor])
+    )
   ],
   bootstrap: [AppComponent], 
 })

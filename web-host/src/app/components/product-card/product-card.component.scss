@@ -16,6 +16,16 @@
   padding: 0;
   box-sizing: border-box;
 }
+:host {
+  transition: height 0.3s;
+  &.initial{
+    max-height: 160px;
+    height: 160px;
+  }
+  &.collapsed{
+    height: 60px;
+  }
+}
 
 .card {
   position: relative;
