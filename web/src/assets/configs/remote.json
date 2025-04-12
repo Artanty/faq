@@ -1,0 +1,23 @@
+{
+    "event_bus_hooks": [
+        {
+            "on": {
+                "event": "ASK_BACK_URLS"
+            },
+            "push": {
+                "type": "ANSWER",
+                "payload": {
+                    "project_id": "faq",
+                    "back_url": "http://localhost:3266"
+                }
+            },
+            "lives": 1
+        }
+    ],
+    "interceptors": [],
+    
+    "desc": "preload - чтобы без загрузки ремоута взять адрес его бэка",
+    "todo": "добавить сборку этой секции при serve/build"
+
+}
+

@@ -1,5 +1,18 @@
 # faq
 
+Что с версиями?
+
+MAJOR: Breaking changes
+MINOR: New features (backward-compatible)
+PATCH: Bug fixes (backward-compatible)
+
+npm version major
+npm version minor
+npm version patch
+
+Перед каждым коммитом версия должна быть поднята.
+==
+
 service-worker@ background.js 
 - knows when to open popup (interval)
 - opens popup
