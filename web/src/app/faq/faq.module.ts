@@ -28,93 +28,93 @@ import { WellComponent } from './components/well/well.component';
 import { RegisterComponentsService } from "./services/register-components.service";
 
 export const CHILD_ROUTES = [
-    {
-      path: '',
-      component: FaqComponent,
-      children: [
-        {
-          path: '', component: WellComponent
-        },
-        {
-          path: 'ticket', component: TicketDetailComponent
-        },
-        { 
-          path: 'ticket/:id', component: TicketDetailComponent
-        }, 
-        {
-          path: 'ticket-create', component: TicketCreateComponent
-        },
-        { 
-          path: 'ticket-list', component: TicketListComponent
-        }, 
-        { 
-          path: 'answer-list/:id', component: AnswerListComponent
-        },
-        {
-          path: 'schedule-create', component: ScheduleCreateComponent
-        },
-        {
-          path: 'schedule-list', component: ScheduleListComponent
-        }
-      ]
-    }, 
+  {
+    path: 'faq', 
+    component: FaqComponent,
+    children: [
+      {
+        path: '', component: WellComponent
+      },
+      {
+        path: 'ticket', component: TicketDetailComponent
+      },
+      { 
+        path: 'ticket/:id', component: TicketDetailComponent
+      }, 
+      {
+        path: 'ticket-create', component: TicketCreateComponent
+      },
+      { 
+        path: 'ticket-list', component: TicketListComponent
+      }, 
+      { 
+        path: 'answer-list/:id', component: AnswerListComponent
+      },
+      {
+        path: 'schedule-create', component: ScheduleCreateComponent
+      },
+      {
+        path: 'schedule-list', component: ScheduleListComponent
+      }
+    ]
+  }, 
 ]
 
 @NgModule({
-    declarations: [
-        FaqComponent,
-        TicketListComponent,
-        TicketDetailComponent,
-        TicketCreateComponent,
-        TextareaComponent,
-        SelectComponent,
-        ButtonComponent,
-        AnswerListComponent,
-        FlipComponent,
-        ScheduleCreateComponent,
-        DatePickerComponent,
-        ScheduleListComponent,
-        AssetUrlUpdateDirective,
-        ProductButtonIconComponent,
-        ProductButtonTextComponent,
-        WellComponent
-    ],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        RouterModule.forChild(CHILD_ROUTES),
-        HttpClientModule,
-    ],
-    providers: [
-      { 
-        provide: 'WEB_VERSION', 
-        useValue: process.env['FAQ_WEB_VERSION']
+  declarations: [
+    FaqComponent,
+    TicketListComponent,
+    TicketDetailComponent,
+    TicketCreateComponent,
+    TextareaComponent,
+    SelectComponent,
+    ButtonComponent,
+    AnswerListComponent,
+    FlipComponent,
+    ScheduleCreateComponent,
+    DatePickerComponent,
+    ScheduleListComponent,
+    AssetUrlUpdateDirective,
+    ProductButtonIconComponent,
+    ProductButtonTextComponent,
+    WellComponent
+  ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule.forChild(CHILD_ROUTES),
+    HttpClientModule,
+  ],
+  providers: [
+    { 
+      provide: 'WEB_VERSION', 
+      useValue: process.env['FAQ_WEB_VERSION']
+    },
+    OpenerService,
+    CoreService,
+    RegisterComponentsService,
+    TicketQueueService,
+    { 
+      provide: EVENT_BUS_LISTENER, 
+      useFactory: (eventBus$: BehaviorSubject<BusEvent>) => {
+        return eventBus$
+          .asObservable()
+          .pipe(
+            filter((res: BusEvent) => {
+              return res.to === `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`
+            }),
+            tap(res => {
+              console.log('faq module saw event: ' + res.event)
+            })
+          );
       },
-      OpenerService,
-      CoreService,
-      RegisterComponentsService,
-      TicketQueueService,
-      { 
-        provide: EVENT_BUS_LISTENER, 
-        useFactory: (eventBus$: BehaviorSubject<BusEvent>) => {
-          return eventBus$
-            .asObservable()
-            .pipe(
-              filter((res: BusEvent) => {
-                return res.to === `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`
-              }),
-              tap(res => {
-                console.log('faq module saw event: ' + res.event)
-              })
-            );
-        },
-        deps: [EVENT_BUS], 
-      },
-      { 
-        provide: 'ROUTER_PATH_DONE', 
-        useFactory: (eventBus$: Observable<BusEvent>) => {
-          return eventBus$
+      deps: [EVENT_BUS], 
+    },
+    { 
+      provide: 'ROUTER_PATH_DONE', 
+      useFactory: (eventBus$: Observable<BusEvent>) => {
+        return eventBus$
           .pipe(
             filter((res: BusEvent) => {
               return res.to === `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}` &&
@@ -122,13 +122,13 @@ export const CHILD_ROUTES = [
             }),
             take(1)
           )
-        },
-        deps: [EVENT_BUS_LISTENER], 
       },
-      { 
-        provide: 'REGISTER_COMPONENTS_DONE',
-        useFactory: (eventBus$: Observable<BusEvent>) => {
-          return eventBus$
+      deps: [EVENT_BUS_LISTENER], 
+    },
+    { 
+      provide: 'REGISTER_COMPONENTS_DONE',
+      useFactory: (eventBus$: Observable<BusEvent>) => {
+        return eventBus$
           .pipe(
             filter((res: BusEvent) => {
               return res.to === `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}` &&
@@ -136,23 +136,23 @@ export const CHILD_ROUTES = [
             }),
             take(1)
           )
-        },
-        deps: [EVENT_BUS_LISTENER], 
       },
-      {
-        provide: EVENT_BUS_PUSHER,
-        useFactory: (eventBus$: BehaviorSubject<BusEvent>) => {
-          return (busEvent: BusEvent) => {
-            eventBus$.next(busEvent);
-          };
-        },
-        deps: [EVENT_BUS],
+      deps: [EVENT_BUS_LISTENER], 
+    },
+    {
+      provide: EVENT_BUS_PUSHER,
+      useFactory: (eventBus$: BehaviorSubject<BusEvent>) => {
+        return (busEvent: BusEvent) => {
+          eventBus$.next(busEvent);
+        };
       },
-    ],
-    exports: [ 
-      FaqComponent
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      deps: [EVENT_BUS],
+    },
+  ],
+  exports: [ 
+    FaqComponent
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class FaqModule {
   

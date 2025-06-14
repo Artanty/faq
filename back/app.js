@@ -4,6 +4,7 @@ const ticketRoutes = require('./routes/tickets');
 const answerRoutes = require('./routes/answers');
 const dictRoutes = require('./routes/dictionaries');
 const scheduleRoutes = require('./routes/schedules');
+const saveTempRoutes = require('./routes/saveTempRoutes')
 const test = require('./test');
 
 const axios = require('axios');
@@ -23,6 +24,7 @@ app.use('/tickets', ticketRoutes);
 app.use('/answers', answerRoutes);
 app.use('/dictionaries', dictRoutes);
 app.use('/schedule', scheduleRoutes);
+app.use('/save-temp', saveTempRoutes);
 
 async function sendRuntimeEventToStat(triggerIP) {
   try {
@@ -48,14 +50,14 @@ async function sendRuntimeEventToStat(triggerIP) {
       // Handle Axios-specific errors
       const axiosError = error; // as AxiosError
       console.error('Axios Error:', {
-          message: axiosError.message,
-          status: axiosError.response?.status,
-          statusText: axiosError.response?.statusText,
-          data: axiosError.response?.data,
+        message: axiosError.message,
+        status: axiosError.response?.status,
+        statusText: axiosError.response?.statusText,
+        data: axiosError.response?.data,
       });
     } else {
-        // Handle generic errors
-        console.error('Unexpected Error:', error);
+      // Handle generic errors
+      console.error('Unexpected Error:', error);
     }
     return false;
   }
@@ -84,19 +86,19 @@ app.get('/get-updates', async (req, res) => {
 
   // Check if stat=true is in the URL params
   if (stat === 'true') {
-      sendToStatResult = await sendRuntimeEventToStat(clientIP);
+    sendToStatResult = await sendRuntimeEventToStat(clientIP);
   } else {
-      // If stat is not true, check the current time and whether the function was already called this minute
-      if (shouldRunStat(currentMinute) && lastExecutedMinute !== currentMinute) {
-          lastExecutedMinute = currentMinute; // Update the last executed minute
-          sendToStatResult = await sendRuntimeEventToStat(clientIP);
-      }
+    // If stat is not true, check the current time and whether the function was already called this minute
+    if (shouldRunStat(currentMinute) && lastExecutedMinute !== currentMinute) {
+      lastExecutedMinute = currentMinute; // Update the last executed minute
+      sendToStatResult = await sendRuntimeEventToStat(clientIP);
+    }
   }
 
   res.json({
-      trigger: clientIP,
-      PORT: process.env.PORT,
-      isSendToStat: sendToStatResult,
+    trigger: clientIP,
+    PORT: process.env.PORT,
+    isSendToStat: sendToStatResult,
   });
 });
 
