@@ -22,18 +22,19 @@ import { ProductButtonIconComponent } from "./components/_remotes/product-button
 import { TicketQueueService } from "./services/ticketQueue.service";
 import { OpenerService } from "./services/opener.service";
 import { BehaviorSubject, filter, Observable, take, tap } from "rxjs";
-import { BusEvent, EVENT_BUS, EVENT_BUS_PUSHER } from "typlib";
+import { BusEvent, EVENT_BUS, EVENT_BUS_PUSHER, HOST_NAME } from "typlib";
 import { createCustomElement } from "@angular/elements";
 import { WellComponent } from './components/well/well.component';
 import { RegisterComponentsService } from "./services/register-components.service";
 
 export const CHILD_ROUTES = [
   {
-    path: 'faq', 
+    path: '', 
     component: FaqComponent,
     children: [
       {
-        path: '', component: WellComponent
+        // path: '', component: WellComponent
+        path: '', component: TicketDetailComponent
       },
       {
         path: 'ticket', component: TicketDetailComponent
@@ -167,13 +168,15 @@ export class FaqModule {
     private _coreService: CoreService,
     private _registerComponentsService: RegisterComponentsService,
     private injector: Injector,
-    @Inject('WEB_VERSION') private readonly webVersion: string
+    @Inject('WEB_VERSION') private readonly webVersion: string,
+    @Inject(HOST_NAME) private readonly hostName: string,
   ) {
     console.log('Faq module constructor')
+    
     this.eventBusListener$.subscribe((res: BusEvent) => {
       if (res.event === 'ROUTER_PATH') {
         this._coreService.setRouterPath((res.payload as any).routerPath).then(() => {
-          this._sendDoneEvent(res, 'self')
+          // this._sendDoneEvent(res, 'self')
         })
       }
       if (res.event === 'REGISTER_COMPONENTS_DONE') {
@@ -184,6 +187,16 @@ export class FaqModule {
       console.log('ROUTER_PATH RECEIVED, START COMPONENTS REGISTER')
       this._registerComponents()
     })
+
+    this.eventBusPusher({
+      from: `${process.env['PROJECT_ID']}@${process.env['NAMESPACE']}`,
+      to: this.hostName,
+      event: 'ASK_ROUTER_PATH',
+      payload: {
+        projectId: `${process.env['PROJECT_ID']}`
+      }
+    })
+
   }
   ngDoBootstrap() {}
   

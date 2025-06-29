@@ -35,6 +35,7 @@ const eventBus$ = new BehaviorSubject(initBusEvent)
    */
   providers: [
     { provide: EVENT_BUS, useValue: eventBus$ },
+    { provide: HOST_NAME, useValue: 'faq@web-standalone' },
   ],
   bootstrap: [AppComponent],
 })
